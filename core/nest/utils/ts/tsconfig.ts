@@ -56,7 +56,7 @@ export function writeTsconfig(
   const dirs = getDirs(config);
 
   const outputDir = dirs.output.dir;
-  const coreDir = useDir({ dir: resolve(__dirname, '../../..') });
+  const coreDir = useDir({ dir: resolve(__dirname, '../../../') });
   const _rootDir = useDir({ dir: rootDir ?? dirs.output.dir });
 
   const include: string[] = [];
@@ -66,20 +66,20 @@ export function writeTsconfig(
   if (!merge.include) {
     include.push(
       ...normalizeDirs([
-        join(dirs.output.server.types.relative.from(outputDir), '**/*.d.ts'),
-        join(dirs.root.server.relative.from(outputDir), '**/*.ts'),
-        join(dirs.root.server.relative.from(outputDir), '**/*.d.ts'),
-        join(coreDir.relative.from(outputDir), 'nest/types/**/*.d.ts'),
+        join(dirs.output.server.types.relative.to(outputDir), '**/*.d.ts'),
+        join(dirs.root.server.relative.to(outputDir), '**/*.ts'),
+        join(dirs.root.server.relative.to(outputDir), '**/*.d.ts'),
+        join(coreDir.relative.to(outputDir), 'nest/types/**/*.d.ts'),
       ]),
     );
 
     const node_modules = useDir({ dir: dirs.join('node_modules') });
     if (node_modules.exists()) {
-      exclude.push(node_modules.relative.from(dirs.output.server.dir));
+      exclude.push(node_modules.relative.to(dirs.output.server.dir));
     }
 
     if (dirs.dist.exists()) {
-      exclude.push(dirs.dist.relative.from(outputDir));
+      exclude.push(dirs.dist.relative.to(outputDir));
     }
 
     _.merge(paths, {

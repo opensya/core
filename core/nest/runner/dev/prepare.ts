@@ -27,7 +27,7 @@ export function devPrepare() {
 
     const code = [
       "import { nestEntry } from '@core/nest/entry'",
-      `import { bootstrap } from '${bootstrapDir.relative.from(dirs.output.server.dir)}';`,
+      `import { bootstrap } from '${bootstrapDir.relative.to(dirs.output.server.dir)}';`,
       '',
       'nestEntry(() => {',
       ' bootstrap();',
