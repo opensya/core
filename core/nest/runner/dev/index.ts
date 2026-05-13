@@ -48,7 +48,7 @@ void nestEntry(async () => {
       if (_env.CORE_ENV === 'factory') {
         args.push(
           `--tsconfig`,
-          resolve(__dirname, '../../../../tsconfig.json'),
+          resolve(__dirname, '../../../../tsconfig.dev.json'),
         );
       }
 

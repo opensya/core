@@ -31,5 +31,7 @@
   },
   "include": [
     "./core/**/*.ts",
+    "./test/**/*.ts",
+    "./vitest.config.ts"
   ]
 }

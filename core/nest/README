@@ -1,0 +1,410 @@
+# Opensya Core
+
+> Runtime & framework layer built on top of NestJS using a convention-driven architecture.
+
+## Vision
+
+`@opensya/core` is not a classic NestJS application.
+
+It is a **runtime engine** that transforms a simple file-based structure into a fully working NestJS application.
+
+The goal is to provide:
+
+- a modular backend architecture
+- a convention-over-configuration workflow
+- automatic registration of controllers/services/models
+- a simplified developer experience
+- strong TypeScript integration
+- scalable project organization
+- dynamic runtime capabilities
+
+Instead of manually wiring modules, providers and controllers everywhere, Opensya Core analyzes your project structure and builds the application automatically.
+
+---
+
+# Philosophy
+
+Traditional NestJS applications require a lot of manual configuration:
+
+- registering controllers
+- importing modules
+- wiring providers
+- configuring routes
+- exposing metadata
+- managing dependency trees
+
+Opensya Core moves this logic into a centralized runtime/compiler layer.
+
+The developer focuses on:
+
+- business logic
+- folder organization
+- conventions
+
+The framework handles:
+
+- discovery
+- compilation
+- registration
+- runtime orchestration
+
+---
+
+# Global Architecture
+
+```text
+server/
+├── controllers/
+├── services/
+├── models/
+├── guards/
+├── locales/
+```
+
+At startup:
+
+1. Opensya loads the project configuration
+2. The runtime scans the filesystem
+3. Definitions are compiled
+4. NestJS metadata is generated dynamically
+5. The Nest application is created automatically
+
+---
+
+# Runtime Lifecycle
+
+```text
+nestEntry()
+    ↓
+loadConfig()
+    ↓
+load environment
+    ↓
+nestCompiler()
+    ↓
+scan server/*
+    ↓
+register definitions
+    ↓
+generate runtime metadata
+    ↓
+createApp()
+    ↓
+NestJS application starts
+```
+
+---
+
+# Core Concepts
+
+## 1. Convention over Configuration
+
+The framework relies heavily on conventions.
+
+Example:
+
+```text
+server/controllers/user/get.ts
+```
+
+Automatically becomes:
+
+```http
+GET /user
+```
+
+Another example:
+
+```text
+server/controllers/auth/login/post.ts
+```
+
+Becomes:
+
+```http
+POST /auth/login
+```
+
+No explicit controller registration is required.
+
+---
+
+# 2. Dynamic Compilation Layer
+
+The project contains an internal compiler/runtime system.
+
+This layer is responsible for:
+
+- scanning files
+- resolving metadata
+- creating runtime definitions
+- building NestJS-compatible structures
+
+This is why Opensya Core behaves more like a framework runtime than a simple NestJS wrapper.
+
+---
+
+# 3. File-Based Backend Routing
+
+Routes are inferred from the filesystem.
+
+Example structure:
+
+```text
+server/controllers/
+├── user/
+│   ├── get.ts
+│   ├── post.ts
+│   └── [id]/
+│       └── get.ts
+```
+
+Generated routes:
+
+```http
+GET    /user
+POST   /user
+GET    /user/:id
+```
+
+HTTP methods are inferred from filenames.
+
+---
+
+# 4. Dynamic Service Registration
+
+Services are automatically registered into the runtime container.
+
+Example:
+
+```ts
+export default defineService(function (id: string) {
+  const model = getModel('User');
+  const user = await model.findById(id);
+
+  return user;
+});
+```
+
+The runtime:
+
+- discovers the service
+- registers it
+- exposes typings
+- injects it into the application lifecycle
+
+---
+
+# 5. Runtime Globals
+
+The runtime exposes several global variables internally.
+
+Examples:
+
+```ts
+_config;
+_env;
+_nestConfig;
+_nestApp;
+logger;
+```
+
+These globals centralize runtime state and orchestration.
+
+This architecture simplifies dynamic compilation and internal framework coordination.
+
+---
+
+# 6. Type Generation
+
+The framework generates additional typings dynamically.
+
+This allows:
+
+- service autocompletion
+- runtime-aware typing
+- dynamic module inference
+- framework-level DX improvements
+
+Example:
+
+```ts
+const service = useService('user.get');
+```
+
+With full inferred typing.
+
+---
+
+# 7. NestJS as the Execution Engine
+
+NestJS is used as the underlying execution platform.
+
+Opensya Core adds:
+
+- discovery
+- compilation
+- orchestration
+- metadata generation
+- runtime abstraction
+
+NestJS remains the transport/runtime engine underneath.
+
+---
+
+# Developer Experience
+
+The framework aims to provide:
+
+- less boilerplate
+- faster backend development
+- scalable structure
+- modular organization
+- strong typing
+- filesystem-driven architecture
+
+---
+
+# Example
+
+## Controller
+
+```ts
+export default defineController({
+  async handle({ req }) {
+    return {
+      message: 'Hello world',
+    };
+  },
+});
+```
+
+File:
+
+```text
+server/controllers/hello/get.ts
+```
+
+Generated route:
+
+```http
+GET /hello
+```
+
+---
+
+# Internal Layers
+
+## Runtime Layer
+
+Responsible for:
+
+- globals
+- lifecycle
+- orchestration
+- bootstrapping
+
+---
+
+## Compiler Layer
+
+Responsible for:
+
+- file discovery
+- metadata extraction
+- dynamic registration
+- route generation
+
+---
+
+## Nest Layer
+
+Responsible for:
+
+- actual HTTP execution
+- DI container
+- middleware/interceptors/guards
+- transport layer
+
+---
+
+# Why This Architecture?
+
+This architecture provides:
+
+- rapid backend prototyping
+- cleaner project structures
+- easier scaling
+- highly modular applications
+- framework extensibility
+- plugin/runtime capabilities
+
+It also opens the door for:
+
+- distributed modules
+- runtime plugins
+- hot module loading
+- dynamic package registration
+- framework tooling
+- code generation
+
+---
+
+# Important Note
+
+Opensya Core is closer to:
+
+- Nuxt backend runtime
+- Next.js API routing
+- Nitro runtime
+- AdonisJS conventions
+
+than to a classic manual NestJS architecture.
+
+NestJS is the foundation.
+
+Opensya Core is the orchestration layer.
+
+---
+
+# Current Status
+
+The project is currently focused on:
+
+- stabilizing the runtime
+- improving typing generation
+- strengthening the compiler layer
+- building the testing infrastructure
+- improving developer tooling
+
+---
+
+# Future Goals
+
+- plugin ecosystem
+- module federation
+- distributed runtime
+- CLI tooling
+- advanced code generation
+- HMR runtime
+- deployment abstraction
+- microservice orchestration
+- runtime adapters
+
+---
+
+# Summary
+
+Opensya Core transforms:
+
+```text
+Filesystem + Conventions + Definitions
+```
+
+into:
+
+```text
+A fully orchestrated NestJS application runtime
+```
+
+without forcing developers to manually wire the application architecture.

@@ -21,7 +21,7 @@ void nestEntry(
     const args: string[] = [];
 
     if (env.CORE_ENV === 'factory') {
-      args.push(`--tsconfig`, resolve(__dirname, '../tsconfig.json'));
+      args.push(`--tsconfig`, resolve(__dirname, '../tsconfig.dev.json'));
     }
 
     args.push(resolve(__dirname, './nest/runner/dev'));
