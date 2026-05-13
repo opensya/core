@@ -2,7 +2,6 @@ import { createConnection, ConnectionStates, Connection } from 'mongoose';
 import { Model } from '../../types';
 import { randomUUID } from 'crypto';
 
-const dbUrl = 'mongodb://root:root@localhost:27017/worky?authSource=admin';
 let con: Connection;
 
 const confidentialKey = randomUUID();
@@ -16,6 +15,8 @@ export function registerModel(model: Model) {
 
 export async function initDatabase() {
   if (con?.readyState === ConnectionStates.connected) return;
+
+  const dbUrl = _env.NEST_DATABASE_URL;
 
   con = createConnection(dbUrl, {
     // maxPoolSize: 10,

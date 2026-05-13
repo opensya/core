@@ -6,5 +6,7 @@ export const envDefinition = {
     .optional()
     .default('development'),
 
+  NEST_DATABASE_URL: Env.schema.string(),
+
   NEST_PORT: Env.schema.number().default(4720),
 };
