@@ -1,0 +1,64 @@
+name: tests
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout core
+        uses: actions/checkout@v6
+        with:
+          path: core
+
+      - name: Checkout config
+        uses: actions/checkout@v6
+        with:
+          repository: opensya/config
+          path: config
+
+      - name: Checkout share
+        uses: actions/checkout@v6
+        with:
+          repository: opensya/share
+          path: share
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
+      - name: Create temporary workspace
+        run: |
+          cat > pnpm-workspace.yaml <<'EOF'
+          packages:
+            - core
+            - config
+            - share
+          EOF
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build local packages
+        run: |
+          pnpm --filter @opensya/config build
+          pnpm --filter @opensya/share build
+
+      - name: Run tests
+        run: pnpm --filter @opensya/core test
