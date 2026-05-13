@@ -3,15 +3,15 @@ import { syntheseTypes } from '@nest/compiler/utils/types';
 import { Model } from '@nest/types';
 import { acceptFileRegex } from '@nest/utils/accept-files';
 import { getWhyleDefault } from '@nest/utils/get-whyle-default';
-import { typeTemplate } from '@nest/utils/models';
+import { typeTemplate } from '@core/nest/utils/database/models';
 import { writeFileSync } from 'fs-extra';
 import { registerModel } from '@nest/utils/database';
 
 export async function compiler(config: OpensyaConfigOutput) {
   const projectDirs = getDirs(config);
-  if (!projectDirs.root.server.models.exists()) return;
+  if (!projectDirs.root.server.database.models.exists()) return;
 
-  const files = projectDirs.root.server.models.getChildren({
+  const files = projectDirs.root.server.database.models.getChildren({
     recursive: true,
     onlyFile: true,
     endWith: acceptFileRegex,

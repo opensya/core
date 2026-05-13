@@ -89,8 +89,7 @@ globalThis.defineController = function (handler, options = {}) {
             res: req.res!,
             next: req.next!,
             i18n: this.i18n,
-            // eslint-disable-next-line @typescript-eslint/unbound-method
-            $t: this.i18n.t,
+            $t: (val) => val, // this.i18n.t,
           });
         }
       }
