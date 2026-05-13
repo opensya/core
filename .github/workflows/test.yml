@@ -51,6 +51,24 @@ jobs:
             - config
             - share
           EOF
+      - name: Create temporary pnpm config
+        run: |
+          cat > package.json <<'EOF'
+          {
+          "private": true,
+          "pnpm": {
+              "onlyBuiltDependencies": [
+              "@nestjs/core",
+              "@swc/core",
+              "bcrypt",
+              "esbuild"
+              ],
+              "ignoredBuiltDependencies": [
+              "@scarf/scarf"
+              ]
+          }
+          }
+          EOF
 
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
