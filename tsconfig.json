@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@core/*": [
+        "core/*"
+      ],
+      "@nest/*": [
+        "core/nest/*"
+      ],
+    },
+    "strict": true,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "resolvePackageJsonExports": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "declaration": true,
+    "removeComments": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2023",
+    "sourceMap": true,
+    "baseUrl": "./",
+    "outDir": "./dist",
+    "incremental": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "preserveSymlinks": true,
+    "pretty": true,
+  },
+  "include": [
+    "./core/**/*.ts",
+  ]
+}

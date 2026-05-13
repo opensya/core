@@ -1,0 +1,79 @@
+import { Module, ModuleMetadata, OnApplicationBootstrap } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { colorize } from 'consola/utils';
+import { getAddressURL } from './utils/server';
+import { initDatabase } from './utils/database';
+import { initServices } from './utils/services';
+import { getI18NModule } from './utils/i18n/get-module';
+import { NestLogger } from './utils/nest';
+
+export async function createApp() {
+  const port = process.env.NEST_PORT ?? 3e3;
+  const modules: ModuleMetadata = { ..._nestConfig.modules };
+  modules.imports ??= [];
+  modules.providers ??= [];
+  modules.exports ??= [];
+  modules.controllers ??= [];
+
+  modules.imports.push(getI18NModule());
+
+  modules.providers.push(NestLogger);
+  modules.exports.push(NestLogger);
+
+  const controllers = Object.values(_nestConfig.controllers);
+  modules.controllers = controllers;
+
+  @Module(modules)
+  class AppModule implements OnApplicationBootstrap {
+    async onApplicationBootstrap() {
+      await initDatabase();
+      void initServices();
+
+      for (const onBootstrap of _nestConfig.onBootstraps) {
+        await onBootstrap();
+      }
+    }
+  }
+
+  globalThis._nestApp = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+    ..._nestConfig.options,
+  });
+
+  _nestApp.useLogger(_nestApp.get(NestLogger));
+
+  _nestApp.setGlobalPrefix('api');
+
+  void _nestApp?.listen(port, () => void onAppListen());
+}
+
+async function onAppListen() {
+  if (!_nestApp) return;
+
+  const host = await getAddressURL();
+
+  globalThis.BASE_URL = host;
+  globalThis.API_BASE_URL = host;
+
+  logger.log();
+
+  logger.log(
+    [
+      ''.padStart(1, ' '),
+      colorize('greenBright', '➜ Local'.padEnd(11, ' ')),
+      colorize('underline', colorize('blueBright', host)),
+    ].join(' '),
+  );
+
+  logger.log(
+    [
+      ''.padStart(1, '  '),
+      colorize('dim', '➜ Network'.padEnd(11, ' ')),
+      colorize('dim', 'use'),
+      colorize('reset', '--host'),
+      colorize('dim', 'to expose'),
+    ].join(' '),
+  );
+
+  logger.log(' ');
+}

@@ -1,0 +1,3 @@
+{
+  "extends": "../.opensya/tsconfig.server.json"
+}
