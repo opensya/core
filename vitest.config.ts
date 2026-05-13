@@ -1,5 +1,3 @@
-// vitest.config.ts
-
 import { resolve } from 'node:path';
 import { defineConfig } from 'vitest/config';
 

@@ -6,13 +6,13 @@ import {
 import { I18nService } from 'nestjs-i18n';
 import express from 'express';
 import { Controller } from '../utils/controllers';
-import { getProjectDirsv2, OpensyaConfigOutput } from '@opensya/config';
+import { getDirs, OpensyaConfigOutput } from '@opensya/config';
 import { randomUUID } from 'node:crypto';
 
 globalThis.defineController = function (handler, options = {}) {
   return {
     compiler: function (config: OpensyaConfigOutput, { file }) {
-      const projectDirs = getProjectDirsv2(config);
+      const projectDirs = getDirs(config);
 
       function buildOptions() {
         const methods = Object.values(RequestMethod).filter((v) =>

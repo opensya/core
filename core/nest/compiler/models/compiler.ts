@@ -1,4 +1,4 @@
-import { getProjectDirsv2, OpensyaConfigOutput, useDir } from '@opensya/config';
+import { getDirs, OpensyaConfigOutput, useDir } from '@opensya/config';
 import { syntheseTypes } from '@nest/compiler/utils/types';
 import { Model } from '@nest/types';
 import { acceptFileRegex } from '@nest/utils/accept-files';
@@ -8,7 +8,7 @@ import { writeFileSync } from 'fs-extra';
 import { registerModel } from '@nest/utils/database';
 
 export async function compiler(config: OpensyaConfigOutput) {
-  const projectDirs = getProjectDirsv2(config);
+  const projectDirs = getDirs(config);
   if (!projectDirs.root.server.models.exists()) return;
 
   const files = projectDirs.root.server.models.getChildren({
@@ -34,15 +34,16 @@ export async function compiler(config: OpensyaConfigOutput) {
     function writeTypes() {
       if (!['factory', 'development'].includes(_env.CORE_ENV)) return;
 
+      const dirs = getDirs(_config);
       const dir = useDir({ dir: file.replace(acceptFileRegex, '') });
-      const rPath = dir.relative.from.outputServerTypes();
+      const rPath = dir.relative.from(dirs.output.server.dir);
 
       const content = typeTemplate
         .replaceAll('{import}', `${rPath}`)
         .replaceAll('{name}', model.name!);
 
       writeFileSync(
-        projectDirs.output.server.types.join.this(
+        projectDirs.output.server.types.join(
           `model.${model.name!.toLocaleLowerCase()}.d.ts`,
         ),
         content,

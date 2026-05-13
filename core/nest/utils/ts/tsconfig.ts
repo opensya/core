@@ -2,10 +2,10 @@ import { writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import _ from 'lodash';
 import {
-  getDirs_v4,
+  getDirs,
   normalizeDirs,
   OpensyaConfigOutput,
-  useDirs_V2,
+  useDir,
 } from '@opensya/config';
 import {
   CompilerOptions,
@@ -53,11 +53,11 @@ export function writeTsconfig(
     rootDir?: string;
   } = {},
 ) {
-  const dirs = getDirs_v4(config);
+  const dirs = getDirs(config);
 
   const outputDir = dirs.output.dir;
-  const coreDir = useDirs_V2({ dir: resolve(__dirname, '../../..') });
-  const _rootDir = useDirs_V2({ dir: rootDir ?? dirs.output.dir });
+  const coreDir = useDir({ dir: resolve(__dirname, '../../..') });
+  const _rootDir = useDir({ dir: rootDir ?? dirs.output.dir });
 
   const include: string[] = [];
   const exclude: string[] = [];
@@ -73,9 +73,9 @@ export function writeTsconfig(
       ]),
     );
 
-    const node_modules = useDirs_V2({ dir: dirs.join('node_modules') });
+    const node_modules = useDir({ dir: dirs.join('node_modules') });
     if (node_modules.exists()) {
-      exclude.push(node_modules.relative.from.outputServer());
+      exclude.push(node_modules.relative.from(dirs.output.server.dir));
     }
 
     if (dirs.dist.exists()) {

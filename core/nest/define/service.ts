@@ -1,4 +1,4 @@
-import { getProjectDirsv2, useDir } from '@opensya/config';
+import { getDirs, useDir } from '@opensya/config';
 import { acceptFileRegex } from '../utils/accept-files';
 import { registerService, typeTemplate } from '../utils/services';
 import { writeFileSync } from 'fs-extra';
@@ -6,7 +6,7 @@ import { writeFileSync } from 'fs-extra';
 globalThis.defineService = (handler) => {
   return {
     compiler: function (config, { file }: { file: string }) {
-      const projectDirs = getProjectDirsv2(config);
+      const projectDirs = getDirs(config);
       const parent = projectDirs.root.server.services.dir;
 
       const name = file
@@ -34,14 +34,14 @@ globalThis.defineService = (handler) => {
         if (!['factory', 'development'].includes(_env.CORE_ENV)) return;
 
         const dir = useDir({ dir: file.replace(acceptFileRegex, '') });
-        const rPath = dir.relative.from.outputServerTypes();
+        const rPath = dir.relative.from(projectDirs.output.server.dir);
 
         const content = typeTemplate
           .replaceAll('{import}', rPath)
           .replaceAll('{name}', name);
 
         writeFileSync(
-          projectDirs.output.server.types.join.this(`service.${name}.d.ts`),
+          projectDirs.output.server.types.join(`service.${name}.d.ts`),
           content,
         );
       }

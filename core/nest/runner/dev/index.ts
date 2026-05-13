@@ -1,13 +1,13 @@
 import { nestEntry } from '../../entry';
 import { devPrepare } from './prepare';
 import { execo, ExecoReturn } from '@core/utils/execo';
-import { getDirs_v4 } from '@opensya/config';
+import { getDirs } from '@opensya/config';
 import { Stats } from 'fs-extra';
 import chokidar from 'chokidar';
 import { resolve } from 'node:path';
 
 void nestEntry(async () => {
-  const dirs = getDirs_v4(_config);
+  const dirs = getDirs(_config);
 
   let serverProcess: ExecoReturn | null = null;
 

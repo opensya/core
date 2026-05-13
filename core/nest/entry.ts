@@ -1,5 +1,5 @@
 import { Env, InferEnv } from '@core/utils/env';
-import { getDirs_v4, loadConfig, OpensyaConfigOutput } from '@opensya/config';
+import { getDirs, loadConfig, OpensyaConfigOutput } from '@opensya/config';
 import { MayBePromise } from '@opensya/share';
 import { envDefinition } from './utils/env.js';
 
@@ -8,7 +8,7 @@ export async function nestEntry(
     config: OpensyaConfigOutput,
     params: {
       env: InferEnv<typeof envDefinition>;
-      dirs: ReturnType<typeof getDirs_v4>;
+      dirs: ReturnType<typeof getDirs>;
     },
   ) => MayBePromise<void>,
   { processEnv = true, cwd }: { processEnv?: boolean; cwd?: string } = {},
@@ -21,7 +21,7 @@ export async function nestEntry(
 
   await import('./utils/set-globals.js');
   const config = await loadConfig(cwd);
-  const dirs = getDirs_v4(config);
+  const dirs = getDirs(config);
 
   if (processEnv) {
     globalThis._config = config;
