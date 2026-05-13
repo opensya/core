@@ -3,7 +3,6 @@ import {
   Req,
   RequestMethod,
 } from '@nestjs/common';
-import { I18nService } from 'nestjs-i18n';
 import express from 'express';
 import { Controller } from '../utils/controllers';
 import { getDirs, OpensyaConfigOutput } from '@opensya/config';
@@ -80,16 +79,12 @@ globalThis.defineController = function (handler, options = {}) {
 
       @NestController()
       class ControllerClass {
-        constructor(readonly i18n: I18nService) {}
-
         @Controller(_options)
         handler(@Req() req: express.Request) {
           return handler({
             req,
             res: req.res!,
             next: req.next!,
-            i18n: this.i18n,
-            $t: (val) => val, // this.i18n.t,
           });
         }
       }

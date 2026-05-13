@@ -1,6 +1,5 @@
 import { RequestMethod } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
-import { I18nService } from 'nestjs-i18n';
 import { MayBePromise } from '@opensya/share';
 import { OpensyaConfigOutput } from '@opensya/config';
 
@@ -10,8 +9,6 @@ export type ControllerContext = {
   req: Request;
   res: Response;
   next: NextFunction;
-  i18n: I18nService;
-  $t: (val: string) => string;
 };
 
 export type AccessOptions =

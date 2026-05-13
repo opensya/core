@@ -4,8 +4,8 @@ import { colorize } from 'consola/utils';
 import { getAddressURL } from './utils/server';
 import { initDatabase } from './utils/database';
 import { initServices } from './utils/services';
-import { getI18NModule } from './utils/i18n/get-module';
 import { NestLogger } from './utils/nest';
+import { createI18n } from './utils/i18n/i18n';
 
 export async function createApp() {
   const port = process.env.NEST_PORT ?? 3e3;
@@ -14,8 +14,6 @@ export async function createApp() {
   modules.providers ??= [];
   modules.exports ??= [];
   modules.controllers ??= [];
-
-  modules.imports.push(getI18NModule());
 
   modules.providers.push(NestLogger);
   modules.exports.push(NestLogger);
@@ -27,6 +25,7 @@ export async function createApp() {
   class AppModule implements OnApplicationBootstrap {
     async onApplicationBootstrap() {
       await initDatabase();
+      await createI18n();
       void initServices();
 
       for (const onBootstrap of _nestConfig.onBootstraps) {

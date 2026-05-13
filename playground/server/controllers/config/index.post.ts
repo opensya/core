@@ -1,7 +1,7 @@
 import { getConfigSchema } from '@opensya/share';
 
 export default defineController(
-  async ({ res, req, $t }) => {
+  async ({ res, req }) => {
     // const body = req.body;
     // const config = await models.Config.findOne();
     // const { schema } = getConfigSchema($t);
