@@ -9,7 +9,7 @@ export class I18nLoader implements _I18nLoader {
   isDev: boolean;
 
   constructor() {
-    this.isDev = ['factory', 'development'].includes(_env.CORE_ENV);
+    this.isDev = ['factory', 'development'].includes(_env.CORE_ENV as any);
     this.event = new rxjs.Subject();
   }
 

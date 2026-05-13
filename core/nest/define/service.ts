@@ -31,7 +31,7 @@ globalThis.defineService = (handler) => {
       writeType();
 
       function writeType() {
-        if (!['factory', 'development'].includes(_env.CORE_ENV)) return;
+        if (!['factory', 'development'].includes(_env.CORE_ENV as any)) return;
 
         const dir = useDir({ dir: file.replace(acceptFileRegex, '') });
         const rPath = dir.relative.from(projectDirs.output.server.dir);

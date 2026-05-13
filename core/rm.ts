@@ -23,4 +23,6 @@ function rmv(root: string) {
   }
 }
 
+void rmv(join(process.cwd(), 'core/utils'));
 void rmv(join(process.cwd(), 'core/nest'));
+void rmv(join(process.cwd(), 'playground/server'));

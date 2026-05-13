@@ -1,11 +1,10 @@
 import '../../utils/set-globals';
-import { getDirs, OpensyaConfigOutput } from '@opensya/config';
+import { getDirs } from '@opensya/config';
 import { copyLocales } from '../../utils/copy-locales';
 import { writeTsconfig } from '../../utils/ts';
 
-export function prepareBuild(config: OpensyaConfigOutput) {
-  globalThis._config = config;
-  const dirs = getDirs(config);
+export function prepareBuild() {
+  const dirs = getDirs(_config);
 
   function clean() {
     dirs.dist.server.remove({ recursive: true, force: true });
@@ -19,14 +18,16 @@ export function prepareBuild(config: OpensyaConfigOutput) {
     writeTsconfig(_config, {
       merge: {
         compilerOptions: {
-          outDir: dirs.dist.relative.to(dirs.output.dir),
+          rootDir: dirs.root.server.relative.to(dirs.output.dir),
+          outDir: dirs.dist.server.relative.to(dirs.output.dir),
         },
       },
+      name: 'build',
     });
   }
 
   void clean();
   void ensureDist();
-  void copyLocales(config);
+  void copyLocales(_config);
   void tsconfig();
 }

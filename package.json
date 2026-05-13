@@ -24,7 +24,7 @@
     "clean": "rm -rf dist",
     "dev:prepare": "pnpm clean && tsc -p tsconfig.build.json && tsc-alias",
     "dev": "tsx ./core/dev",
-    "build": "pnpm dev:prepare && tsx ./dist/build",
+    "build": "pnpm dev:prepare && tsx ./dist/core/build",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",

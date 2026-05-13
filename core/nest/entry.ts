@@ -15,7 +15,7 @@ export async function nestEntry(
 ) {
   const env = Env.runtime(envDefinition, {
     prefix: 'NEST_',
-    with: ['CORE_ENV'],
+    with: ['CORE_ENV', 'NODE_ENV'],
     processEnv,
   });
 

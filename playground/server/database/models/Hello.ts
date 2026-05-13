@@ -1,7 +1,5 @@
 import { Schema } from 'mongoose';
 
-// export type HelloDocument = HydratedDocument<{ test: boolean }>;
-
 const model = {
   schema: new Schema(
     {

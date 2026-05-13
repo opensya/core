@@ -32,7 +32,7 @@ export async function compiler(config: OpensyaConfigOutput) {
     writeTypes();
 
     function writeTypes() {
-      if (!['factory', 'development'].includes(_env.CORE_ENV)) return;
+      if (!['factory', 'development'].includes(_env.CORE_ENV as any)) return;
 
       const dirs = getDirs(_config);
       const dir = useDir({ dir: file.replace(acceptFileRegex, '') });

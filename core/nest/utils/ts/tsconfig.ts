@@ -24,7 +24,7 @@ type $CompilerOptionss = Omit<
   module?: keyof typeof ModuleKind;
   moduleResolution?: keyof typeof ModuleResolutionKind;
   target?: keyof typeof ScriptTarget;
-  moduleDetection?: keyof typeof ModuleDetectionKind;
+  moduleDetection?: Lowercase<keyof typeof ModuleDetectionKind>;
   types?: any[];
 };
 
@@ -73,6 +73,10 @@ export function writeTsconfig(
       ]),
     );
 
+    if (_env.CORE_ENV == 'factory') {
+      include.push(join(coreDir.relative.to(outputDir), 'nest/types/**/*.ts'));
+    }
+
     const node_modules = useDir({ dir: dirs.join('node_modules') });
     if (node_modules.exists()) {
       exclude.push(node_modules.relative.to(dirs.output.server.dir));
@@ -114,7 +118,7 @@ export function writeTsconfig(
     skipLibCheck: true,
     preserveSymlinks: true,
     composite: true,
-    moduleDetection: 'Force',
+    moduleDetection: 'force',
     pretty: true,
   };
 
@@ -126,7 +130,7 @@ export function writeTsconfig(
 
   _.merge(tsconfig, merge);
 
-  const _name = name ? `tsconfig.${name}.server.json` : 'tsconfig.server.json';
+  const _name = name ? `tsconfig.server.${name}.json` : 'tsconfig.server.json';
   const path = dirs.output.join(_name);
   writeFileSync(path, JSON.stringify(tsconfig, null, 2));
 
