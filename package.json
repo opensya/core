@@ -22,7 +22,7 @@
   "scripts": {
     "rmv": "tsx ./core/rm.ts",
     "clean": "rm -rf dist",
-    "dev:prepare": "pnpm clean && tsc && tsc-alias",
+    "dev:prepare": "pnpm clean && tsc -p tsconfig.build.json && tsc-alias",
     "dev": "tsx ./core/dev",
     "build": "pnpm dev:prepare && tsx ./dist/build",
     "test": "vitest run",
