@@ -6,6 +6,7 @@ import { getWhyleDefault } from '@nest/utils/get-whyle-default';
 import { typeTemplate } from '@core/nest/utils/database/models';
 import { writeFileSync } from 'fs-extra';
 import { registerModel } from '@nest/utils/database';
+import { resolve } from 'node:path';
 
 export async function compiler(config: OpensyaConfigOutput) {
   const projectDirs = getDirs(config);
@@ -21,7 +22,7 @@ export async function compiler(config: OpensyaConfigOutput) {
 
   async function build(file: string) {
     const raw = await import(file);
-    const model = getWhyleDefault<Model>(raw);
+    const model = getWhyleDefault<Model<any>>(raw);
 
     if (!model?.schema) return;
 
@@ -36,11 +37,16 @@ export async function compiler(config: OpensyaConfigOutput) {
 
       const dirs = getDirs(_config);
       const dir = useDir({ dir: file.replace(acceptFileRegex, '') });
-      const rPath = dir.relative.from(dirs.output.server.dir);
+      const rPath = dir.relative.to(dirs.output.server.types.dir);
+
+      const typeImport = useDir({
+        dir: resolve(__dirname, '../../../types'),
+      }).relative.to(projectDirs.output.server.types.dir);
 
       const content = typeTemplate
         .replaceAll('{import}', `${rPath}`)
-        .replaceAll('{name}', model.name!);
+        .replaceAll('{name}', model.name!)
+        .replaceAll('{types-import}', typeImport);
 
       writeFileSync(
         projectDirs.output.server.types.join(

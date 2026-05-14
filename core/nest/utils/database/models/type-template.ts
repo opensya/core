@@ -1,8 +1,9 @@
-export const typeTemplate = `import model from "{import}";
-type {name} = import('mongoose').HydratedDocumentFromSchema<typeof model['schema']>;
+export const typeTemplate = `import model from '{import}';
+
+type {name}Model = import('{types-import}').InferModel<typeof model>;
 
 interface _Models {
- {name}: import('mongoose').Model<{name}>;
+  {name}: {name}Model;
 }
 
 declare module 'mongoose' {
@@ -10,7 +11,7 @@ declare module 'mongoose' {
 }
 
 declare global {
-  function getModel(name: '{name}'): import('mongoose').Model<{name}>;
+  function getModel(name: '{name}'): {name}Model;
 }
 
 export {};

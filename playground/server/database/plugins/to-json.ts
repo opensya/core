@@ -12,7 +12,7 @@ export default defineMongoosePlugin((schema) => {
       for (const key in ret) {
         if (!Object.hasOwn(ret, key)) continue;
 
-        const data = ret[key] as any;
+        const data: any = ret[key];
         if (data?.type !== 'Buffer') continue;
 
         _.unset(ret, key);

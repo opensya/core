@@ -3,6 +3,7 @@ import { join, resolve } from 'node:path';
 import _ from 'lodash';
 import {
   getDirs,
+  normalizeDir,
   normalizeDirs,
   OpensyaConfigOutput,
   useDir,
@@ -64,18 +65,28 @@ export function writeTsconfig(
   let paths: ServerConfig['paths'] = {};
 
   if (!merge.include) {
-    include.push(
-      ...normalizeDirs([
-        join(dirs.output.server.types.relative.to(outputDir), '**/*.d.ts'),
-        join(dirs.root.server.relative.to(outputDir), '**/*.ts'),
-        join(dirs.root.server.relative.to(outputDir), '**/*.d.ts'),
-        join(coreDir.relative.to(outputDir), 'nest/types/**/*.d.ts'),
-      ]),
-    );
+    include.push(join(coreDir.relative.to(outputDir), 'utils/env.ts'));
 
     if (_env.CORE_ENV == 'factory') {
-      include.push(join(coreDir.relative.to(outputDir), 'nest/types/**/*.ts'));
+      include.push(join(coreDir.relative.to(outputDir), 'nest/**/*.ts'));
+    } else {
+      include.push(
+        join(coreDir.relative.to(outputDir), 'nest/types/**/*.d.ts'),
+      );
     }
+
+    include.push(
+      normalizeDir(
+        join(dirs.output.server.types.relative.to(outputDir), '**/*.d.ts'),
+      ),
+    );
+
+    include.push(
+      ...normalizeDirs([
+        join(dirs.root.server.relative.to(outputDir), '**/*.ts'),
+        join(dirs.root.server.relative.to(outputDir), '**/*.d.ts'),
+      ]),
+    );
 
     const node_modules = useDir({ dir: dirs.join('node_modules') });
     if (node_modules.exists()) {

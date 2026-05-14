@@ -13,15 +13,16 @@ export async function nestEntry(
   ) => MayBePromise<void>,
   { processEnv = true, cwd }: { processEnv?: boolean; cwd?: string } = {},
 ) {
+  await import('./utils/set-globals.js');
+  const config = await loadConfig(cwd);
+  const dirs = getDirs(config);
+
   const env = Env.runtime(envDefinition, {
     prefix: 'NEST_',
     with: ['CORE_ENV', 'NODE_ENV'],
     processEnv,
+    path: config.envFile,
   });
-
-  await import('./utils/set-globals.js');
-  const config = await loadConfig(cwd);
-  const dirs = getDirs(config);
 
   if (processEnv) {
     globalThis._config = config;

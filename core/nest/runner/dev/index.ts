@@ -1,5 +1,5 @@
 import { nestEntry } from '../../entry';
-import { devPrepare } from './prepare';
+import { devPrepare } from './run-prepare';
 import { execo, ExecoReturn } from '@core/utils/execo';
 import { getDirs } from '@opensya/config';
 import { Stats } from 'fs-extra';

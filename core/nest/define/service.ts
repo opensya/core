@@ -1,3 +1,4 @@
+import { colorize } from 'consola/utils';
 import { getDirs, useDir } from '@opensya/config';
 import { acceptFileRegex } from '../utils/accept-files';
 import { registerService, typeTemplate } from '../utils/services';
@@ -18,11 +19,17 @@ globalThis.defineService = (handler) => {
         .replace(/(\/?)index$/, '');
 
       async function service(...args: Parameters<typeof handler>) {
-        // TODO exécution de middeleware d'entrée
+        logger.start(
+          `Executing service ${colorize('green', name)} ...`,
+          'Service',
+        );
 
         const ret = await handler(...args);
 
-        // TODO exécition de middeware de sortie
+        logger.success(
+          `${colorize('green', name)} service executed successfully`,
+          'Service',
+        );
 
         return ret;
       }
@@ -34,7 +41,7 @@ globalThis.defineService = (handler) => {
         if (!['factory', 'development'].includes(_env.CORE_ENV as any)) return;
 
         const dir = useDir({ dir: file.replace(acceptFileRegex, '') });
-        const rPath = dir.relative.from(projectDirs.output.server.dir);
+        const rPath = dir.relative.to(projectDirs.output.server.types.dir);
 
         const content = typeTemplate
           .replaceAll('{import}', rPath)
@@ -46,5 +53,7 @@ globalThis.defineService = (handler) => {
         );
       }
     },
+
+    handler,
   };
 };

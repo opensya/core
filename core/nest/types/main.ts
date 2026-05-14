@@ -11,9 +11,6 @@ export type ServerConfig = Omit<ModuleMetadata, 'controllers'> & {
   onBootstrap?: () => any;
   options?: NestApplicationOptions;
   paths?: Record<string, string[]>;
-
-  /** @default '.server.env */
-  envFile?: string;
 };
 
 declare global {
@@ -26,8 +23,8 @@ declare global {
   var _types: Record<'models', Record<string, string>>;
   var _nestApp: INestApplication;
 
-  function useService(name: string): () => any;
-  function getModel(name: string): import('mongoose').Model<any>;
+  function useService(name: string): (...args: any[]) => Promise<any>;
+  function getModel<T = unknown>(name: string): import('mongoose').Model<T>;
 }
 
 declare module '@opensya/config' {

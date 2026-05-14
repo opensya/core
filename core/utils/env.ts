@@ -1,6 +1,10 @@
 import fs from 'node:fs';
 import { resolve } from 'node:path';
 
+declare const ENV_SECRET: unique symbol;
+export type SecretFlag = { [ENV_SECRET]: true };
+type IsSecret<T> = T extends SecretFlag ? true : false;
+
 export type EnvValue = string | boolean | number;
 
 export type EnvObject = Record<string, EnvValue>;
@@ -9,6 +13,8 @@ export type EnvValidator<T> = {
   parse(value: EnvValue | undefined, key: string): T;
   optional(): EnvValidator<T | undefined>;
   default(value: T): EnvValidator<NonNullable<T>>;
+  secret(): EnvValidator<T> & SecretFlag;
+  isSecret?: boolean;
 };
 
 export type InferValidator<T> = T extends EnvValidator<infer R> ? R : never;
@@ -19,9 +25,9 @@ export type EnvDefinition = Record<
 >;
 
 export type InferEnv<T extends EnvDefinition> = {
-  [K in keyof T]: T[K] extends () => infer R
-    ? InferValidator<R>
-    : InferValidator<T[K]>;
+  [K in keyof T as IsSecret<T[K]> extends true
+    ? never
+    : K]: T[K] extends () => infer R ? InferValidator<R> : InferValidator<T[K]>;
 };
 
 export interface LoadEnvOptions {
@@ -56,6 +62,8 @@ export interface LoadEnvOptions {
    */
   overrideProcessEnv?: boolean;
 }
+
+const secretStore = new Map<string, unknown>();
 
 export class Env {
   static schema = {
@@ -111,8 +119,26 @@ export class Env {
           );
         }
 
-        return parsed; // as T[number];
+        return parsed;
       });
+    },
+
+    private: {
+      any<T = any>() {
+        return Env.schema.any<T>().secret();
+      },
+
+      string(options?: { format?: 'host' }) {
+        return Env.schema.string(options).secret();
+      },
+
+      number() {
+        return Env.schema.number().secret();
+      },
+
+      enum<const T extends readonly string[]>(values: T) {
+        return Env.schema.enum(values).secret();
+      },
     },
   };
 
@@ -145,50 +171,85 @@ export class Env {
     options: LoadEnvOptions = {},
   ): InferEnv<T> {
     const rawEnv = loadEnvFile(options);
-
-    const parsedEnv = {} as InferEnv<T>;
+    const parsedEnv: Record<string, unknown> = {};
 
     for (const key in definition) {
       const schemaOrFactory = definition[key];
-      let schema: EnvValidator<any>;
 
-      if (typeof schemaOrFactory === 'function') schema = schemaOrFactory();
-      else schema = schemaOrFactory;
+      const schema =
+        typeof schemaOrFactory === 'function'
+          ? schemaOrFactory()
+          : schemaOrFactory;
 
-      parsedEnv[key] = schema.parse(
-        rawEnv[key],
-        key,
-      ) as InferEnv<T>[typeof key];
+      if ('parse' in schema) {
+        const value = schema.parse(rawEnv[key], key);
+
+        if (schema.isSecret) {
+          secretStore.set(key, value);
+          continue;
+        }
+
+        parsedEnv[key] = value;
+      }
     }
 
-    return parsedEnv;
+    return parsedEnv as InferEnv<T>;
+  }
+
+  static secret<T = unknown>(key: string): T {
+    if (!secretStore.has(key)) {
+      throw new Error(`Unknown secret: ${key}`);
+    }
+
+    return secretStore.get(key) as T;
   }
 }
 
 function createValidator<T>(
   parser: (value: EnvValue | undefined, key: string) => T,
+  options: {
+    isSecret?: boolean;
+  } = {},
 ): EnvValidator<T> {
   return {
     parse: parser,
 
-    optional() {
-      return createValidator<T | undefined>((value, key) => {
-        if (value === undefined || value === '') {
-          return undefined;
-        }
+    isSecret: options.isSecret,
 
-        return parser(value, key);
-      });
+    optional() {
+      return createValidator<T | undefined>(
+        (value, key) => {
+          if (value === undefined || value === '') {
+            return undefined;
+          }
+
+          return parser(value, key);
+        },
+        {
+          isSecret: options.isSecret,
+        },
+      );
     },
 
     default(defaultValue: T) {
-      return createValidator<NonNullable<T>>((value, key) => {
-        if (value === undefined || value === '') {
-          return defaultValue as NonNullable<T>;
-        }
+      return createValidator<NonNullable<T>>(
+        (value, key) => {
+          if (value === undefined || value === '') {
+            return defaultValue as NonNullable<T>;
+          }
 
-        return parser(value, key) as NonNullable<T>;
-      });
+          return parser(value, key) as NonNullable<T>;
+        },
+        {
+          isSecret: options.isSecret,
+        },
+      );
+    },
+
+    secret() {
+      return createValidator<T>(parser, {
+        isSecret: true,
+      }) as EnvValidator<T> & SecretFlag;
     },
   };
 }

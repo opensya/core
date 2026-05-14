@@ -38,6 +38,13 @@ export type ControllerOptions = {
   method?: HttpMethod | Lowercase<HttpMethod>;
 } & preOptions;
 
+export interface ControllerOptions2 {
+  idx: string;
+  name: string;
+  path: string | string[];
+  method: HttpMethod | Lowercase<HttpMethod>;
+}
+
 export type ControllerDefineParams<T> = {
   handler: (ctx: ControllerContext) => MayBePromise<T>;
   options?: ControllerOptions;
@@ -54,13 +61,4 @@ export type DefineController = <R>(
 
 declare global {
   var defineController: DefineController;
-}
-
-export interface ControllerManifest {
-  idx: string;
-  name: string;
-  path: string | string[];
-  method?: HttpMethod | Lowercase<HttpMethod>;
-  file: string;
-  parent: string;
 }
