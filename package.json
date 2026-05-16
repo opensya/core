@@ -25,8 +25,8 @@
     "registry": "https://npm.pkg.github.com"
   },
   "scripts": {
-    "install:deps": "dotenv -e .env -- pnpm install",
-    "i:deps": "dotenv -e .env -- pnpm install",
+    "install:deps": "pnpm dlx dotenv-cli -e .env -- pnpm install",
+    "i:deps": "pnpm install:deps",
     "rmv": "tsx ./core/rm.ts",
     "clean": "rm -rf dist",
     "build:lib": "pnpm clean && tsc -p tsconfig.build.json && tsc-alias",
@@ -87,6 +87,7 @@
     "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/lodash": "^4.17.24",
     "@types/node": "^22.19.19",
     "@types/passport-jwt": "^4.0.1",
     "@vitest/coverage-v8": "^4.1.6",

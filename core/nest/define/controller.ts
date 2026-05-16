@@ -6,7 +6,7 @@ import { randomUUID } from 'node:crypto';
 import {
   buildControllerUrl,
   buildRoutePaths,
-  methodRegex,
+  getMehtodRegex,
 } from '../utils/controllers/path';
 
 globalThis.defineController = function (handler, options = {}) {
@@ -29,7 +29,7 @@ globalThis.defineController = function (handler, options = {}) {
 
         let method = options.method;
         if (!method)
-          method = (file.match(methodRegex)?.at(2) as 'get') ?? 'get';
+          method = (file.match(getMehtodRegex())?.at(2) as 'get') ?? 'get';
         idx.push(method);
 
         function getName() {

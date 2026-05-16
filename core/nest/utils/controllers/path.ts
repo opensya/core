@@ -1,13 +1,14 @@
 import { RequestMethod } from '@nestjs/common';
 
-const methods = Object.values(RequestMethod)
-  .filter((v) => _.isString(v))
-  .map((method) => method.toString().toLowerCase());
+export function getMehtodRegex() {
+  const methods = Object.values(RequestMethod)
+    .filter((v) => _.isString(v))
+    .map((method) => method.toLowerCase());
 
-export const methodRegex = new RegExp(
-  `\\.(${methods.join('|')})\\.(js|ts)$`,
-  'i',
-);
+  const methodRegex = new RegExp(`\\.(${methods.join('|')})\\.(js|ts)$`, 'i');
+
+  return methodRegex;
+}
 
 export function buildControllerUrl(
   filePath: string,
@@ -15,7 +16,7 @@ export function buildControllerUrl(
 ): string {
   return filePath
     .replace(controllersDir, '')
-    .replace(methodRegex, '')
+    .replace(getMehtodRegex(), '')
     .replace(/\.(js|ts)$/, '')
     .replace(/^\/+/, '')
     .replace(/\/+$/, '')
