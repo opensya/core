@@ -7,3 +7,5 @@ declare global {
   var useTranslate: (key: string, options?: TranslateOptions) => string;
   var $t: (key: string, options?: TranslateOptions) => string;
 }
+
+export {};

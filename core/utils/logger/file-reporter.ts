@@ -1,4 +1,4 @@
-import { mkdirSync, createWriteStream, WriteStream } from 'node:fs';
+import { mkdirSync, createWriteStream, WriteStream } from 'fs-extra';
 import { dirname } from 'node:path';
 import { ConsolaReporter, LogObject } from 'consola';
 

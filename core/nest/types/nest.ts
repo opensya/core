@@ -16,3 +16,5 @@ declare global {
   var _nestConfig: NestConfig;
   var _mainDir: string;
 }
+
+export {};

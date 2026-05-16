@@ -27,3 +27,5 @@ export type CompilerSource = {
   parent: string;
   config: OpensyaConfigOutputForCompilerFn;
 };
+
+export {};

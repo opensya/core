@@ -50,3 +50,5 @@ export type InferModelDocument<T extends { schema: any }> =
 export type InferModel<T extends { schema: any }> = import('mongoose').Model<
   InferModelDocument<T>
 >;
+
+export {};

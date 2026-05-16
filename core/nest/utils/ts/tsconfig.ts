@@ -1,4 +1,4 @@
-import { writeFileSync } from 'node:fs';
+import { writeFileSync } from 'fs-extra';
 import { resolve } from 'node:path';
 import { getDirs, OpensyaConfigOutput, useDir } from '@opensya/config';
 import {

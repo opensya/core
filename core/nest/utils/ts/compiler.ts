@@ -1,5 +1,4 @@
 import { MayBePromise } from '@opensya/share';
-import { replaceTscAliasPaths } from 'tsc-alias';
 import { relative } from 'node:path';
 import ts from 'typescript';
 
@@ -124,7 +123,7 @@ export class TSCompiler {
   }
 
   async parseRoot() {
-    await replaceTscAliasPaths({ configFile: this.tsConfigPath });
+    // await replaceTscAliasPaths({ configFile: this.tsConfigPath });
   }
 }
 

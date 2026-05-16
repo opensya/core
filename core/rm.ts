@@ -1,4 +1,4 @@
-import { existsSync, lstatSync, readdirSync, rmSync } from 'node:fs';
+import { existsSync, lstatSync, readdirSync, rmSync } from 'fs-extra';
 import { join } from 'node:path';
 
 function rmv(root: string) {

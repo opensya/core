@@ -1,4 +1,4 @@
-import fs from 'node:fs';
+import fs from 'fs-extra';
 import { resolve } from 'node:path';
 
 declare const ENV_SECRET: unique symbol;

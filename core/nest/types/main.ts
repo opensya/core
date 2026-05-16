@@ -38,3 +38,5 @@ declare module '@opensya/config' {
     ['server']: ServerConfig;
   }
 }
+
+export {};

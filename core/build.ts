@@ -3,16 +3,6 @@ import { execo } from './utils/execo';
 import { Env } from './utils/env';
 import { entry } from './entry';
 
-const env = Env.create({
-  CORE_ENV: Env.schema
-    .enum(['factory', 'development', 'production', 'test'] as const)
-    .optional()
-    .default('development'),
-});
-
-let cwd = process.cwd();
-if (env.CORE_ENV === 'factory') cwd = resolve(cwd, 'playground');
-
 void entry(
   (config, { dirs, env }) => {
     const command = 'tsx';
@@ -34,7 +24,6 @@ void entry(
         .optional(),
     },
     envOptions: { processEnv: false },
-    cwd,
   },
 );
 

@@ -1,5 +1,5 @@
 import i18next, { i18n } from 'i18next';
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'fs-extra';
 import { basename, extname, join } from 'node:path';
 import { defaultLocales } from './defaults';
 

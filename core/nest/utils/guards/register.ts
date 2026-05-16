@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { CONTROLLER_METADATA } from '../controllers';
-import { Request } from 'express';
+import { Request } from 'express-serve-static-core';
 
 const confidentialKey = randomUUID();
 function getConfidential() {

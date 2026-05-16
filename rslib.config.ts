@@ -18,7 +18,7 @@ export default defineConfig({
     {
       dts: true,
       bundle: false,
-      format: 'esm',
+      format: 'cjs',
     },
   ],
 
@@ -26,7 +26,7 @@ export default defineConfig({
     target: 'node',
     cleanDistPath: true,
     distPath: { root: './dist' },
-    filename: { js: 'core/[name].mjs' },
+    filename: { js: 'core/[name].js' },
   },
 
   tools: {

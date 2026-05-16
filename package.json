@@ -1,21 +1,25 @@
 {
   "name": "@opensya/core",
   "private": false,
-  "version": "0.29.0",
+  "version": "0.29.4-alpha.0",
   "license": "MIT",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/core/index.js",
+  "types": "./dist/core/index.d.ts",
   "files": [
     "dist"
   ],
   "exports": {
     ".": {
       "types": "./dist/core/index.d.ts",
-      "import": "./dist/core/index.mjs"
+      "import": "./dist/core/index.js",
+      "require": "./dist/core/index.js",
+      "default": "./dist/core/index.js"
     },
     "./*": {
       "types": "./dist/core/*.d.ts",
-      "import": "./dist/core/*.mjs"
+      "import": "./dist/core/*.js",
+      "require": "./dist/core/*.js",
+      "default": "./dist/core/*.js"
     }
   },
   "repository": {
@@ -23,17 +27,14 @@
     "url": "git+https://github.com/opensya/core.git"
   },
   "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   },
   "scripts": {
-    "install:deps": "pnpm dlx dotenv-cli -e .env -- pnpm install",
-    "i:deps": "pnpm install:deps",
     "rmv": "tsx ./core/rm.ts",
     "clean": "rm -rf dist",
-    "build:lib": "rslib build",
-    "dev": "tsx ./core/dev",
-    "build": "pnpm build:lib && tsx ./dist/core/build",
+    "build": "rslib build",
+    "play:dev": "tsx ./core/dev",
+    "play:build": "pnpm build:lib && tsx ./dist/core/build",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
@@ -54,14 +55,21 @@
     "@nestjs/platform-express": "^11.1.21",
     "@nestjs/swagger": "^11.4.3",
     "@nuxt/schema": "^4.4.5",
-    "@opensya/config": "^0.30.0",
-    "@opensya/share": "^0.28.10",
+    "@opensya/config": "latest",
+    "@opensya/share": "latest",
     "@rsbuild/core": "^2.0.6",
+    "@types/bcrypt": "^6.0.0",
+    "@types/express": "^5.0.6",
+    "@types/express-serve-static-core": "^5.1.1",
+    "@types/fs-extra": "^11.0.4",
+    "@types/lodash": "^4.17.24",
+    "@types/multer": "^2.1.0",
+    "@types/passport-jwt": "^4.0.1",
     "bcrypt": "^6.0.0",
     "chokidar": "^5.0.0",
     "consola": "^3.4.2",
     "dayjs": "^1.11.20",
-    "express": "^5.1.0",
+    "express-serve-static-core": "^0.1.1",
     "fs-extra": "^11.3.5",
     "i18next": "^26.2.0",
     "i18next-fs-backend": "^2.6.5",
@@ -77,7 +85,6 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.31.0",
     "@eslint/eslintrc": "^3.3.5",
     "@eslint/js": "^9.39.4",
     "@nestjs/cli": "^11.0.21",
@@ -87,13 +94,9 @@
     "@swc/cli": "^0.6.0",
     "@swc/core": "^1.15.33",
     "@types/bcrypt": "^6.0.0",
-    "@types/express": "^5.0.6",
-    "@types/fs-extra": "^11.0.4",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/lodash": "^4.17.24",
-    "@types/multer": "^2.1.0",
     "@types/node": "^22.19.19",
-    "@types/passport-jwt": "^4.0.1",
     "@vitest/coverage-v8": "^4.1.6",
     "dotenv-cli": "^11.0.0",
     "eslint": "^9.39.4",

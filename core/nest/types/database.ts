@@ -8,3 +8,5 @@ export type DefineMongoosePlugin = (...params: Parameters<typeof plugin>) => {
 declare global {
   var defineMongoosePlugin: DefineMongoosePlugin;
 }
+
+export {};

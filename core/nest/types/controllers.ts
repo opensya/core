@@ -1,5 +1,9 @@
 import { RequestMethod } from '@nestjs/common';
-import { NextFunction, Request, Response } from 'express';
+import type {
+  NextFunction,
+  Request,
+  Response,
+} from 'express-serve-static-core';
 import { MayBePromise } from '@opensya/share';
 import { OpensyaConfigOutput } from '@opensya/config';
 
@@ -62,3 +66,5 @@ export type DefineController = <R>(
 declare global {
   var defineController: DefineController;
 }
+
+export {};

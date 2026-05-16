@@ -1,4 +1,4 @@
-import { METHOD_METADATA, PATH_METADATA } from '@nestjs/common/constants';
+import { METHOD_METADATA, PATH_METADATA } from '@nestjs/common/constants.js';
 import { ControllerOptions, HttpMethod } from '@nest/types/controllers';
 import { RequestMethod } from '@nestjs/common';
 

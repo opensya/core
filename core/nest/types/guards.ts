@@ -1,7 +1,7 @@
-import { OpensyaConfigOutput } from '@opensya/config';
-import { MayBePromise } from '@opensya/share';
-import { ControllerOptions2 } from './controllers';
-import { Request } from 'express';
+import type { OpensyaConfigOutput } from '@opensya/config';
+import type { MayBePromise } from '@opensya/share';
+import type { ControllerOptions2 } from './controllers';
+import type { Request } from 'express-serve-static-core';
 
 export type DefineGuard = (
   handler: (params: {
@@ -19,3 +19,5 @@ export type DefineGuard = (
 declare global {
   var defineGuard: DefineGuard;
 }
+
+export {};

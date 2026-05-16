@@ -1,5 +1,7 @@
 export default defineController(
-  async () => {
+  async ({ req }) => {
+    console.log(req.params);
+
     const config = await useService('config.get')();
     return config;
   },

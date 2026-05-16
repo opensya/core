@@ -1,5 +1,5 @@
 import { Controller as NestController, Next, Req, Res } from '@nestjs/common';
-import express from 'express';
+import express from 'express-serve-static-core';
 import { Controller } from '../utils/controllers';
 import { getDirs, OpensyaConfigOutput } from '@opensya/config';
 import { randomUUID } from 'node:crypto';
