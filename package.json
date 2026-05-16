@@ -20,6 +20,8 @@
     }
   },
   "scripts": {
+    "install:deps": "dotenv -e .env -- pnpm install",
+    "i:deps": "dotenv -e .env -- pnpm install",
     "rmv": "tsx ./core/rm.ts",
     "clean": "rm -rf dist",
     "dev:prepare": "pnpm clean && tsc -p tsconfig.build.json && tsc-alias",
@@ -45,8 +47,8 @@
     "@nestjs/platform-express": "^11.1.21",
     "@nestjs/swagger": "^11.4.3",
     "@nuxt/schema": "^4.4.5",
-    "@opensya/config": "latest",
-    "@opensya/share": "latest",
+    "@opensya/config": "^0.30.0",
+    "@opensya/share": "^0.28.10",
     "@types/fs-extra": "^11.0.4",
     "@types/multer": "^2.1.0",
     "bcrypt": "^6.0.0",
@@ -83,6 +85,7 @@
     "@types/node": "^22.19.19",
     "@types/passport-jwt": "^4.0.1",
     "@vitest/coverage-v8": "^4.1.6",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9.39.4",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
