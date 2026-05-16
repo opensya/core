@@ -5,24 +5,6 @@ import {
   SchemaOptions,
 } from 'mongoose';
 
-export type ModelManifest = {
-  file: string;
-  name: string;
-  schema: string;
-};
-
-export type Model0 = {
-  name?: string;
-  schema: Schema;
-  factory?: () => void;
-};
-
-// export type Model<TSchema extends Schema = Schema> = {
-//   name?: string;
-//   schema: TSchema;
-//   factory?: (schema: TSchema) => void;
-// };
-
 export type Model<TSchema = unknown> = {
   name?: string;
 
