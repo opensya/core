@@ -1,5 +1,0 @@
----
-'@opensya/core': patch
----
-
-UP
