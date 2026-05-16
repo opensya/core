@@ -48,9 +48,13 @@ export class Guard implements CanActivate {
         getConfidential,
       ) as Parameters<DefineGuard>['0'];
 
-      response = await guard({ request, controllerOptions });
-      if (!response) continue;
+      try {
+        response = await guard({ request, controllerOptions });
+      } catch {
+        response = { pass: false };
+      }
 
+      if (!response) continue;
       if (!response.pass) break;
     }
 

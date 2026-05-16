@@ -41,7 +41,7 @@ export async function compiler(config: OpensyaConfigOutput) {
 
       const typeImport = useDir({
         dir: resolve(__dirname, '../../../types'),
-      }).relative.to(projectDirs.output.server.types.dir);
+      }).relative.to(projectDirs.output.server.types.dir).dir;
 
       const content = typeTemplate
         .replaceAll('{import}', `${rPath}`)
@@ -51,7 +51,7 @@ export async function compiler(config: OpensyaConfigOutput) {
       writeFileSync(
         projectDirs.output.server.types.join(
           `model.${model.name!.toLocaleLowerCase()}.d.ts`,
-        ),
+        ).dir,
         content,
       );
 

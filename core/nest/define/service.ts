@@ -41,14 +41,14 @@ globalThis.defineService = (handler) => {
         if (!['factory', 'development'].includes(_env.CORE_ENV as any)) return;
 
         const dir = useDir({ dir: file.replace(acceptFileRegex, '') });
-        const rPath = dir.relative.to(projectDirs.output.server.types.dir);
+        const rPath = dir.relative.to(projectDirs.output.server.types.dir).dir;
 
         const content = typeTemplate
           .replaceAll('{import}', rPath)
           .replaceAll('{name}', name);
 
         writeFileSync(
-          projectDirs.output.server.types.join(`service.${name}.d.ts`),
+          projectDirs.output.server.types.join(`service.${name}.d.ts`).dir,
           content,
         );
       }

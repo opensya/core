@@ -1,9 +1,7 @@
 import { writeFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
-import _ from 'lodash';
+import { resolve } from 'node:path';
 import {
   getDirs,
-  normalizeDir,
   normalizeDirs,
   OpensyaConfigOutput,
   useDir,
@@ -65,41 +63,54 @@ export function writeTsconfig(
   let paths: ServerConfig['paths'] = {};
 
   if (!merge.include) {
-    include.push(join(coreDir.relative.to(outputDir), 'utils/env.ts'));
-
-    if (_env.CORE_ENV == 'factory') {
-      include.push(join(coreDir.relative.to(outputDir), 'nest/**/*.ts'));
+    if (_env.CORE_ENV === 'factory') {
+      include.push(
+        coreDir.resolve('utils/env').relative.to(outputDir).normalize().dir,
+      );
     } else {
       include.push(
-        join(coreDir.relative.to(outputDir), 'nest/types/**/*.d.ts'),
+        coreDir.resolve('utils/env.d.ts').relative.to(outputDir).normalize()
+          .dir,
+      );
+    }
+
+    if (_env.CORE_ENV == 'factory') {
+      include.push(
+        coreDir.join('nest/**/*.ts').relative.to(outputDir).normalize().dir,
+      );
+    } else {
+      include.push(
+        coreDir.join('nest/**/*.d.ts').relative.to(outputDir).normalize().dir,
       );
     }
 
     include.push(
-      normalizeDir(
-        join(dirs.output.server.types.relative.to(outputDir), '**/*.d.ts'),
-      ),
+      dirs.output.server.types
+        .join('**/*.d.ts')
+        .relative.to(outputDir)
+        .normalize().dir,
     );
 
     include.push(
-      ...normalizeDirs([
-        join(dirs.root.server.relative.to(outputDir), '**/*.ts'),
-        join(dirs.root.server.relative.to(outputDir), '**/*.d.ts'),
-      ]),
+      dirs.root.server.join('**/*.ts').relative.to(outputDir).normalize().dir,
+
+      dirs.root.server.join('**/*d.ts').relative.to(outputDir).normalize().dir,
     );
 
-    const node_modules = useDir({ dir: dirs.join('node_modules') });
+    const node_modules = dirs.join('node_modules');
     if (node_modules.exists()) {
-      exclude.push(node_modules.relative.to(dirs.output.server.dir));
+      exclude.push(node_modules.relative.to(dirs.output.server.dir).dir);
     }
 
     if (dirs.dist.exists()) {
-      exclude.push(dirs.dist.relative.to(outputDir));
+      exclude.push(dirs.dist.relative.to(outputDir).dir);
     }
 
     _.merge(paths, {
-      '@core/*': [join(_rootDir.relative.from(coreDir.dir), './*')],
-      '@nest/*': [join(_rootDir.relative.from(coreDir.dir), 'nest/*')],
+      '@core/*': [coreDir.join('./*').relative.to(outputDir).normalize().dir],
+      '@nest/*': [
+        coreDir.join('./nest/*').relative.to(outputDir).normalize().dir,
+      ],
     });
   }
 
@@ -142,7 +153,7 @@ export function writeTsconfig(
   _.merge(tsconfig, merge);
 
   const _name = name ? `tsconfig.server.${name}.json` : 'tsconfig.server.json';
-  const path = dirs.output.join(_name);
+  const path = dirs.output.join(_name).dir;
   writeFileSync(path, JSON.stringify(tsconfig, null, 2));
 
   return {

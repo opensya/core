@@ -1,7 +1,7 @@
 import { resolve } from 'node:path';
 import { execo } from './utils/execo';
-import { nestEntry } from './nest/entry';
 import { Env } from './utils/env';
+import { entry } from './entry';
 
 const env = Env.create({
   CORE_ENV: Env.schema
@@ -13,7 +13,7 @@ const env = Env.create({
 let cwd = process.cwd();
 if (env.CORE_ENV === 'factory') cwd = resolve(cwd, 'playground');
 
-void nestEntry(
+void entry(
   (config, { dirs, env }) => {
     const command = 'tsx';
     const args: string[] = [];
@@ -26,7 +26,16 @@ void nestEntry(
 
     void execo([command, ...args], { cwd: dirs.dir });
   },
-  { processEnv: false, cwd },
+  {
+    envDefinition: {
+      CORE_ENV: Env.schema.enum(['factory'] as const).optional(),
+      NODE_ENV: Env.schema
+        .enum(['development', 'production', 'test'] as const)
+        .optional(),
+    },
+    envOptions: { processEnv: false },
+    cwd,
+  },
 );
 
 // import './utils/set-globals';

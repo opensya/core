@@ -18,8 +18,8 @@ export function prepareBuild() {
     writeTsconfig(_config, {
       merge: {
         compilerOptions: {
-          rootDir: dirs.root.server.relative.to(dirs.output.dir),
-          outDir: dirs.dist.server.relative.to(dirs.output.dir),
+          rootDir: dirs.root.server.relative.to(dirs.output.dir).dir,
+          outDir: dirs.dist.server.relative.to(dirs.output.dir).dir,
         },
       },
       name: 'build',

@@ -1,9 +1,12 @@
 import { nestEntry } from '@core/nest/entry';
 import { prepareBuild } from './prepare';
 import { execo } from '@core/utils/execo';
+import { getDirs } from '@opensya/config';
 
-void nestEntry(async (config, { dirs }) => {
+void nestEntry(async () => {
   console.clear();
+
+  const dirs = getDirs(_config);
 
   logger.start('Start building ...');
 
