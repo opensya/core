@@ -1,4 +1,4 @@
-import '../../utils/set-globals';
+import '../../utils/set-globals.js';
 import { getDirs, useDir } from '@opensya/config';
 import { writeTsconfig } from '../../utils/ts';
 import { resolve } from 'node:path';
@@ -27,7 +27,7 @@ export function devPrepare() {
 
     const code = [
       "import { nestEntry } from '@core/nest/entry'",
-      `import { bootstrap } from '${bootstrapDir.relative.to(dirs.output.server.dir)}';`,
+      `import { bootstrap } from '${bootstrapDir.relative.to(dirs.output.server.dir).dir}';`,
       '',
       'nestEntry(() => {',
       ' bootstrap();',

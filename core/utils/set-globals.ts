@@ -1,2 +1,6 @@
 import { defineOpensyaConfig } from '@opensya/config';
-globalThis.defineOpensyaConfig = defineOpensyaConfig;
+
+export async function setGlobls() {
+  await import('@opensya/share/set-globals');
+  globalThis.defineOpensyaConfig = defineOpensyaConfig;
+}

@@ -44,7 +44,7 @@ export async function compiler(config: OpensyaConfigOutput) {
       }).relative.to(projectDirs.output.server.types.dir).dir;
 
       const content = typeTemplate
-        .replaceAll('{import}', `${rPath}`)
+        .replaceAll('{import}', `${rPath.dir}`)
         .replaceAll('{name}', model.name!)
         .replaceAll('{types-import}', typeImport);
 

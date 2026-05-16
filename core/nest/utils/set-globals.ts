@@ -1,5 +1,8 @@
 import { Logger } from '@core/utils/logger/logger';
-import '../define';
+import { define } from '../define';
 
-globalThis._types = { models: {} };
-globalThis.logger = new Logger();
+export async function setGlobals() {
+  await define();
+  globalThis._types = { models: {} };
+  globalThis.logger = new Logger();
+}

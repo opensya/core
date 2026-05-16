@@ -1,11 +1,6 @@
 import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import {
-  getDirs,
-  normalizeDirs,
-  OpensyaConfigOutput,
-  useDir,
-} from '@opensya/config';
+import { getDirs, OpensyaConfigOutput, useDir } from '@opensya/config';
 import {
   CompilerOptions,
   ModuleKind,

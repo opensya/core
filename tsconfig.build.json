@@ -1,9 +1,24 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "./dist",
+    "declaration": true,
+    "sourceMap": false,
     "incremental": false
   },
+  "include": [
+    "./core/**/*.ts"
+  ],
   "exclude": [
-    "./playground"
+    "./playground",
+    "./dist",
+    "./node_modules",
+    "./test/**/*.ts",
+    "./vitest.config.ts",
+    "./rslib.config.ts",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/__tests__/**"
   ]
 }

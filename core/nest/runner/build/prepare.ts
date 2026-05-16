@@ -1,6 +1,6 @@
-import '../../utils/set-globals';
+import '../../utils/set-globals.js';
 import { getDirs } from '@opensya/config';
-import { copyLocales } from '../../utils/copy-locales';
+import { copyLocales } from '../../utils/i18n';
 import { writeTsconfig } from '../../utils/ts';
 
 export function prepareBuild() {

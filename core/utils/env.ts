@@ -170,7 +170,7 @@ export class Env {
     definition: T,
     options: LoadEnvOptions = {},
   ): InferEnv<T> {
-    const rawEnv = loadEnvFile(options);
+    const rawEnv = mergeWithProcessEnv(loadEnvFile(options), definition);
     const parsedEnv: Record<string, unknown> = {};
 
     for (const key in definition) {
@@ -262,13 +262,31 @@ export function loadEnvFile(options: LoadEnvOptions = {}): EnvObject {
 
   const absolutePath = resolve(options.path);
 
-  if (!fs.existsSync(absolutePath)) {
-    throw new Error(`Env file not found: ${absolutePath}`);
-  }
+  if (!fs.existsSync(absolutePath)) return {};
+  //   {
+  //   throw new Error(`Env file not found: ${absolutePath}`);
+  // }
 
   const content = fs.readFileSync(absolutePath, 'utf-8');
 
   return parseEnv(content, options);
+}
+
+function mergeWithProcessEnv<T extends EnvDefinition>(
+  env: EnvObject,
+  definition: T,
+): EnvObject {
+  const result: EnvObject = { ...env };
+
+  for (const key of Object.keys(definition)) {
+    const processValue = process.env[key];
+
+    if (result[key] === undefined && processValue !== undefined) {
+      result[key] = processValue;
+    }
+  }
+
+  return result;
 }
 
 /**

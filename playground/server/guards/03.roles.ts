@@ -1,4 +1,4 @@
-declare module '@core/nest/types/controllers' {
+declare module '@core/nest/types/controllers.js' {
   interface ControllerOptions2 {
     roles?: string[]; // TODO JobUser['role'][];
   }
