@@ -63,6 +63,6 @@ jobs:
           git push
 
       - name: Publish to GitHub Packages
-        run: pnpm -r publish --registry=https://npm.pkg.github.com --no-git-checks
+        run: pnpm changeset publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
