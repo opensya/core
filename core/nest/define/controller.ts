@@ -1,47 +1,27 @@
-import {
-  Controller as NestController,
-  Req,
-  RequestMethod,
-} from '@nestjs/common';
-import { I18nService } from 'nestjs-i18n';
+import { Controller as NestController, Next, Req, Res } from '@nestjs/common';
 import express from 'express';
 import { Controller } from '../utils/controllers';
-import { getProjectDirsv2, OpensyaConfigOutput } from '@opensya/config';
+import { getDirs, OpensyaConfigOutput } from '@opensya/config';
 import { randomUUID } from 'node:crypto';
+import {
+  buildControllerUrl,
+  buildRoutePaths,
+  methodRegex,
+} from '../utils/controllers/path';
 
 globalThis.defineController = function (handler, options = {}) {
   return {
     compiler: function (config: OpensyaConfigOutput, { file }) {
-      const projectDirs = getProjectDirsv2(config);
+      const projectDirs = getDirs(config);
 
       function buildOptions() {
-        const methods = Object.values(RequestMethod).filter((v) =>
-          _.isString(v),
-        );
-        const methodRegex = new RegExp(
-          `(.)(${methods.join('|').toLowerCase()})(.)(js|ts)$`,
-        );
-
         const idx = [];
 
-        const url = file
-          .replace(projectDirs.root.server.controllers.dir, '')
-          .replace(methodRegex, '')
-          .replace(/^\//, '')
-          .replace(/\/$/, '')
-          .replace(/.(js)$/, '')
-          .replace(/(\/?)index$/, '');
-
         function getPaths(paths?: string | string[]) {
-          if (!paths) return [url];
-
-          paths = Array.isArray(paths) ? paths : [paths];
-
-          paths = paths.map((path) =>
-            path.startsWith('/') ? path : `${url}/${path}`,
+          return buildRoutePaths(
+            buildControllerUrl(file, projectDirs.root.server.controllers.dir),
+            paths,
           );
-
-          return paths;
         }
 
         const path = getPaths(options.path);
@@ -80,18 +60,14 @@ globalThis.defineController = function (handler, options = {}) {
 
       @NestController()
       class ControllerClass {
-        constructor(readonly i18n: I18nService) {}
-
         @Controller(_options)
-        handler(@Req() req: express.Request) {
-          return handler({
-            req,
-            res: req.res!,
-            next: req.next!,
-            i18n: this.i18n,
-            // eslint-disable-next-line @typescript-eslint/unbound-method
-            $t: this.i18n.t,
-          });
+        async handler(
+          @Req() req: express.Request,
+          @Res({ passthrough: true }) res: express.Response,
+          @Next() next: express.NextFunction,
+        ) {
+          const result = await handler({ req, res, next });
+          return result;
         }
       }
 

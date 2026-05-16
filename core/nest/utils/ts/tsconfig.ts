@@ -1,11 +1,10 @@
 import { writeFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
-import _ from 'lodash';
+import { resolve } from 'node:path';
 import {
-  getDirs_v4,
+  getDirs,
   normalizeDirs,
   OpensyaConfigOutput,
-  useDirs_V2,
+  useDir,
 } from '@opensya/config';
 import {
   CompilerOptions,
@@ -24,7 +23,7 @@ type $CompilerOptionss = Omit<
   module?: keyof typeof ModuleKind;
   moduleResolution?: keyof typeof ModuleResolutionKind;
   target?: keyof typeof ScriptTarget;
-  moduleDetection?: keyof typeof ModuleDetectionKind;
+  moduleDetection?: Lowercase<keyof typeof ModuleDetectionKind>;
   types?: any[];
 };
 
@@ -53,38 +52,65 @@ export function writeTsconfig(
     rootDir?: string;
   } = {},
 ) {
-  const dirs = getDirs_v4(config);
+  const dirs = getDirs(config);
 
   const outputDir = dirs.output.dir;
-  const coreDir = useDirs_V2({ dir: resolve(__dirname, '../../..') });
-  const _rootDir = useDirs_V2({ dir: rootDir ?? dirs.output.dir });
+  const coreDir = useDir({ dir: resolve(__dirname, '../../../') });
+  const _rootDir = useDir({ dir: rootDir ?? dirs.output.dir });
 
   const include: string[] = [];
   const exclude: string[] = [];
   let paths: ServerConfig['paths'] = {};
 
   if (!merge.include) {
+    if (_env.CORE_ENV === 'factory') {
+      include.push(
+        coreDir.resolve('utils/env').relative.to(outputDir).normalize().dir,
+      );
+    } else {
+      include.push(
+        coreDir.resolve('utils/env.d.ts').relative.to(outputDir).normalize()
+          .dir,
+      );
+    }
+
+    if (_env.CORE_ENV == 'factory') {
+      include.push(
+        coreDir.join('nest/**/*.ts').relative.to(outputDir).normalize().dir,
+      );
+    } else {
+      include.push(
+        coreDir.join('nest/**/*.d.ts').relative.to(outputDir).normalize().dir,
+      );
+    }
+
     include.push(
-      ...normalizeDirs([
-        join(dirs.output.server.types.relative.from(outputDir), '**/*.d.ts'),
-        join(dirs.root.server.relative.from(outputDir), '**/*.ts'),
-        join(dirs.root.server.relative.from(outputDir), '**/*.d.ts'),
-        join(coreDir.relative.from(outputDir), 'nest/types/**/*.d.ts'),
-      ]),
+      dirs.output.server.types
+        .join('**/*.d.ts')
+        .relative.to(outputDir)
+        .normalize().dir,
     );
 
-    const node_modules = useDirs_V2({ dir: dirs.join('node_modules') });
+    include.push(
+      dirs.root.server.join('**/*.ts').relative.to(outputDir).normalize().dir,
+
+      dirs.root.server.join('**/*d.ts').relative.to(outputDir).normalize().dir,
+    );
+
+    const node_modules = dirs.join('node_modules');
     if (node_modules.exists()) {
-      exclude.push(node_modules.relative.from.outputServer());
+      exclude.push(node_modules.relative.to(dirs.output.server.dir).dir);
     }
 
     if (dirs.dist.exists()) {
-      exclude.push(dirs.dist.relative.from(outputDir));
+      exclude.push(dirs.dist.relative.to(outputDir).dir);
     }
 
     _.merge(paths, {
-      '@core/*': [join(_rootDir.relative.from(coreDir.dir), './*')],
-      '@nest/*': [join(_rootDir.relative.from(coreDir.dir), 'nest/*')],
+      '@core/*': [coreDir.join('./*').relative.to(outputDir).normalize().dir],
+      '@nest/*': [
+        coreDir.join('./nest/*').relative.to(outputDir).normalize().dir,
+      ],
     });
   }
 
@@ -114,7 +140,7 @@ export function writeTsconfig(
     skipLibCheck: true,
     preserveSymlinks: true,
     composite: true,
-    moduleDetection: 'Force',
+    moduleDetection: 'force',
     pretty: true,
   };
 
@@ -126,8 +152,8 @@ export function writeTsconfig(
 
   _.merge(tsconfig, merge);
 
-  const _name = name ? `tsconfig.${name}.server.json` : 'tsconfig.server.json';
-  const path = dirs.output.join(_name);
+  const _name = name ? `tsconfig.server.${name}.json` : 'tsconfig.server.json';
+  const path = dirs.output.join(_name).dir;
   writeFileSync(path, JSON.stringify(tsconfig, null, 2));
 
   return {

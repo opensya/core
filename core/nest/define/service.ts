@@ -1,4 +1,5 @@
-import { getProjectDirsv2, useDir } from '@opensya/config';
+import { colorize } from 'consola/utils';
+import { getDirs, useDir } from '@opensya/config';
 import { acceptFileRegex } from '../utils/accept-files';
 import { registerService, typeTemplate } from '../utils/services';
 import { writeFileSync } from 'fs-extra';
@@ -6,7 +7,7 @@ import { writeFileSync } from 'fs-extra';
 globalThis.defineService = (handler) => {
   return {
     compiler: function (config, { file }: { file: string }) {
-      const projectDirs = getProjectDirsv2(config);
+      const projectDirs = getDirs(config);
       const parent = projectDirs.root.server.services.dir;
 
       const name = file
@@ -18,11 +19,17 @@ globalThis.defineService = (handler) => {
         .replace(/(\/?)index$/, '');
 
       async function service(...args: Parameters<typeof handler>) {
-        // TODO exécution de middeleware d'entrée
+        logger.start(
+          `Executing service ${colorize('green', name)} ...`,
+          'Service',
+        );
 
         const ret = await handler(...args);
 
-        // TODO exécition de middeware de sortie
+        logger.success(
+          `${colorize('green', name)} service executed successfully`,
+          'Service',
+        );
 
         return ret;
       }
@@ -31,20 +38,22 @@ globalThis.defineService = (handler) => {
       writeType();
 
       function writeType() {
-        if (!['factory', 'development'].includes(_env.CORE_ENV)) return;
+        if (!['factory', 'development'].includes(_env.CORE_ENV as any)) return;
 
         const dir = useDir({ dir: file.replace(acceptFileRegex, '') });
-        const rPath = dir.relative.from.outputServerTypes();
+        const rPath = dir.relative.to(projectDirs.output.server.types.dir).dir;
 
         const content = typeTemplate
           .replaceAll('{import}', rPath)
           .replaceAll('{name}', name);
 
         writeFileSync(
-          projectDirs.output.server.types.join.this(`service.${name}.d.ts`),
+          projectDirs.output.server.types.join(`service.${name}.d.ts`).dir,
           content,
         );
       }
     },
+
+    handler,
   };
 };

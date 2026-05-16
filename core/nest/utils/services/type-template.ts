@@ -1,7 +1,4 @@
-export const typeTemplate = `
-import service from "{import}";
-
-type Handler = (typeof service)['default']['handler'];
+export const typeTemplate = `type Handler = (typeof import("{import}"))['default']['handler'];
 type R = ReturnType<Handler>;
 type P = Parameters<Handler>;
 

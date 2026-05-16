@@ -1,5 +1,5 @@
 import { ConsoleLogger, Injectable } from '@nestjs/common';
-import { Logger } from '../logger/logger';
+import { Logger } from '@core/utils/logger/logger';
 import { colorize } from 'consola/utils';
 
 @Injectable()

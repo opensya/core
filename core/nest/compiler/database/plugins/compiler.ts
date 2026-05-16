@@ -1,10 +1,10 @@
 import { DefineMongoosePlugin } from '@core/nest/types/database';
 import { acceptFileRegex } from '@nest/utils/accept-files';
 import { getWhyleDefault } from '@nest/utils/get-whyle-default';
-import { getProjectDirsv2, OpensyaConfigOutput } from '@opensya/config';
+import { getDirs, OpensyaConfigOutput } from '@opensya/config';
 
 export async function compiler(config: OpensyaConfigOutput) {
-  const projectDirs = getProjectDirsv2(config);
+  const projectDirs = getDirs(config);
   if (!projectDirs.root.server.database.plugins.exists()) return;
 
   const files = projectDirs.root.server.database.plugins.getChildren({

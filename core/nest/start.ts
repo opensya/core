@@ -31,7 +31,7 @@
 
 //     console.log(_config);
 
-//     const dirs = getDirs();
+//     const dirs = getDirs(_config);
 //     globalThis._mainDir = dirs.output.server.dir;
 
 //     let restartTimer: NodeJS.Timeout;
@@ -64,7 +64,7 @@
 //     }
 
 //     function writeMainJs() {
-//       const dirs = getDirs();
+//       const dirs = getDirs(_config);
 
 //       let bootstrapDir = resolve(__dirname, '../bootstrap.js');
 //       if (!existsSync(bootstrapDir)) {

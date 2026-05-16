@@ -3,10 +3,10 @@
     "configurations": [
         {
             "type": "node-terminal",
-            "name": "Exécuter le script : dev",
+            "name": "run dev",
             "request": "launch",
             "command": "npm run dev",
             "cwd": "${workspaceFolder}"
-        }
+        },
     ]
 }

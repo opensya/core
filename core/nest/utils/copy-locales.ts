@@ -1,8 +1,8 @@
-import { getProjectDirsv2, OpensyaConfigOutput } from '@opensya/config';
+import { getDirs, OpensyaConfigOutput } from '@opensya/config';
 import { copySync } from 'fs-extra';
 
 export const copyLocales = function (config: OpensyaConfigOutput) {
-  const projectDirs = getProjectDirsv2(config);
+  const projectDirs = getDirs(config);
   if (!projectDirs.root.server.locales.exists()) return;
 
   projectDirs.dist.server.locales.ensureExists();

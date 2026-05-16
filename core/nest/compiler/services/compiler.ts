@@ -1,10 +1,10 @@
-import { getProjectDirsv2, OpensyaConfigOutput } from '@opensya/config';
+import { getDirs, OpensyaConfigOutput } from '@opensya/config';
 import { DefineService } from '@nest/types';
 import { acceptFileRegex } from '@nest/utils/accept-files';
 import { getWhyleDefault } from '@nest/utils/get-whyle-default';
 
 export async function compiler(config: OpensyaConfigOutput) {
-  const projectDirs = getProjectDirsv2(config);
+  const projectDirs = getDirs(config);
   if (!projectDirs.root.server.services.exists()) return;
 
   const files = projectDirs.root.server.services.getChildren({

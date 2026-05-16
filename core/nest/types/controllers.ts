@@ -1,6 +1,5 @@
 import { RequestMethod } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
-import { I18nService } from 'nestjs-i18n';
 import { MayBePromise } from '@opensya/share';
 import { OpensyaConfigOutput } from '@opensya/config';
 
@@ -10,8 +9,6 @@ export type ControllerContext = {
   req: Request;
   res: Response;
   next: NextFunction;
-  i18n: I18nService;
-  $t: (val: string) => string;
 };
 
 export type AccessOptions =
@@ -41,6 +38,13 @@ export type ControllerOptions = {
   method?: HttpMethod | Lowercase<HttpMethod>;
 } & preOptions;
 
+export interface ControllerOptions2 {
+  idx: string;
+  name: string;
+  path: string | string[];
+  method: HttpMethod | Lowercase<HttpMethod>;
+}
+
 export type ControllerDefineParams<T> = {
   handler: (ctx: ControllerContext) => MayBePromise<T>;
   options?: ControllerOptions;
@@ -57,13 +61,4 @@ export type DefineController = <R>(
 
 declare global {
   var defineController: DefineController;
-}
-
-export interface ControllerManifest {
-  idx: string;
-  name: string;
-  path: string | string[];
-  method?: HttpMethod | Lowercase<HttpMethod>;
-  file: string;
-  parent: string;
 }

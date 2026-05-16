@@ -1,11 +1,22 @@
-import '../../utils/set-globals';
-import { config as dotenv } from 'dotenv';
-import { loadConfig } from '@opensya/config';
+import { nestEntry } from '@core/nest/entry';
 import { prepareBuild } from './prepare';
+import { execo } from '@core/utils/execo';
+import { getDirs } from '@opensya/config';
 
-void loadConfig().then(async (config) => {
+void nestEntry(async () => {
   console.clear();
 
-  dotenv({ path: config.server.envFile ?? '.env' });
-  prepareBuild(config);
+  const dirs = getDirs(_config);
+
+  logger.start('Start building ...');
+
+  console.log(dirs.output.join('tsconfig.server.build.json'));
+
+  void prepareBuild();
+  await execo(['tsc', '-p', dirs.output.join('tsconfig.server.build.json')], {
+    wait: true,
+    cwd: dirs.dir,
+  });
+
+  logger.success('Build completed');
 });

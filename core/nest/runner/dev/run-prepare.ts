@@ -1,11 +1,11 @@
 import '../../utils/set-globals';
-import { getDirs_v4, useDirs_V2 } from '@opensya/config';
+import { getDirs, useDir } from '@opensya/config';
 import { writeTsconfig } from '../../utils/ts';
 import { resolve } from 'node:path';
 import { writeFileSync } from 'fs-extra';
 
 export function devPrepare() {
-  const dirs = getDirs_v4(_config);
+  const dirs = getDirs(_config);
 
   function clean() {
     dirs.output.server.remove({ recursive: true, force: true });
@@ -18,7 +18,7 @@ export function devPrepare() {
   }
 
   function writeMainJs() {
-    const bootstrapDir = useDirs_V2({
+    const bootstrapDir = useDir({
       dir:
         _env.CORE_ENV === 'factory'
           ? resolve(__dirname, '../../bootstrap')
@@ -27,7 +27,7 @@ export function devPrepare() {
 
     const code = [
       "import { nestEntry } from '@core/nest/entry'",
-      `import { bootstrap } from '${bootstrapDir.relative.from(dirs.output.server.dir)}';`,
+      `import { bootstrap } from '${bootstrapDir.relative.to(dirs.output.server.dir)}';`,
       '',
       'nestEntry(() => {',
       ' bootstrap();',

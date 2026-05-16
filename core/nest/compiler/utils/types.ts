@@ -1,14 +1,11 @@
 import { readdirSync, writeFileSync } from 'fs-extra';
-import { getDirsv3, normalizeDir } from '@opensya/config';
+import { getDirs, normalizeDir } from '@opensya/config';
 import { join } from 'node:path';
 
 export function syntheseTypes() {
-  const dirs = getDirsv3();
+  const dirs = getDirs(_config);
 
-  // const coreNestTypes = useDir({ dir: join(__CORE_ROOT_DIR__, 'nest/types') });
-  const types = [
-    // `/// <reference types="${dirs.output.dist.server.types.relative.from.this(coreNestTypes)}" />`,
-  ];
+  const types = [];
 
   const definitionDirs = readdirSync(dirs.output.server.types.dir).filter(
     (dir) => dir !== 'index.d.ts',

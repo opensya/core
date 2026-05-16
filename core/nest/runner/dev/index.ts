@@ -1,14 +1,13 @@
-import { nestEntry } from '../../entry';
-import { devPrepare } from './prepare';
+import { devPrepare } from './run-prepare';
 import { execo, ExecoReturn } from '@core/utils/execo';
-import { getDirs_v4 } from '@opensya/config';
 import { Stats } from 'fs-extra';
 import chokidar from 'chokidar';
 import { resolve } from 'node:path';
+import { nestEntry } from '@core/nest/entry';
+import { getDirs, useDir } from '@opensya/config';
 
 void nestEntry(async () => {
-  const dirs = getDirs_v4(_config);
-
+  const dirs = getDirs(_config);
   let serverProcess: ExecoReturn | null = null;
 
   function listen() {
@@ -35,7 +34,6 @@ void nestEntry(async () => {
   const run = _.debounce(async (action: string = 'Starting') => {
     try {
       if (action !== 'Starting') await stop();
-      if (!dirs.output.server.mainjs.exists()) return;
 
       console.clear();
       logger.start(`${action} Opensya server ...`);
@@ -52,7 +50,15 @@ void nestEntry(async () => {
         );
       }
 
-      args.push(dirs.output.server.mainjs.dir);
+      const bootstrapDir = useDir({
+        dir:
+          _env.CORE_ENV === 'factory'
+            ? resolve(__dirname, '../../bootstrap.ts')
+            : resolve(__dirname, '../../bootstrap.js'),
+      });
+
+      args.push(bootstrapDir.dir);
+
       serverProcess = await execo([command, ...args]);
     } catch (error) {
       logger.error(error);

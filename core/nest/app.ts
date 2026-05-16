@@ -1,11 +1,12 @@
 import { Module, ModuleMetadata, OnApplicationBootstrap } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { APP_GUARD, NestFactory } from '@nestjs/core';
 import { colorize } from 'consola/utils';
 import { getAddressURL } from './utils/server';
 import { initDatabase } from './utils/database';
 import { initServices } from './utils/services';
-import { getI18NModule } from './utils/i18n/get-module';
 import { NestLogger } from './utils/nest';
+import { createI18n } from './utils/i18n/i18n';
+import { Guard } from './utils/guards/register';
 
 export async function createApp() {
   const port = process.env.NEST_PORT ?? 3e3;
@@ -15,10 +16,10 @@ export async function createApp() {
   modules.exports ??= [];
   modules.controllers ??= [];
 
-  modules.imports.push(getI18NModule());
-
   modules.providers.push(NestLogger);
   modules.exports.push(NestLogger);
+
+  modules.providers.push({ provide: APP_GUARD, useClass: Guard });
 
   const controllers = Object.values(_nestConfig.controllers);
   modules.controllers = controllers;
@@ -27,6 +28,7 @@ export async function createApp() {
   class AppModule implements OnApplicationBootstrap {
     async onApplicationBootstrap() {
       await initDatabase();
+      await createI18n();
       void initServices();
 
       for (const onBootstrap of _nestConfig.onBootstraps) {

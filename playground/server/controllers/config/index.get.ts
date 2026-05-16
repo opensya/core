@@ -1,7 +1,7 @@
 export default defineController(
-  async ({ res }) => {
+  async () => {
     const config = await useService('config.get')();
-    res.send(config);
+    return config;
   },
   { public: true },
 );
