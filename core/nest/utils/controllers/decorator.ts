@@ -21,7 +21,7 @@ export function Controller(options: ControllerOptions = {}): MethodDecorator {
     options.path ??= '';
 
     globalThis.ALL_CONTROLLERS ??= {};
-    ALL_CONTROLLERS[options.name] = options as any;
+    // ALL_CONTROLLERS[options.name] = options as any;
 
     if ('public' in options) SetMetadata(IS_PUBLIC_KEY, true);
     else {

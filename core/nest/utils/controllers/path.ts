@@ -2,7 +2,7 @@ import { RequestMethod } from '@nestjs/common';
 
 const methods = Object.values(RequestMethod)
   .filter((v) => _.isString(v))
-  .map((method) => method.toLowerCase());
+  .map((method) => method.toString().toLowerCase());
 
 export const methodRegex = new RegExp(
   `\\.(${methods.join('|')})\\.(js|ts)$`,

@@ -13,10 +13,13 @@ void nestEntry(async () => {
   console.log(dirs.output.join('tsconfig.server.build.json'));
 
   void prepareBuild();
-  await execo(['tsc', '-p', dirs.output.join('tsconfig.server.build.json')], {
-    wait: true,
-    cwd: dirs.dir,
-  });
+  await execo(
+    ['tsc', '-p', dirs.output.join('tsconfig.server.build.json').dir],
+    {
+      wait: true,
+      cwd: dirs.dir,
+    },
+  );
 
   logger.success('Build completed');
 });
