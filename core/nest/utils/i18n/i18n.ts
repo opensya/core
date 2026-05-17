@@ -19,7 +19,7 @@ export async function createI18n() {
 
   loadLocaleDirs(instance, _nestConfig.i18nLocaleDirs);
 
-  globalThis.useTranslate = function (value, options): string {
+  globalThis.$t = globalThis.useTranslate = function (value, options): string {
     const [namespace, ...keyParts] = value.split('.');
 
     if (!namespace || keyParts.length === 0) {
