@@ -1,17 +1,7 @@
-import {
-  INestApplication,
-  ModuleMetadata,
-  NestApplicationOptions,
-} from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import { ControllerOptions } from './controllers';
 import { InferEnv } from '@core/utils/env';
 import { envDefinition } from '../utils/env';
-
-export type ServerConfig = Omit<ModuleMetadata, 'controllers'> & {
-  onBootstrap?: () => any;
-  options?: NestApplicationOptions;
-  paths?: Record<string, string[]>;
-};
 
 declare global {
   var _env: InferEnv<typeof envDefinition>;
@@ -26,17 +16,3 @@ declare global {
   function useService(name: string): (...args: any[]) => Promise<any>;
   function getModel<T = unknown>(name: string): import('mongoose').Model<T>;
 }
-
-declare module '@opensya/config' {
-  interface OpensyaConfig {
-    /** @default 'server' */ serverDir?: string;
-
-    ['server']?: boolean | ServerConfig;
-  }
-
-  interface OpensyaConfigOutput {
-    ['server']: ServerConfig;
-  }
-}
-
-export {};

@@ -1,7 +1,7 @@
 import '../../utils/set-globals.js';
 import { getDirs } from '@opensya/config';
 import { copyLocales } from '../../utils/i18n';
-import { writeTsconfig } from '../../utils/ts';
+import { writeServerTsconfig } from '../../utils';
 
 export function prepareBuild() {
   const dirs = getDirs(_config);
@@ -15,7 +15,7 @@ export function prepareBuild() {
   }
 
   function tsconfig() {
-    writeTsconfig(_config, {
+    writeServerTsconfig(_config, {
       merge: {
         compilerOptions: {
           rootDir: dirs.root.server.relative.to(dirs.output.dir).dir,

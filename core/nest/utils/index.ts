@@ -11,3 +11,4 @@ export * from './accept-files';
 export * from './env';
 export * from './get-whyle-default';
 export * from './set-globals';
+export * from './write-tsconfig';
