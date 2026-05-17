@@ -1,5 +1,5 @@
 import { getDirs, useDir } from '@opensya/config';
-import { writeTsconfig } from '../../utils/ts';
+import { writeServerTsconfig } from '../../utils';
 import { resolve } from 'node:path';
 import { atomicWriteFile } from '@core/utils/atomic-write-file';
 
@@ -41,5 +41,5 @@ export function devPrepare() {
 
   void ensureOutput();
   void writeMainJs();
-  void writeTsconfig(_config);
+  void writeServerTsconfig(_config);
 }
