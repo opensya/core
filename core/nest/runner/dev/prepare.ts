@@ -1,15 +1,10 @@
 import { getDirs, useDir } from '@opensya/config';
 import { writeTsconfig } from '../../utils/ts';
 import { resolve } from 'node:path';
-import { writeFileSync } from 'fs-extra';
+import { atomicWriteFile } from '@core/utils/atomic-write-file';
 
 export function devPrepare() {
   const dirs = getDirs(_config);
-
-  function clean() {
-    dirs.output.server.remove({ recursive: true, force: true });
-    dirs.dist.server.remove({ recursive: true, force: true });
-  }
 
   function ensureOutput() {
     dirs.output.server.ensureExists();
@@ -41,10 +36,9 @@ export function devPrepare() {
       '',
     ].join('\n');
 
-    writeFileSync(dirs.output.server.mainjs.dir, code);
+    atomicWriteFile(dirs.output.server.mainjs.dir, code);
   }
 
-  void clean();
   void ensureOutput();
   void writeMainJs();
   void writeTsconfig(_config);

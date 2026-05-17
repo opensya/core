@@ -1,5 +1,7 @@
-import {
+import type {
+  HydratedDocument,
   InferRawDocType,
+  Model as MongooseModel,
   Schema,
   SchemaDefinition,
   SchemaOptions,
@@ -17,7 +19,7 @@ export type Model<TSchema = unknown> = {
 
 type IsAny<T> = 0 extends 1 & T ? true : false;
 
-export type InferModelSchema<T extends { schema: any }> =
+export type InferModelSchema<T extends { schema: SchemaDefinition<any> }> =
   T extends Model<infer TSchema>
     ? IsAny<TSchema> extends true
       ? InferRawDocType<T['schema']>
@@ -26,11 +28,10 @@ export type InferModelSchema<T extends { schema: any }> =
         : TSchema
     : InferRawDocType<T['schema']>;
 
-export type InferModelDocument<T extends { schema: any }> =
-  import('mongoose').HydratedDocument<InferModelSchema<T>>;
+export type InferModelDocument<T extends { schema: SchemaDefinition<any> }> =
+  HydratedDocument<InferModelSchema<T>>;
 
-export type InferModel<T extends { schema: any }> = import('mongoose').Model<
-  InferModelDocument<T>
->;
+export type InferModel<T extends { schema: SchemaDefinition<any> }> =
+  MongooseModel<InferModelSchema<T>>;
 
 export {};

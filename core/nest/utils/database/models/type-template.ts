@@ -1,4 +1,4 @@
-export const typeTemplate = `import model from '{import}';
+export const typeTemplate = `import type model from '{import}';
 
 type {name}Model = import('{types-import}').InferModel<typeof model>;
 

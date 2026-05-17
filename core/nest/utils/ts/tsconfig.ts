@@ -1,4 +1,3 @@
-import { writeFileSync } from 'fs-extra';
 import { resolve } from 'node:path';
 import { getDirs, OpensyaConfigOutput, useDir } from '@opensya/config';
 import {
@@ -10,6 +9,7 @@ import {
   ModuleDetectionKind,
 } from 'typescript';
 import { ServerConfig } from '../../types';
+import { atomicWriteFile } from '@core/utils/atomic-write-file';
 
 type $CompilerOptionss = Omit<
   CompilerOptions,
@@ -81,15 +81,18 @@ export function writeTsconfig(
 
     include.push(
       dirs.output.server.types
+        .join('index.d.ts')
+        .relative.to(outputDir)
+        .normalize().dir,
+      dirs.output.server.types
         .join('**/*.d.ts')
         .relative.to(outputDir)
         .normalize().dir,
     );
 
     include.push(
+      dirs.root.server.join('**/*.d.ts').relative.to(outputDir).normalize().dir,
       dirs.root.server.join('**/*.ts').relative.to(outputDir).normalize().dir,
-
-      dirs.root.server.join('**/*d.ts').relative.to(outputDir).normalize().dir,
     );
 
     const node_modules = dirs.join('node_modules');
@@ -149,7 +152,8 @@ export function writeTsconfig(
 
   const _name = name ? `tsconfig.server.${name}.json` : 'tsconfig.server.json';
   const path = dirs.output.join(_name).dir;
-  writeFileSync(path, JSON.stringify(tsconfig, null, 2));
+
+  atomicWriteFile(path, JSON.stringify(tsconfig, null, 2));
 
   return {
     path,

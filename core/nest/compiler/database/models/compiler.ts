@@ -4,9 +4,9 @@ import { Model } from '@nest/types';
 import { acceptFileRegex } from '@nest/utils/accept-files';
 import { getWhyleDefault } from '@nest/utils/get-whyle-default';
 import { typeTemplate } from '@core/nest/utils/database/models';
-import { writeFileSync } from 'fs-extra';
 import { registerModel } from '@nest/utils/database';
 import { resolve } from 'node:path';
+import { atomicWriteFile } from '@core/utils/atomic-write-file';
 
 export async function compiler(config: OpensyaConfigOutput) {
   const projectDirs = getDirs(config);
@@ -33,7 +33,7 @@ export async function compiler(config: OpensyaConfigOutput) {
     writeTypes();
 
     function writeTypes() {
-      if (!['factory', 'development'].includes(_env.CORE_ENV as any)) return;
+      if (!['development'].includes(_env.NODE_ENV as any)) return;
 
       const dirs = getDirs(_config);
       const dir = useDir({ dir: file.replace(acceptFileRegex, '') });
@@ -48,7 +48,7 @@ export async function compiler(config: OpensyaConfigOutput) {
         .replaceAll('{name}', model.name!)
         .replaceAll('{types-import}', typeImport);
 
-      writeFileSync(
+      atomicWriteFile(
         projectDirs.output.server.types.join(
           `model.${model.name!.toLocaleLowerCase()}.d.ts`,
         ).dir,

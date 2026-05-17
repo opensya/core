@@ -1,6 +1,7 @@
-import { readdirSync, writeFileSync } from 'fs-extra';
+import { readdirSync } from 'fs-extra';
 import { getDirs, normalizeDir } from '@opensya/config';
 import { join } from 'node:path';
+import { atomicWriteFile } from '@core/utils/atomic-write-file';
 
 export function syntheseTypes() {
   const dirs = getDirs(_config);
@@ -12,9 +13,9 @@ export function syntheseTypes() {
   );
 
   for (const dir of definitionDirs) {
-    types.push(`/// <reference types="${normalizeDir(dir)}" />`);
+    types.push(`/// <reference path="${normalizeDir(dir)}" />`);
   }
 
   const content = `${types.join('\n')}\n\nexport {};\n`;
-  writeFileSync(join(dirs.output.server.types.dir, 'index.d.ts'), content);
+  atomicWriteFile(join(dirs.output.server.types.dir, 'index.d.ts'), content);
 }
