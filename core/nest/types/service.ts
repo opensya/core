@@ -8,12 +8,6 @@ export type DefineService = <P extends any[], R>(
   handler: (...args: P) => MayBePromise<R>;
 };
 
-export interface ServiceManifest {
-  name: string;
-  file: string;
-  parent: string;
-}
-
 declare global {
   var defineService: DefineService;
 }
