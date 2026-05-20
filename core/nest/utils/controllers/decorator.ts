@@ -1,5 +1,5 @@
 import { METHOD_METADATA, PATH_METADATA } from '@nestjs/common/constants.js';
-import { ControllerOptions, HttpMethod } from '@nest/types/controllers';
+import { ControllerOptions, HttpMethod } from '#core/nest/types/controllers';
 import { RequestMethod } from '@nestjs/common';
 
 export const IS_PUBLIC_KEY = '__opensya_is_public__';

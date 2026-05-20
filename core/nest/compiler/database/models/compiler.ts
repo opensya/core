@@ -1,12 +1,12 @@
 import { getDirs, OpensyaConfigOutput, useDir } from '@opensya/config';
-import { syntheseTypes } from '@nest/compiler/utils/types';
-import { Model } from '@nest/types';
-import { acceptFileRegex } from '@nest/utils/accept-files';
-import { getWhyleDefault } from '@nest/utils/get-whyle-default';
-import { typeTemplate } from '@core/nest/utils/database/models';
-import { registerModel } from '@nest/utils/database';
+import { syntheseTypes } from '#core/nest/compiler/utils/types';
+import { Model } from '#core/nest/types';
+import { acceptFileRegex } from '#core/nest/utils/accept-files';
+import { getWhyleDefault } from '#core/nest/utils/get-whyle-default';
+import { typeTemplate } from '#core/nest//utils/database/models';
+import { registerModel } from '#core/nest/utils/database';
 import { resolve } from 'node:path';
-import { atomicWriteFile } from '@core/utils/atomic-write-file';
+import { atomicWriteFile } from '#core/utils/atomic-write-file';
 
 export async function compiler(config: OpensyaConfigOutput) {
   const projectDirs = getDirs(config);

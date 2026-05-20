@@ -1,4 +1,4 @@
-import { Model } from '#core/nest/types';
+import { Model } from '#core/nest//types';
 import { ConfigSchema as _ConfigSchema } from '@opensya/share';
 
 const model: Model<_ConfigSchema> = {

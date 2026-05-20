@@ -1,4 +1,4 @@
-import { genObjectID } from '@core/nest/utils/database';
+import { genObjectID } from '#core/nest//utils/database';
 
 export default defineMongoosePlugin((schema) => {
   function toArray(param?: string | string[]) {

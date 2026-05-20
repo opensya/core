@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { DefineService } from '@nest/types';
+import { DefineService } from '#core/nest/types';
 import { colorize } from 'consola/utils';
 
 const confidentialKey = randomUUID();

@@ -6,7 +6,7 @@ import {
 } from 'mongoose';
 import { Model } from '../../types';
 import { randomUUID } from 'crypto';
-import { Env } from '@core/utils/env';
+import { Env } from '#core/utils/env';
 import { colorize } from 'consola/utils';
 
 let con: Connection;

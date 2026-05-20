@@ -2,7 +2,7 @@ import { colorize } from 'consola/utils';
 import { getDirs, useDir } from '@opensya/config';
 import { acceptFileRegex } from '../utils/accept-files';
 import { registerService, typeTemplate } from '../utils/services';
-import { atomicWriteFile } from '@core/utils/atomic-write-file';
+import { atomicWriteFile } from '#core/utils/atomic-write-file';
 import { syntheseTypes } from '../compiler/utils/types';
 
 globalThis.defineService = (handler) => {

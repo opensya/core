@@ -1,5 +1,5 @@
 import { prepareBuild } from './prepare';
-import { execo } from '@core/utils/execo';
+import { execo } from '#core/utils/execo';
 import { getDirs } from '@opensya/config';
 
 export async function build() {

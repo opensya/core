@@ -1,4 +1,4 @@
-import { Env } from '@core/utils/env';
+import { Env } from '#core/utils/env';
 
 export const envDefinition = {
   CORE_ENV: Env.schema.enum(['factory'] as const).optional(),

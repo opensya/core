@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
     "paths": {
-      "@core/*": [
+      "#core/*": [
         "core/*"
       ],
-      "@nest/*": [
-        "core/nest/*"
+      "#core": [
+        "core"
       ],
     },
     "strict": true,

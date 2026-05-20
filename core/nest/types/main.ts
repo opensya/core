@@ -1,6 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { ControllerOptions } from './controllers';
-import { InferEnv } from '@core/utils/env';
+import { InferEnv } from '#core/utils/env';
 import { envDefinition } from '../utils/env';
 
 declare global {

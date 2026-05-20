@@ -1,7 +1,7 @@
 import { getDirs, useDir } from '@opensya/config';
 import { writeServerTsconfig } from '../../utils';
 import { resolve } from 'node:path';
-import { atomicWriteFile } from '@core/utils/atomic-write-file';
+import { atomicWriteFile } from '#core/utils/atomic-write-file';
 
 export function devPrepare() {
   const dirs = getDirs(_config);

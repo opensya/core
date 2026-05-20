@@ -78,4 +78,6 @@ async function onAppListen() {
   );
 
   logger.log(' ');
+
+  process.send?.({ type: 'server:started' });
 }

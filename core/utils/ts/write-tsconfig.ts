@@ -1,6 +1,6 @@
 import { getDirs, OpensyaConfigOutput } from '@opensya/config';
 import { CompilerOptions } from 'typescript';
-import { atomicWriteFile } from '@core/utils/atomic-write-file';
+import { atomicWriteFile } from '#core/utils/atomic-write-file';
 import { TSConfig } from './ts';
 
 export function writeTsconfig(

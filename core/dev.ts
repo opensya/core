@@ -41,5 +41,11 @@
 //   },
 // ).catch(console.log);
 
-import { dev } from './nest/index.js';
-void dev();
+import * as nest from './nest/runner';
+import * as nuxt from './nuxt/runner';
+
+void nest.dev({
+  onStarted() {
+    void nuxt.dev();
+  },
+});

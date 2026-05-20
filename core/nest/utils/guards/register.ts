@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { ControllerOptions2, DefineGuard } from '@nest/types';
+import { ControllerOptions2, DefineGuard } from '#core/nest/types';
 import {
   CanActivate,
   ExecutionContext,

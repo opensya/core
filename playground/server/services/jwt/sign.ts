@@ -1,4 +1,4 @@
-import { Env } from '@core/utils/env';
+import { Env } from '#core/utils/env';
 import jwt from 'jsonwebtoken';
 import { JwtService } from '.';
 

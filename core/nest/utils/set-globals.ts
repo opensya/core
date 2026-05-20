@@ -1,4 +1,4 @@
-import { Logger } from '@core/utils/logger/logger';
+import { Logger } from '#core/utils/logger/logger';
 import { define } from '../define';
 
 export async function setGlobals() {

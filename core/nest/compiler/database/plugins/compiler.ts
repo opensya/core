@@ -1,6 +1,6 @@
-import { DefineMongoosePlugin } from '@core/nest/types/database';
-import { acceptFileRegex } from '@nest/utils/accept-files';
-import { getWhyleDefault } from '@nest/utils/get-whyle-default';
+import { DefineMongoosePlugin } from '#core/nest//types/database';
+import { acceptFileRegex } from '#core/nest/utils/accept-files';
+import { getWhyleDefault } from '#core/nest/utils/get-whyle-default';
 import { getDirs, OpensyaConfigOutput } from '@opensya/config';
 
 export async function compiler(config: OpensyaConfigOutput) {

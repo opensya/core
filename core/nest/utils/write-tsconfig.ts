@@ -8,11 +8,11 @@ import {
   ScriptTarget,
   ModuleDetectionKind,
 } from 'typescript';
-import { writeSharedTsconfig } from '@core/utils/ts/shared-tsconfig';
-import { writeTsconfig } from '@core/utils/ts/write-tsconfig';
-import { writeNodeTsconfig } from '@core/utils/ts/node-tsconfig';
-import { getCoreDir, getCoreResolvePaths } from '@core/utils/ts/core-paths';
-import { $CompilerOptions } from '@core/utils/ts';
+import { writeSharedTsconfig } from '#core/utils/ts/shared-tsconfig';
+import { writeTsconfig } from '#core/utils/ts/write-tsconfig';
+import { writeNodeTsconfig } from '#core/utils/ts/node-tsconfig';
+import { getCoreDir, getCoreResolvePaths } from '#core/utils/ts/core-paths';
+import { $CompilerOptions } from '#core/utils/ts';
 
 type $CompilerOptionss = Omit<
   CompilerOptions,

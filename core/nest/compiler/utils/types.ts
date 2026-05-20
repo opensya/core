@@ -1,7 +1,7 @@
 import { readdirSync } from 'fs-extra';
 import { getDirs, normalizeDir } from '@opensya/config';
 import { join } from 'node:path';
-import { atomicWriteFile } from '@core/utils/atomic-write-file';
+import { atomicWriteFile } from '#core/utils/atomic-write-file';
 
 export function syntheseTypes() {
   const dirs = getDirs(_config);

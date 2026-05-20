@@ -1,25 +1,16 @@
-import { Env, EnvDefinition, InferEnv, LoadEnvOptions } from '@core/utils/env';
+import { Env, EnvDefinition, InferEnv, LoadEnvOptions } from './utils/env';
 import { getDirs, loadConfig, OpensyaConfigOutput } from '@opensya/config';
 import { MayBePromise } from '@opensya/share';
 import { setGlobls } from './utils/set-globals';
 import { resolve } from 'node:path';
 
-export async function entry<E extends EnvDefinition>(
-  run: (
-    config: OpensyaConfigOutput,
-    params: {
-      env: InferEnv<E>;
-      dirs: ReturnType<typeof getDirs>;
-    },
-  ) => MayBePromise<void>,
-  {
-    envDefinition,
-    envOptions = {},
-  }: {
-    envDefinition?: E;
-    envOptions?: LoadEnvOptions;
-  } = {},
-) {
+async function _entry({
+  envDefinition,
+  envOptions = {},
+}: {
+  envDefinition?: EnvDefinition;
+  envOptions?: LoadEnvOptions;
+} = {}) {
   await setGlobls();
 
   const preEnv = Env.create({
@@ -32,10 +23,24 @@ export async function entry<E extends EnvDefinition>(
   const config = await loadConfig(cwd);
   const dirs = getDirs(config);
 
-  const env = Env.runtime<E>(envDefinition ?? ({} as E), {
+  const env = Env.runtime(envDefinition ?? {}, {
     ...envOptions,
     with: ['CORE_ENV', 'NODE_ENV'],
   });
 
-  await run(config, { env, dirs });
+  return { config, env, dirs };
+}
+export async function entry(
+  run: (
+    config: OpensyaConfigOutput,
+    params: Awaited<ReturnType<typeof _entry>>,
+  ) => MayBePromise<void>,
+  options: Parameters<typeof _entry>['0'] = {},
+) {
+  const r = await _entry(options);
+  await run(r.config, r);
+}
+
+export async function entryAsync(options: Parameters<typeof _entry>['0'] = {}) {
+  return await _entry(options);
 }

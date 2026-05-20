@@ -1,6 +1,6 @@
-import { DefineGuard } from '@nest/types';
-import { acceptFileRegex } from '@nest/utils/accept-files';
-import { getWhyleDefault } from '@nest/utils/get-whyle-default';
+import { DefineGuard } from '#core/nest/types';
+import { acceptFileRegex } from '#core/nest/utils/accept-files';
+import { getWhyleDefault } from '#core/nest/utils/get-whyle-default';
 import { getDirs, OpensyaConfigOutput } from '@opensya/config';
 
 export async function compiler(config: OpensyaConfigOutput) {

@@ -6,4 +6,10 @@ export default defineOpensyaConfig({
       '@/*': ['./*'],
     },
   },
+
+  client: {
+    components: {
+      prefix: 'o',
+    },
+  },
 });

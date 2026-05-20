@@ -1,12 +1,15 @@
 import { devPrepare } from './prepare';
-import { execo, ExecoReturn } from '@core/utils/execo';
+import { execo, ExecoReturn } from '#core/utils/execo';
 import { Stats } from 'fs-extra';
 import { resolve } from 'node:path';
 import { getDirs } from '@opensya/config';
 import chokidar from 'chokidar';
-import { nestEntry } from '@core/nest/entry';
+import { nestEntry } from '#core/nest//entry';
 
-export async function dev() {
+export async function dev({
+  onStarted,
+  onRestarted,
+}: { onStarted?: () => void; onRestarted?: () => void } = {}) {
   nestEntry(() => {
     const dirs = getDirs(_config);
     let serverProcess: ExecoReturn | null = null;
@@ -32,6 +35,7 @@ export async function dev() {
         .on('change', (...args) => void onChange(...args));
     }
 
+    let isServerFirstStarted = false;
     const run = _.debounce(async (action: string = 'Starting') => {
       try {
         if (action !== 'Starting') await stop();
@@ -61,7 +65,27 @@ export async function dev() {
         // args.push(bootstrapDir.dir);
 
         args.push(dirs.output.server.mainjs.dir);
-        serverProcess = await execo([command, ...args], {});
+        serverProcess = await execo([command, ...args], {
+          stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
+        });
+
+        serverProcess.on('message', (message) => {
+          if (typeof message === 'object' && message && 'type' in message) {
+            switch (message.type) {
+              case 'server:started':
+                if (
+                  !isServerFirstStarted ||
+                  action.toLowerCase() === 'starting'
+                ) {
+                  onStarted?.();
+                } else onRestarted?.();
+
+                isServerFirstStarted = true;
+
+                break;
+            }
+          }
+        });
       } catch (error) {
         logger.error(error);
       }
