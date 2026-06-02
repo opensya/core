@@ -1,4 +1,4 @@
-import { Model } from '#core/nest//types';
+import { Model } from '#core/nest/types';
 import { normalize } from '#core/nest//utils/normalize';
 import { UserSchema, USER_ROLES } from '@opensya/share';
 import { Query } from 'mongoose';

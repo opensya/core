@@ -46,7 +46,11 @@ export async function createApp() {
 
   _nestApp.setGlobalPrefix('api');
 
-  void _nestApp?.listen(port, () => void onAppListen());
+  console.log();
+
+  if (process.env.PREPARE_MODE !== 'yes') {
+    void _nestApp?.listen(port, () => void onAppListen());
+  }
 }
 
 async function onAppListen() {

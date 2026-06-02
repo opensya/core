@@ -1,7 +1,10 @@
 import { nestCompiler } from './compiler';
 import { createApp } from './app';
+import { nestEntry } from './entry';
 
-export async function bootstrap() {
-  await nestCompiler();
-  await createApp();
+export function bootstrap() {
+  nestEntry(async () => {
+    await nestCompiler();
+    await createApp();
+  });
 }

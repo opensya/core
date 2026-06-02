@@ -5,7 +5,9 @@ export function getCoreResolvePaths(config: OpensyaConfigOutput) {
   const coreDir = getCoreDir();
 
   return {
-    '#core': [coreDir.relative.to(dirs.output.dir).normalize().dir],
+    '#core': [
+      coreDir.join('index.d.ts').relative.to(dirs.output.dir).normalize().dir,
+    ],
     '#core/*': [
       coreDir.join('/*').relative.to(dirs.output.dir).normalize().dir,
     ],

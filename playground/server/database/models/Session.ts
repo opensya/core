@@ -1,4 +1,4 @@
-import { Model } from '#core/nest//types';
+import { Model } from '#core/nest/types';
 import { Types } from 'mongoose';
 
 const model = {

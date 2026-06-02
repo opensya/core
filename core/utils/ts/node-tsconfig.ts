@@ -28,9 +28,7 @@ export function writeNodeTsconfig(
 
   include.push(
     coreDir
-      .join(
-        'nest/types/config' + (_env.CORE_ENV === 'factory' ? '.ts' : '.d.ts'),
-      )
+      .join('nest/types/config.d.ts')
       .relative.to(dirs.output.dir)
       .normalize().dir,
   );

@@ -1,12 +1,11 @@
-import { devPrepare } from './prepare';
+import { prepareServer } from '../prepare/prepare';
 import { execo, ExecoReturn } from '#core/utils/execo';
 import { Stats } from 'fs-extra';
-import { resolve } from 'node:path';
 import { getDirs } from '@opensya/config';
 import chokidar from 'chokidar';
 import { nestEntry } from '#core/nest//entry';
 
-export async function dev({
+export async function runDev({
   onStarted,
   onRestarted,
 }: { onStarted?: () => void; onRestarted?: () => void } = {}) {
@@ -24,10 +23,6 @@ export async function dev({
 
       const listenDirs: string[] = [dirs.root.server.dir];
 
-      if (_env.CORE_ENV === 'factory') {
-        listenDirs.push(resolve(__dirname, '../..'));
-      }
-
       chokidar
         .watch(listenDirs, { ignoreInitial: true })
         .on('add', (...args) => void onChange(...args))
@@ -44,17 +39,10 @@ export async function dev({
 
         logger.start(`${action} Opensya server ...`);
 
-        devPrepare();
+        prepareServer();
 
         const command = 'tsx';
         const args: string[] = [];
-
-        if (_env.CORE_ENV === 'factory') {
-          args.push(
-            `--tsconfig`,
-            resolve(__dirname, '../../../../tsconfig.dev.json'),
-          );
-        }
 
         // const bootstrapDir = useDir({
         //   dir:

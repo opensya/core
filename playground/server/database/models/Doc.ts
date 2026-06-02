@@ -1,4 +1,4 @@
-import { Model } from '#core/nest//types';
+import { Model } from '#core/nest/types';
 import { DocSchema } from '@opensya/share';
 
 const model: Model<DocSchema> = {
