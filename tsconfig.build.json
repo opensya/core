@@ -17,6 +17,7 @@
     "./test/**/*.ts",
     "./vitest.config.ts",
     "./rslib.config.ts",
+    "./rslib.nuxt.config.ts",
     "**/*.spec.ts",
     "**/*.test.ts",
     "**/__tests__/**"

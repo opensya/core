@@ -153,6 +153,9 @@ importers:
       '@nestjs/testing':
         specifier: ^11.1.21
         version: 11.1.21(@nestjs/common@11.1.21(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.21)(@nestjs/platform-express@11.1.21)
+      '@rsbuild/plugin-vue':
+        specifier: ^1.2.9
+        version: 1.2.9(@rsbuild/core@2.0.6)(@rspack/core@2.0.3(@swc/helpers@0.5.21))(@vue/compiler-sfc@3.5.34)(vue@3.5.34(typescript@5.9.3))
       '@rslib/core':
         specifier: ^0.21.5
         version: 0.21.5(typescript@5.9.3)
@@ -2259,6 +2262,14 @@ packages:
       core-js:
         optional: true
 
+  '@rsbuild/plugin-vue@1.2.9':
+    resolution: {integrity: sha512-ufD4eufkZZlNK3iY5NWg57AMK9qrTFmHycDkSTfRTua4Qczf7q9s7rCLYVfVv2w36cOXJIewM+376jD0zaQShQ==}
+    peerDependencies:
+      '@rsbuild/core': ^1.0.0 || ^2.0.0-0
+    peerDependenciesMeta:
+      '@rsbuild/core':
+        optional: true
+
   '@rslib/core@0.21.5':
     resolution: {integrity: sha512-KPWR8gcodSIw8txfJ+KbgF5NoL7CxX0AljHiJk1VWDiClrN94jYmF5iGCFgaDraOBV9jJhpIIwPOfu09ild8eA==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -2339,6 +2350,9 @@ packages:
         optional: true
       '@swc/helpers':
         optional: true
+
+  '@rspack/lite-tapable@1.1.1':
+    resolution: {integrity: sha512-d1p93zyCSvI8ASw6pJWzDOx+RNh3Utu3DSQRPBibmDJEg57Q6kEcYBY0xJUD0m4tJ7JNu8KKKRB1EKhLM7RLrw==}
 
   '@scarf/scarf@1.4.0':
     resolution: {integrity: sha512-xxeapPiUXdZAE3che6f3xogoJPeZgig6omHEy1rIY5WVsB3H2BHNnZH+gHG6x91SCWyQCzWGsuL2Hh3ClO5/qQ==}
@@ -5477,6 +5491,20 @@ packages:
       typescript:
         optional: true
 
+  rspack-vue-loader@17.5.1:
+    resolution: {integrity: sha512-1pXdeqYM95P0T8DO2ZcOCBnfMp62W5IG2c0RICn1rFYjHcja41IYSQLzcdc1uePEq0n4JZwvfR2lVs8wRZuwzA==}
+    peerDependencies:
+      '@rspack/core': ^1.0.0 || ^2.0.0-0
+      '@vue/compiler-sfc': '*'
+      vue: '*'
+    peerDependenciesMeta:
+      '@rspack/core':
+        optional: true
+      '@vue/compiler-sfc':
+        optional: true
+      vue:
+        optional: true
+
   run-applescript@7.1.0:
     resolution: {integrity: sha512-DPe5pVFaAsinSaV6QjQ6gdiedWDcRCbUuiQfQa2wmWV7+xC9bGulGI8+TdRmoFkAPaBXk8CrAbnlY2ISniJ47Q==}
     engines: {node: '>=18'}
@@ -8355,6 +8383,16 @@ snapshots:
     transitivePeerDependencies:
       - '@module-federation/runtime-tools'
 
+  '@rsbuild/plugin-vue@1.2.9(@rsbuild/core@2.0.6)(@rspack/core@2.0.3(@swc/helpers@0.5.21))(@vue/compiler-sfc@3.5.34)(vue@3.5.34(typescript@5.9.3))':
+    dependencies:
+      rspack-vue-loader: 17.5.1(@rspack/core@2.0.3(@swc/helpers@0.5.21))(@vue/compiler-sfc@3.5.34)(vue@3.5.34(typescript@5.9.3))
+    optionalDependencies:
+      '@rsbuild/core': 2.0.6
+    transitivePeerDependencies:
+      - '@rspack/core'
+      - '@vue/compiler-sfc'
+      - vue
+
   '@rslib/core@0.21.5(typescript@5.9.3)':
     dependencies:
       '@rsbuild/core': 2.0.6
@@ -8418,6 +8456,8 @@ snapshots:
       '@rspack/binding': 2.0.3
     optionalDependencies:
       '@swc/helpers': 0.5.21
+
+  '@rspack/lite-tapable@1.1.1': {}
 
   '@scarf/scarf@1.4.0': {}
 
@@ -11975,6 +12015,15 @@ snapshots:
       '@rsbuild/core': 2.0.6
     optionalDependencies:
       typescript: 5.9.3
+
+  rspack-vue-loader@17.5.1(@rspack/core@2.0.3(@swc/helpers@0.5.21))(@vue/compiler-sfc@3.5.34)(vue@3.5.34(typescript@5.9.3)):
+    dependencies:
+      '@rspack/lite-tapable': 1.1.1
+      chalk: 4.1.2
+    optionalDependencies:
+      '@rspack/core': 2.0.3(@swc/helpers@0.5.21)
+      '@vue/compiler-sfc': 3.5.34
+      vue: 3.5.34(typescript@5.9.3)
 
   run-applescript@7.1.0: {}
 

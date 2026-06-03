@@ -32,7 +32,9 @@
   "scripts": {
     "rmv": "tsx ./core/rm.ts",
     "clean": "rm -rf dist",
-    "build": "rslib build",
+    "build": "pnpm build:core && pnpm build:nuxt",
+    "build:core": "rslib build",
+    "build:nuxt": "rslib build --config rslib.nuxt.config.ts",
     "play:prepare": "pnpm build && tsx ./dist/core/run/prepare.js",
     "play:dev": "pnpm build && tsx ./dist/core/run/dev.js",
     "play:build": "pnpm build && tsx ./dist/core/run/build.js",
@@ -96,6 +98,7 @@
     "@nestjs/cli": "^11.0.21",
     "@nestjs/schematics": "^11.1.0",
     "@nestjs/testing": "^11.1.21",
+    "@rsbuild/plugin-vue": "^1.2.9",
     "@rslib/core": "^0.21.5",
     "@swc/cli": "^0.6.0",
     "@swc/core": "^1.15.33",

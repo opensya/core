@@ -3,7 +3,7 @@ import { writeClientTsconfig } from '#core/nuxt/utils/write-tsconfig';
 import { atomicWriteFile } from '#core/utils/atomic-write-file';
 import { getDirs, useDir } from '@opensya/config';
 
-export function devPrepare() {
+export function runPrepare() {
   const dirs = getDirs(_config);
 
   function ensureOutput() {
@@ -14,7 +14,7 @@ export function devPrepare() {
     const modules: string[] = [];
 
     const moduleLoaderDir = useDir({ dir: __dirname }).join(
-      '../../utils/module-loader',
+      '../../utils/module-loader/index.js',
     );
     modules.push(moduleLoaderDir.relative.to(dirs.output.client.dir).dir);
 
@@ -26,6 +26,9 @@ export function devPrepare() {
         modules,
         srcDir: dirs.root.client.relative.to(dirs.output.client.dir).normalize()
           .dir,
+        buildDir: dirs.dist.client.relative
+          .to(dirs.output.client.dir)
+          .normalize().dir,
       }),
     );
   }

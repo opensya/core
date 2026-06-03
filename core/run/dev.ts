@@ -42,10 +42,12 @@
 // ).catch(console.log);
 
 import * as nest from '../nest/run';
-import * as nuxt from '../nuxt/runner';
+import * as nuxt from '../nuxt/run';
 
-void nest.runDev({
-  onStarted() {
-    // void nuxt.dev();
-  },
-});
+// void nest.runDev({
+//   onStarted() {
+//     // void nuxt.dev();
+//   },
+// });
+
+void nuxt.runDev();

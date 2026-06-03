@@ -4,6 +4,7 @@ import {
   addComponentsDir,
   addImportsDir,
   addPlugin,
+  addPluginTemplate,
   defineNuxtModule,
   extendPages,
 } from '@nuxt/kit';
@@ -29,7 +30,7 @@ function scanVueFiles(dir: string): string[] {
       continue;
     }
 
-    if (item.isFile() && item.name.endsWith('.vue')) {
+    if (item.isFile() && /\.(vue|js|mjs)$/.test(item.name)) {
       files.push(fullPath);
     }
   }
@@ -39,7 +40,7 @@ function scanVueFiles(dir: string): string[] {
 
 function fileToRoutePath(pagesDir: string, file: string): string {
   const relativePath = relative(pagesDir, file)
-    .replace(/\.vue$/, '')
+    .replace(/\.(vue|js|mjs)$/, '')
     .replace(/\\/g, '/');
 
   const path = relativePath
@@ -55,6 +56,31 @@ function getPluginMode(file: string): 'client' | 'server' | 'all' {
   if (file.includes('.server.')) return 'server';
 
   return 'all';
+}
+
+function pascalCase(value: string) {
+  return value
+    .replace(/\.(vue|js|mjs)$/, '')
+    .split(/[/\\_-]/g)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join('');
+}
+
+function getComponentName({
+  file,
+  componentsDir,
+  prefix,
+}: {
+  file: string;
+  componentsDir: string;
+  prefix?: string;
+}) {
+  const relativePath = relative(componentsDir, file).replace(/\\/g, '/');
+
+  const name = pascalCase(relativePath);
+
+  return `${pascalCase(prefix || '')}${name}`;
 }
 
 async function registerModule(config: OpensyaConfigOutput) {
@@ -88,16 +114,58 @@ async function registerModule(config: OpensyaConfigOutput) {
 
   const dirs = getDirs(config);
 
+  // TODO à voir plus tard
   registerComponents();
   function registerComponents() {
     const componentsDir = dirs.root.client.join('components/globals');
     if (!componentsDir.exists()) return;
 
-    addComponentsDir({
-      path: componentsDir.dir,
-      global: true,
-      prefix: clientConf.components?.prefix || name,
+    const files = componentsDir.getChildren({
+      onlyFile: true,
+      endWith: /\.(js|mjs)$/,
+      recursive: true,
     });
+
+    if (!files.length) return;
+
+    const prefix = clientConf.components?.prefix || name;
+
+    addPluginTemplate({
+      filename: dirs.output.client.components.join(`${name}.mjs`).dir,
+      // `opensya/components/${name}.mjs`,
+      getContents: () => {
+        const imports: string[] = [];
+        const registrations: string[] = [];
+
+        files.forEach((file, index) => {
+          const importName = `Component${index}`;
+          const componentName = getComponentName({
+            file: file.path,
+            componentsDir: componentsDir.dir,
+            prefix,
+          });
+
+          imports.push(`import ${importName} from '${file.path}'`);
+          registrations.push(
+            `nuxtApp.vueApp.component('${componentName}', ${importName})`,
+          );
+        });
+
+        return `
+${imports.join('\n')}
+
+export default defineNuxtPlugin((nuxtApp) => {
+${registrations.map((line) => `  ${line}`).join('\n')}
+})
+`;
+      },
+    });
+
+    // addComponentsDir({
+    //   path: componentsDir.dir,
+    //   global: true,
+    //   prefix: clientConf.components?.prefix || name,
+    // });
   }
 
   registerPlugins();

@@ -3,31 +3,29 @@ import { defineConfig } from '@rslib/core';
 export default defineConfig({
   source: {
     tsconfigPath: './tsconfig.build.json',
-
     entry: {
       index: [
-        './core/**/*.ts',
-        '!./core/nuxt/**',
-        '!./core/**/*.spec.ts',
-        '!./core/**/*.test.ts',
-        '!./core/**/__tests__/**',
+        './core/nuxt/**/*.ts',
+        '!./core/nuxt/**/*.spec.ts',
+        '!./core/nuxt/**/*.test.ts',
+        '!./core/nuxt/**/__tests__/**',
       ],
     },
   },
 
   lib: [
     {
-      dts: true,
+      dts: false,
       bundle: false,
-      format: 'cjs',
+      format: 'esm',
     },
   ],
 
   output: {
     target: 'node',
-    cleanDistPath: true,
+    cleanDistPath: false,
     distPath: { root: './dist' },
-    filename: { js: 'core/[name].js' },
+    filename: { js: 'core/nuxt/[name].js' },
   },
 
   tools: {

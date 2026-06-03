@@ -1,10 +1,9 @@
 import { execo } from '#core/utils/execo';
 import { getDirs } from '@opensya/config';
-import chokidar from 'chokidar';
-import { devPrepare } from './prepare';
 import { nuxtEntry } from '#core/nuxt/entry';
+import { runPrepare } from '../prepare';
 
-export async function dev() {
+export async function runDev() {
   void nuxtEntry(async () => {
     const dirs = getDirs(_config);
 
@@ -15,7 +14,7 @@ export async function dev() {
       await execo([command, ...args], {});
     }
 
-    void devPrepare();
+    void runPrepare();
     void run();
   });
 }
