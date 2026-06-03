@@ -1,7 +1,7 @@
 import { execo } from '#core/utils/execo';
 import { getDirs } from '@opensya/config';
 import { nuxtEntry } from '#core/nuxt/entry';
-import { runPrepare } from '../prepare';
+import { prepare } from '../prepare';
 
 export async function runDev() {
   void nuxtEntry(async () => {
@@ -11,10 +11,10 @@ export async function runDev() {
       const command = 'nuxt';
       const args = ['dev', `--cwd=${dirs.output.client.dir}`];
 
-      await execo([command, ...args], {});
+      await execo([command, ...args]);
     }
 
-    void runPrepare();
+    void prepare();
     void run();
   });
 }

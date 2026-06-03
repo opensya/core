@@ -1,7 +1,7 @@
 import { execo } from '#core/utils/execo';
 import { useDir } from '@opensya/config';
 import { nuxtEntry } from '#core/nuxt/entry';
-import { runPrepare } from '../prepare';
+import { prepare } from '../prepare';
 
 export async function runBuild() {
   const { dirs } = await nuxtEntry();
@@ -35,7 +35,7 @@ export async function runBuild() {
     });
   }
 
-  void runPrepare();
+  void prepare();
 
   if (_config.template === 'module') void runModule();
   else void runApp();

@@ -1,3 +1,9 @@
-import { runPrepare } from '../nest/run/prepare/run';
+import * as server from '../nest/run';
+import * as client from '../nuxt/run';
 
-void runPrepare();
+async function prepare() {
+  await server.runPrepare();
+  await client.runPrepare();
+}
+
+void prepare();

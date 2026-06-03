@@ -3,7 +3,7 @@ import { writeClientTsconfig } from '#core/nuxt/utils/write-tsconfig';
 import { atomicWriteFile } from '#core/utils/atomic-write-file';
 import { getDirs, useDir } from '@opensya/config';
 
-export function runPrepare() {
+export function prepare() {
   const dirs = getDirs(_config);
 
   function ensureOutput() {
