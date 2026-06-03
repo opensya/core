@@ -44,10 +44,8 @@
 import * as nest from '../nest/run';
 import * as nuxt from '../nuxt/run';
 
-// void nest.runDev({
-//   onStarted() {
-//     // void nuxt.dev();
-//   },
-// });
-
-void nuxt.runDev();
+void nest.runDev({
+  onStarted() {
+    void nuxt.runDev();
+  },
+});
