@@ -1,3 +1,7 @@
+function getRandomInt(max: number) {
+  return Math.floor(Math.random() * max);
+}
+
 /**
  *
  * @param length default 16
@@ -16,17 +20,13 @@ export function random({
   digits?: boolean;
   specialChars?: boolean;
 } = {}) {
-  const _lowerCase = "abcdefghijklmnopqrstuvwxyz";
-  const _upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  const _digits = "0123456789";
-  const _specialChars = "!@#$%^&*()_+[]{};':\"\\|,.<>/?`~-";
-  let allChars = "";
+  const _lowerCase = 'abcdefghijklmnopqrstuvwxyz';
+  const _upperCase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const _digits = '0123456789';
+  const _specialChars = '!@#$%^&*()_+[]{};\':"\\|,.<>/?`~-';
+  let allChars = '';
 
-  function getRandomInt(max: number) {
-    return Math.floor(Math.random() * max);
-  }
-
-  let password = "";
+  let password = '';
   if (lowerCase) {
     password += _lowerCase[getRandomInt(_lowerCase.length)];
     allChars += _lowerCase;
@@ -53,9 +53,9 @@ export function random({
 
   // Mélange sécurisé
   password = password
-    .split("")
-    .sort(() => 0.5 - Math.random())
-    .join("");
+    .split('')
+    .toSorted(() => 0.5 - Math.random())
+    .join('');
 
   return password;
 }

@@ -1,17 +1,24 @@
-import { dirname, join } from "node:path";
-import { existsSync, statSync } from "node:fs";
+import { dirname, join } from 'node:path';
+import { existsSync, statSync } from 'node:fs';
 
-export function resolvePackageRoot(packageName: string, from: string = process.cwd()): string {
+export function resolvePackageRoot(
+  packageName: string,
+  from: string = process.cwd(),
+): string {
   try {
+    // eslint-disable-next-line unicorn/prefer-module
     const packageJsonPath = require.resolve(`${packageName}/package.json`, {
       paths: [from],
     });
 
     return dirname(packageJsonPath);
   } catch (error) {
-    throw new Error(`Unable to resolve package "${packageName}" from "${from}"`, {
-      cause: error,
-    });
+    throw new Error(
+      `Unable to resolve package "${packageName}" from "${from}"`,
+      {
+        cause: error,
+      },
+    );
   }
 }
 
@@ -19,7 +26,7 @@ export function findPackageRoot(from: string): string {
   let currentDir = statSync(from).isDirectory() ? from : dirname(from);
 
   while (true) {
-    const packageJsonPath = join(currentDir, "package.json");
+    const packageJsonPath = join(currentDir, 'package.json');
 
     if (existsSync(packageJsonPath)) return currentDir;
 
