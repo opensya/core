@@ -1,0 +1,32 @@
+{
+  "name": "@core/utils",
+  "version": "0.0.0",
+  "private": false,
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsdown --tsconfig tsconfig.build.json"
+  },
+  "dependencies": {
+    "lodash": "^4.18.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@core/tsconfig": "workspace:*",
+    "@types/lodash": "^4.17.24",
+    "@types/node": "^25.9.3",
+    "eslint": "^10.5.0",
+    "prettier": "^3.8.4",
+    "tsdown": "^0.22.2",
+    "typescript": "^6.0.3"
+  }
+}

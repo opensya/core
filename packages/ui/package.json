@@ -1,0 +1,12 @@
+{
+  "name": "ui",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {},
+  "devDependencies": {
+    "@core/tsconfig": "workspace:*",
+    "vue": "^3.4.21"
+  }
+}
