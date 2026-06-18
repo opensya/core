@@ -5,5 +5,7 @@ export async function registerControllers(
   app: FastifyInstance,
   controllers: DefineControllerMeta[],
 ) {
-  for (const controller of controllers) await app.register(controller.route);
+  for (const controller of controllers) {
+    await app.register((app) => controller.route(app));
+  }
 }

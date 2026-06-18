@@ -20,21 +20,19 @@ export function defineController<
   handler: (context: ControllerContext<T>) => MayBePromise<R>,
   options: ControllerOptions = {},
 ): DefinedController {
-  function route(app: FastifyInstance) {
-    app.route({
-      method: options.method ?? 'GET',
-      url: options.path ?? '/',
-      handler: async (req, res) => {
-        return handler({
-          req: req as FastifyRequest<T>,
-          res,
-        });
-      },
-    });
-  }
-
   return {
-    route,
+    route: (app) => {
+      app.route({
+        method: options.method ?? 'GET',
+        url: options.path ?? '/',
+        handler: async (req, res) => {
+          return handler({
+            req: req as FastifyRequest<T>,
+            res,
+          });
+        },
+      });
+    },
 
     init(filePath: string, parentDir: string) {
       const segment = relative(parentDir, filePath);

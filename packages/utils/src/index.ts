@@ -5,6 +5,7 @@ import { random } from './random';
 export * from './types';
 export * from './normalize_dir';
 export * from './resolve_package_root';
+export * from './atomic_write_ile';
 
 const utils = { lodash, zod, random };
 
