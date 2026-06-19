@@ -1,6 +1,6 @@
 import { HTTPMethods } from 'fastify';
 import { readFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { OUTPUT_DIR_SERVER } from '../../utils';
 import { DefineControllerMeta } from './define';
@@ -26,10 +26,7 @@ export async function loadControllers() {
     if (!Object.hasOwn(controllers, key)) continue;
 
     const controller = controllers[key];
-
-    let href = resolve(import.meta.dirname, controller.file);
-    href = pathToFileURL(href).href;
-
+    const href = pathToFileURL(controller.file).href;
     const content = (await import(href)) as Raw['content'];
 
     raws.push({ content, _meta: controller });

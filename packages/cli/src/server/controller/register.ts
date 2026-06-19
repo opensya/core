@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import { loadControllers } from './load_controllers';
+import { loadControllers } from './load';
 
 export async function registerControllers(app: FastifyInstance) {
   const controllers = await loadControllers();

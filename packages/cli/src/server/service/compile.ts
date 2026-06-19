@@ -1,4 +1,4 @@
-import { defineSerice, ServiceMeta } from './define';
+import { ServiceMeta } from './define';
 import { REGEXS } from '../utils';
 import { join, relative } from 'node:path';
 import { existsSync } from 'node:fs';
@@ -8,13 +8,11 @@ import { INPUT_DIR_SERVER, OUTPUT_DIR_SERVER } from '../../utils';
 import { writeType } from './typing';
 
 export function compileServices() {
-  globalThis.defineSerice = defineSerice;
-
   const servicesDir = join(INPUT_DIR_SERVER, 'services');
   const services = detectServices(servicesDir);
 
   atomicWriteFile(
-    join(OUTPUT_DIR_SERVER, 'servces.json'),
+    join(OUTPUT_DIR_SERVER, 'services.json'),
     JSON.stringify(services, undefined, 2),
   );
 

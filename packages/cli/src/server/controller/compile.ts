@@ -35,13 +35,10 @@ function detectControllers(parentDir: string) {
   > = {};
 
   for (const file of files) {
-    const route = resolveRouteFromFilePath(relative(parentDir, file.path));
+    const route = resolveRouteFromFilePath(file.path);
 
     const idx = `${route.path}:${route.method}`;
-    controllers[idx] = {
-      file: relative(import.meta.dirname, file.path),
-      ...route,
-    };
+    controllers[idx] = { file: file.path, ...route };
   }
 
   return controllers;
