@@ -1,5 +1,6 @@
-import { defineGlobals } from './utils';
+import { defineGlobals, writeTsconfig } from './utils';
 
 export function prepare() {
   defineGlobals();
+  writeTsconfig();
 }

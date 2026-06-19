@@ -1,1 +1,5 @@
-export function prepare() {}
+import { writeTsconfig } from './utils';
+
+export function prepare() {
+  writeTsconfig();
+}

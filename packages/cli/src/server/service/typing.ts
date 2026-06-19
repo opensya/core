@@ -6,7 +6,7 @@ import { existsSync, mkdirSync } from 'node:fs';
 const template = `type Service = (typeof import("{{import}}"))['default']['service'];
 
 declare global {
-  function useService(name: '{{name}}'): ReturnType<Service>;
+  function useService(name: '{{name}}'): Service;
 }
 
 export {};
