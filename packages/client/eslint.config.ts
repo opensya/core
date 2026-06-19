@@ -1,6 +1,6 @@
-import { withCore } from '@core/eslint';
+import { withCoreReact } from '@core/eslint';
 
-export default withCore({
+export default withCoreReact({
   languageOptions: {
     parserOptions: {
       projectService: true,

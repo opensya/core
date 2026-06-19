@@ -11,6 +11,7 @@ coverage
 # build outputs
 .nuxt/
 .output/
+.opensya
 out/
 build
 dist

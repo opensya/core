@@ -23,15 +23,21 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@vitejs/plugin-react": "^6.0.2",
     "magicast": "^0.5.3",
     "nuxt": "^4.4.8",
-    "tinyexec": "^1.2.4"
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "tinyexec": "^1.2.4",
+    "vite": "^8.0.16"
   },
   "devDependencies": {
     "@core/eslint": "workspace:*",
     "@core/tsconfig": "workspace:*",
     "@core/utils": "workspace:*",
     "@types/node": "^25.9.3",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
     "eslint": "^10.5.0",
     "prettier": "^3.8.4",
     "tsdown": "^0.22.2",

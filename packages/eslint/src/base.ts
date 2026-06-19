@@ -6,7 +6,7 @@ import packageJson from 'eslint-plugin-package-json';
 import globals from 'globals';
 import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 
-const configs: Parameters<typeof defineConfig> = [
+export const configs: Parameters<typeof defineConfig> = [
   {
     ignores: [
       '**/node_modules/**',
@@ -56,16 +56,16 @@ const configs: Parameters<typeof defineConfig> = [
 
       '@typescript-eslint/prefer-for-of': 'off',
 
-      'prettier/prettier': [
-        'error',
-        {
-          singleQuote: true,
-          semi: true,
-          trailingComma: 'all',
-          tabWidth: 2,
-          printWidth: 80,
-        },
-      ],
+      // 'prettier/prettier': [
+      //   'error',
+      //   {
+      //     singleQuote: true,
+      //     semi: true,
+      //     trailingComma: 'all',
+      //     tabWidth: 2,
+      //     printWidth: 80,
+      //   },
+      // ],
     },
   },
 
