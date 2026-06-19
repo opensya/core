@@ -2,6 +2,7 @@
   "extends": "@core/tsconfig/react.json",
   "compilerOptions": {
     "strictNullChecks": true,
+    "noEmit": true
   },
   "exclude": [
     "dist",

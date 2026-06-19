@@ -3,7 +3,6 @@
   "compilerOptions": {
     "types": ["node"],
     "allowJs": true,
-    "noEmit": true,
 
     "composite": false,
     "esModuleInterop": true,
