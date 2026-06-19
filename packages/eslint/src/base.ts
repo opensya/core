@@ -48,6 +48,7 @@ export const configs: Parameters<typeof defineConfig> = [
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
 
       // '@typescript-eslint/no-unnecessary-type-parameters': 'off',
@@ -55,17 +56,6 @@ export const configs: Parameters<typeof defineConfig> = [
       '@typescript-eslint/no-non-null-assertion': 'off',
 
       '@typescript-eslint/prefer-for-of': 'off',
-
-      // 'prettier/prettier': [
-      //   'error',
-      //   {
-      //     singleQuote: true,
-      //     semi: true,
-      //     trailingComma: 'all',
-      //     tabWidth: 2,
-      //     printWidth: 80,
-      //   },
-      // ],
     },
   },
 

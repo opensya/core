@@ -11,14 +11,9 @@
 //   xSync(command, args, { nodeOptions: { stdio: 'inherit' } });
 // }
 
-import { ensureOutput } from './utils';
-import { createViteConfig } from './utils/create_vite_config';
-import { createIndexHtml } from './utils/creat_index_html';
-import { createMainJsx } from './utils/create_main_jsx';
+import { ensureOutput, initFramework } from './utils';
 
 export function buildApp() {
   ensureOutput();
-  createViteConfig();
-  createIndexHtml();
-  createMainJsx();
+  initFramework();
 }

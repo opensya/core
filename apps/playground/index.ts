@@ -7,4 +7,6 @@
 
 import { bootstrap } from "@core/client";
 
-bootstrap();
+(() => {
+  bootstrap();
+})();

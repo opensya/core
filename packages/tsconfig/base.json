@@ -2,6 +2,8 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     "types": ["node"],
+    "allowJs": true,
+    "noEmit": true,
 
     "composite": false,
     "esModuleInterop": true,
