@@ -7,6 +7,12 @@ import type {
 import type { ControllerContext, ControllerOptions } from './types';
 import type { MayBePromise } from '@core/utils';
 
+export interface ControllerMeta {
+  file: string;
+  path: string;
+  method: HTTPMethods;
+}
+
 export interface DefinedController {
   route(
     app: FastifyInstance,

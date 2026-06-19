@@ -1,19 +1,48 @@
-import { join } from 'node:path';
-import { existsSync } from 'node:fs';
+import { join, relative } from 'node:path';
+import { existsSync, readFileSync, rmSync } from 'node:fs';
 import { REGEXS } from '../utils';
 import { atomicWriteFile, getChildren } from '@core/utils';
-import { INPUT_DIR_SERVER, OUTPUT_DIR_SERVER } from '../../utils';
+import { INPUT_DIR_SERVER, OUTPUT_DIR_SERVER, runBootstrap } from '../../utils';
 import { resolveRouteFromFilePath } from './resolve_route';
-import { HTTPMethods } from 'fastify';
+import { ControllerMeta } from './define';
+import chokidar from 'chokidar';
 
 export function compileControllers() {
   const controllersDir = join(INPUT_DIR_SERVER, 'controllers');
-  const controllers = detectControllers(controllersDir);
 
-  atomicWriteFile(
-    join(OUTPUT_DIR_SERVER, 'controllers.json'),
-    JSON.stringify(controllers, undefined, 2),
-  );
+  const manifestDir = join(OUTPUT_DIR_SERVER, 'controllers.json');
+  rmSync(manifestDir, { force: true });
+
+  detectControllers(controllersDir);
+  listen(controllersDir);
+}
+
+function listen(controllersDir: string) {
+  if (!process.argv.includes('--dev')) return;
+  if (!existsSync(controllersDir)) return;
+
+  chokidar
+    .watch(controllersDir, {
+      ignoreInitial: true,
+      ignored: (path, stats) => {
+        if (!stats?.isFile()) return false;
+
+        const isAccept = REGEXS.acceptFiles.test(path);
+        return !isAccept;
+      },
+    })
+    .on('add', () => {
+      detectControllers(controllersDir);
+      runBootstrap();
+    })
+    .on('unlink', () => {
+      detectControllers(controllersDir);
+      runBootstrap();
+    })
+    .on('change', () => {
+      detectControllers(controllersDir);
+      runBootstrap();
+    });
 }
 
 function detectControllers(parentDir: string) {
@@ -25,21 +54,21 @@ function detectControllers(parentDir: string) {
     endWith: REGEXS.acceptFiles,
   });
 
-  const controllers: Record<
-    string,
-    {
-      file: string;
-      path: string;
-      method: HTTPMethods;
-    }
-  > = {};
+  let controllers: Record<string, ControllerMeta> = {};
 
   for (const file of files) {
-    const route = resolveRouteFromFilePath(file.path);
+    const route = resolveRouteFromFilePath(relative(parentDir, file.path));
 
     const idx = `${route.path}:${route.method}`;
     controllers[idx] = { file: file.path, ...route };
   }
 
-  return controllers;
+  const manifestDir = join(OUTPUT_DIR_SERVER, 'controllers.json');
+
+  if (existsSync(manifestDir)) {
+    const _controllers = JSON.parse(readFileSync(manifestDir, 'utf8'));
+    controllers = { ..._controllers, ...controllers };
+  }
+
+  atomicWriteFile(manifestDir, JSON.stringify(controllers, undefined, 2));
 }

@@ -1,3 +1,3 @@
 export default defineSerice(function (name: string) {
-  return { name };
+  return { name, hey: 'dfgdgdfg' };
 });

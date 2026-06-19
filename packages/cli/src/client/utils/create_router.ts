@@ -3,6 +3,7 @@ import { existsSync } from 'node:fs';
 import { extname, join, relative, resolve } from 'node:path';
 import { INPUT_DIR_CLIENT, OUTPUT_DIR_CLIENT } from '../../utils';
 import { generateCode, loadFile, builders } from 'magicast';
+import chokidar from 'chokidar';
 
 const routeTemplate = `
   {
@@ -15,9 +16,34 @@ const routeTemplate = `
 `;
 
 export async function createRouter() {
-  const mod = await loadFile(join(OUTPUT_DIR_CLIENT, 'router.jsx'));
+  await build();
+  listen();
+}
+
+function listen() {
+  if (!process.argv.includes('--dev')) return;
 
   const pagesDir = join(INPUT_DIR_CLIENT, 'pages');
+  if (!existsSync(pagesDir)) return;
+
+  chokidar
+    .watch(pagesDir, {
+      ignoreInitial: true,
+      ignored: (path, stats) => {
+        if (!stats?.isFile()) return false;
+
+        const isAccept = path.endsWith('.jsx') || path.endsWith('.tsx');
+        return !isAccept;
+      },
+    })
+    .on('add', () => void build())
+    .on('unlink', () => void build());
+}
+
+export async function build() {
+  const mod = await loadFile(join(OUTPUT_DIR_CLIENT, 'router.jsx'));
+  const pagesDir = join(INPUT_DIR_CLIENT, 'pages');
+
   let routes: string = '';
 
   if (existsSync(pagesDir)) {
