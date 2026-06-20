@@ -1,7 +1,0 @@
-{
-    "references": [
-        {
-            "path": "../.opensya/server/tsconfig.server.json"
-        },
-    ]
-}

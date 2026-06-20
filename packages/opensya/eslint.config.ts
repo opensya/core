@@ -1,6 +1,6 @@
-import { withCore } from '@opensya/eslint';
+import { withCoreReact } from '@opensya/eslint';
 
-export default withCore({
+export default withCoreReact({
   languageOptions: {
     parserOptions: {
       projectService: true,

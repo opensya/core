@@ -1,5 +1,5 @@
 {
-  "name": "@core/eslint",
+  "name": "@opensya/eslint",
   "version": "0.0.0",
   "private": false,
   "type": "module",
@@ -20,7 +20,7 @@
     "build": "tsdown --tsconfig tsconfig.build.json"
   },
   "dependencies": {
-    "@core/tsconfig": "workspace:*",
+    "@opensya/tsconfig": "workspace:*",
     "@eslint/js": "^10.0.1",
     "eslint": "^10.5.0",
     "eslint-config-prettier": "^10.1.8",
