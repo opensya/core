@@ -4,14 +4,16 @@ import { join, relative } from 'node:path';
 import { existsSync, readFileSync, rmSync } from 'node:fs';
 import { atomicWriteFile, getChildren } from '@core/utils';
 import { resolveServiceFromFilePath } from './resolve_service';
-import { INPUT_DIR_SERVER, OUTPUT_DIR_SERVER, runBootstrap } from '../../utils';
+import { getDirs, runBootstrap } from '../../utils';
 import { writeType } from './typing';
 import chokidar from 'chokidar';
 
 export function compileServices() {
-  const servicesDir = join(INPUT_DIR_SERVER, 'services');
+  const dirs = getDirs();
 
-  const manifestDir = join(OUTPUT_DIR_SERVER, 'services.json');
+  const servicesDir = join(dirs.INPUT_DIR_SERVER, 'services');
+
+  const manifestDir = join(dirs.OUTPUT_DIR_SERVER, 'services.json');
   rmSync(manifestDir, { force: true });
 
   detectServices(servicesDir);
@@ -49,6 +51,8 @@ function listen(servicesDir: string) {
 function detectServices(parentDir: string) {
   if (!existsSync(parentDir)) return {};
 
+  const dirs = getDirs();
+
   const files = getChildren(parentDir, {
     recursive: true,
     onlyFile: true,
@@ -66,7 +70,7 @@ function detectServices(parentDir: string) {
     };
   }
 
-  const manifestDir = join(OUTPUT_DIR_SERVER, 'services.json');
+  const manifestDir = join(dirs.OUTPUT_DIR_SERVER, 'services.json');
 
   if (existsSync(manifestDir)) {
     const _services = JSON.parse(readFileSync(manifestDir, 'utf8'));

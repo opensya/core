@@ -1,14 +1,16 @@
 import { join } from 'node:path';
-import { OUTPUT_DIR } from './output';
 import { Result, x } from 'tinyexec';
+import { getDirs } from './dirs';
 
 const state: { process?: Result } = {};
 
 export function runBootstrap() {
   if (!process.argv.includes('--dev')) return;
 
+  const dirs = getDirs();
+
   const command = 'tsx';
-  const args: string[] = [join(OUTPUT_DIR, 'server.js'), '--dev'];
+  const args: string[] = [join(dirs.OUTPUT_DIR, 'server.js'), '--dev'];
 
   if (state.process && !state.process.killed) {
     state.process.kill();

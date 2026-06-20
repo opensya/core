@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { OUTPUT_DIR_SERVER } from '../../utils';
 import { DefinedService, ServiceMeta } from './define';
+import { getDirs } from '../../utils';
 
 export async function loadServices() {
   type Raw = {
@@ -10,8 +10,10 @@ export async function loadServices() {
     _meta: ServiceMeta;
   };
 
+  const dirs = getDirs();
+
   const controllers = JSON.parse(
-    readFileSync(join(OUTPUT_DIR_SERVER, 'services.json'), 'utf8'),
+    readFileSync(join(dirs.OUTPUT_DIR_SERVER, 'services.json'), 'utf8'),
   ) as Record<string, Raw['_meta']>;
 
   const raws: Raw[] = [];

@@ -1,9 +1,11 @@
 import { cpSync } from 'node:fs';
 import { join } from 'node:path';
-import { OUTPUT_DIR } from './output';
+import { getDirs } from './dirs';
 
 export function copyOutput() {
-  cpSync(join(import.meta.dirname, '../output'), OUTPUT_DIR, {
+  const dirs = getDirs();
+
+  cpSync(join(import.meta.dirname, '../output'), dirs.OUTPUT_DIR, {
     recursive: true,
     force: true,
   });

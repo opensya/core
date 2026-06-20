@@ -1,7 +1,7 @@
 import { atomicWriteFile, getChildren } from '@core/utils';
 import { existsSync } from 'node:fs';
 import { extname, join, relative, resolve } from 'node:path';
-import { INPUT_DIR_CLIENT, OUTPUT_DIR_CLIENT } from '../../utils';
+import { getDirs } from '../../utils';
 import { generateCode, loadFile, builders } from 'magicast';
 import chokidar from 'chokidar';
 
@@ -23,7 +23,8 @@ export async function createRouter() {
 function listen() {
   if (!process.argv.includes('--dev')) return;
 
-  const pagesDir = join(INPUT_DIR_CLIENT, 'pages');
+  const dirs = getDirs();
+  const pagesDir = join(dirs.INPUT_DIR_CLIENT, 'pages');
   if (!existsSync(pagesDir)) return;
 
   chokidar
@@ -41,8 +42,9 @@ function listen() {
 }
 
 export async function build() {
-  const mod = await loadFile(join(OUTPUT_DIR_CLIENT, 'router.jsx'));
-  const pagesDir = join(INPUT_DIR_CLIENT, 'pages');
+  const dirs = getDirs();
+  const mod = await loadFile(join(dirs.OUTPUT_DIR_CLIENT, 'router.jsx'));
+  const pagesDir = join(dirs.INPUT_DIR_CLIENT, 'pages');
 
   let routes: string = '';
 
@@ -66,11 +68,12 @@ export async function build() {
   mod.exports.routes = builders.raw(`[${routes}]`);
   const { code } = generateCode(mod);
 
-  atomicWriteFile(resolve(OUTPUT_DIR_CLIENT, 'router.jsx'), code);
+  atomicWriteFile(resolve(dirs.OUTPUT_DIR_CLIENT, 'router.jsx'), code);
 }
 
 function toImportPath(filePath: string) {
-  const relativePath = relative(OUTPUT_DIR_CLIENT, filePath).replaceAll(
+  const dirs = getDirs();
+  const relativePath = relative(dirs.OUTPUT_DIR_CLIENT, filePath).replaceAll(
     '\\',
     '/',
   );

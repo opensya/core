@@ -1,13 +1,15 @@
 import Fastify from 'fastify';
 import FastifyVite from '@fastify/vite';
 
-import { defineGlobals } from './server/utils';
+import { runInit } from './utils';
 import { registerControllers } from './server/controller';
-import { OUTPUT_DIR } from './utils';
 import { registerServices } from './server/service';
+import { getDirs } from './utils';
 
 export async function bootstrap() {
-  defineGlobals();
+  await runInit();
+
+  const dirs = getDirs();
 
   const app = Fastify({
     logger: {
@@ -21,7 +23,7 @@ export async function bootstrap() {
   await registerControllers(app);
 
   await app.register(FastifyVite, {
-    root: OUTPUT_DIR,
+    root: dirs.OUTPUT_DIR,
     // spa: true,
     // renderer: '@fastify/react',
   });

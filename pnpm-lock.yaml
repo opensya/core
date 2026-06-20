@@ -60,6 +60,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^6.0.2
         version: 6.0.2(vite@8.0.16)
+      c12:
+        specifier: 4.0.0-beta.5
+        version: 4.0.0-beta.5(chokidar@5.0.0)(magicast@0.5.3)
       chokidar:
         specifier: ^5.0.0
         version: 5.0.0
@@ -4215,6 +4218,36 @@ packages:
       ohash: 2.0.11
       pathe: 2.0.3
       perfect-debounce: 2.1.0
+      pkg-types: 2.3.1
+      rc9: 3.0.1
+    dev: false
+
+  /c12@4.0.0-beta.5(chokidar@5.0.0)(magicast@0.5.3):
+    resolution: {integrity: sha512-yWGCPCQGJeFq4R0mFg5HOhC3Rg+B0PCdM+ldXWUhughoGgeeq8/tjRmXh4/lmhKWyhf+KOFxB/JMXf0Yv1Fd5A==}
+    peerDependencies:
+      chokidar: ^5
+      dotenv: '*'
+      giget: '*'
+      jiti: '*'
+      magicast: '*'
+    peerDependenciesMeta:
+      chokidar:
+        optional: true
+      dotenv:
+        optional: true
+      giget:
+        optional: true
+      jiti:
+        optional: true
+      magicast:
+        optional: true
+    dependencies:
+      chokidar: 5.0.0
+      confbox: 0.2.4
+      defu: 6.1.7
+      exsolve: 1.0.8
+      magicast: 0.5.3
+      pathe: 2.0.3
       pkg-types: 2.3.1
       rc9: 3.0.1
     dev: false

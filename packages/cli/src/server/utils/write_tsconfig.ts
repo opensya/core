@@ -1,18 +1,27 @@
 import { join, relative } from 'node:path';
 import { atomicWriteFile, normalizeDir } from '@core/utils';
-import { INPUT_DIR_SERVER, OUTPUT_DIR, OUTPUT_DIR_SERVER } from '../../utils';
+import { getDirs } from '../../utils';
 
 export function writeTsconfig() {
-  const include: string[] = [
-    normalizeDir(relative(OUTPUT_DIR, join(INPUT_DIR_SERVER, '**/*.ts'))),
+  const dirs = getDirs();
 
-    normalizeDir(relative(OUTPUT_DIR, join(import.meta.dirname, '../**/*.ts'))),
+  const include: string[] = [
     normalizeDir(
-      relative(OUTPUT_DIR, join(import.meta.dirname, '../**/*.d.ts')),
+      relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR_SERVER, '**/*.ts')),
     ),
 
     normalizeDir(
-      relative(OUTPUT_DIR, join(OUTPUT_DIR_SERVER, 'types/**/*.d.ts')),
+      relative(dirs.OUTPUT_DIR, join(import.meta.dirname, '../**/*.ts')),
+    ),
+    normalizeDir(
+      relative(dirs.OUTPUT_DIR, join(import.meta.dirname, '../**/*.d.ts')),
+    ),
+
+    normalizeDir(
+      relative(
+        dirs.OUTPUT_DIR,
+        join(dirs.OUTPUT_DIR_SERVER, 'types/**/*.d.ts'),
+      ),
     ),
   ];
 
@@ -39,7 +48,7 @@ export function writeTsconfig() {
   };
 
   atomicWriteFile(
-    join(OUTPUT_DIR, 'tsconfig.server.json'),
+    join(dirs.OUTPUT_DIR, 'tsconfig.server.json'),
     JSON.stringify(tsconfig, undefined, 2),
   );
 }

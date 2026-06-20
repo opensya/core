@@ -1,13 +1,16 @@
 import { join, relative } from 'node:path';
 import { atomicWriteFile, normalizeDir } from '@core/utils';
-import { INPUT_DIR_CLIENT, OUTPUT_DIR } from '../../utils';
+import { getDirs } from '../../utils';
 
 export function writeTsconfig() {
+  const dirs = getDirs();
   const include: string[] = [
-    normalizeDir(relative(OUTPUT_DIR, join(INPUT_DIR_CLIENT, '**/*.ts'))),
+    normalizeDir(
+      relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR_CLIENT, '**/*.ts')),
+    ),
 
     normalizeDir(
-      relative(OUTPUT_DIR, join(import.meta.dirname, '../**/*.d.ts')),
+      relative(dirs.OUTPUT_DIR, join(import.meta.dirname, '../**/*.d.ts')),
     ),
   ];
 
@@ -34,7 +37,7 @@ export function writeTsconfig() {
   };
 
   atomicWriteFile(
-    join(OUTPUT_DIR, 'tsconfig.client.json'),
+    join(dirs.OUTPUT_DIR, 'tsconfig.client.json'),
     JSON.stringify(tsconfig, undefined, 2),
   );
 }

@@ -2,15 +2,16 @@ import { join, relative } from 'node:path';
 import { existsSync, readFileSync, rmSync } from 'node:fs';
 import { REGEXS } from '../utils';
 import { atomicWriteFile, getChildren } from '@core/utils';
-import { INPUT_DIR_SERVER, OUTPUT_DIR_SERVER, runBootstrap } from '../../utils';
+import { getDirs, runBootstrap } from '../../utils';
 import { resolveRouteFromFilePath } from './resolve_route';
 import { ControllerMeta } from './define';
 import chokidar from 'chokidar';
 
 export function compileControllers() {
-  const controllersDir = join(INPUT_DIR_SERVER, 'controllers');
+  const dirs = getDirs();
+  const controllersDir = join(dirs.INPUT_DIR_SERVER, 'controllers');
 
-  const manifestDir = join(OUTPUT_DIR_SERVER, 'controllers.json');
+  const manifestDir = join(dirs.OUTPUT_DIR_SERVER, 'controllers.json');
   rmSync(manifestDir, { force: true });
 
   detectControllers(controllersDir);
@@ -48,6 +49,8 @@ function listen(controllersDir: string) {
 function detectControllers(parentDir: string) {
   if (!existsSync(parentDir)) return {};
 
+  const dirs = getDirs();
+
   const files = getChildren(parentDir, {
     recursive: true,
     onlyFile: true,
@@ -63,7 +66,7 @@ function detectControllers(parentDir: string) {
     controllers[idx] = { file: file.path, ...route };
   }
 
-  const manifestDir = join(OUTPUT_DIR_SERVER, 'controllers.json');
+  const manifestDir = join(dirs.OUTPUT_DIR_SERVER, 'controllers.json');
 
   if (existsSync(manifestDir)) {
     const _controllers = JSON.parse(readFileSync(manifestDir, 'utf8'));
