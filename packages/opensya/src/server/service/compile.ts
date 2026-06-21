@@ -1,27 +1,27 @@
-import { ServiceMeta } from './define';
-import { REGEXS } from '../utils';
-import { join, relative } from 'node:path';
-import { existsSync, readFileSync } from 'node:fs';
-import { atomicWriteFile, getChildren } from '@opensya/utils';
-import { resolveServiceFromFilePath } from './resolve_service';
-import { getDirs, runBootstrap } from '../../utils';
-import { writeType } from './typing';
-import chokidar from 'chokidar';
+import type { ServiceMeta } from "./define";
+import { REGEXS } from "../utils";
+import { join, relative } from "node:path";
+import { existsSync, readFileSync } from "node:fs";
+import { atomicWriteFile, getChildren } from "@opensya/utils";
+import { resolveServiceFromFilePath } from "./resolve_service";
+import { getDirs } from "../../utils";
+import { writeType } from "./typing";
+import chokidar from "chokidar";
 
 export function compileServices() {
   const dirs = getDirs();
 
-  const servicesDir = join(dirs.OUTPUT_DIR_SERVER, 'services');
+  const servicesDir = join(dirs.INPUT_DIR_SERVER, "services");
 
-  const manifestDir = join(dirs.OUTPUT_DIR_SERVER, 'services.json');
-  atomicWriteFile(manifestDir, '{}');
+  const manifestDir = join(dirs.OUTPUT_DIR_SERVER, "services.json");
+  atomicWriteFile(manifestDir, "{}");
 
   detectServices(servicesDir);
   listen(servicesDir);
 }
 
 function listen(servicesDir: string) {
-  if (!process.argv.includes('--dev')) return;
+  if (!process.argv.includes("--dev")) return;
   if (!existsSync(servicesDir)) return;
 
   chokidar
@@ -34,17 +34,17 @@ function listen(servicesDir: string) {
         return !isAccept;
       },
     })
-    .on('add', () => {
+    .on("add", () => {
       detectServices(servicesDir);
-      runBootstrap();
+      // runBootstrap();
     })
-    .on('unlink', () => {
+    .on("unlink", () => {
       detectServices(servicesDir);
-      runBootstrap();
+      // runBootstrap();
     })
-    .on('change', () => {
+    .on("change", () => {
       detectServices(servicesDir);
-      runBootstrap();
+      // runBootstrap();
     });
 }
 
@@ -70,10 +70,10 @@ function detectServices(parentDir: string) {
     };
   }
 
-  const manifestDir = join(dirs.OUTPUT_DIR_SERVER, 'services.json');
+  const manifestDir = join(dirs.OUTPUT_DIR_SERVER, "services.json");
 
   if (existsSync(manifestDir)) {
-    const _services = JSON.parse(readFileSync(manifestDir, 'utf8'));
+    const _services = JSON.parse(readFileSync(manifestDir, "utf8"));
     services = { ..._services, ...services };
   }
 
@@ -82,7 +82,7 @@ function detectServices(parentDir: string) {
 }
 
 function writeTypes(services: Record<string, ServiceMeta>) {
-  if (!process.argv.includes('--dev')) return;
+  if (!process.argv.includes("--dev")) return;
 
   for (const key in services) {
     if (!Object.hasOwn(services, key)) continue;

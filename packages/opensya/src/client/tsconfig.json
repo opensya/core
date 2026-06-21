@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.client.json",
+  "compilerOptions": {
+    "paths": {
+      "@core:*": ["../*"],
+      "@ui:*": ["./ui/*"]
+    }
+  },
+  "include": ["./**/*.tsx"]
+}

@@ -1,9 +1,9 @@
-import { HTTPMethods } from 'fastify';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
-import { DefineControllerMeta } from './define';
-import { getDirs } from '../../utils';
+import type { HTTPMethods } from "fastify";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { pathToFileURL } from "node:url";
+import type { DefineControllerMeta } from "./define";
+import { getDirs } from "../../utils";
 
 export async function loadControllers() {
   type Raw = {
@@ -19,8 +19,8 @@ export async function loadControllers() {
   const dirs = getDirs();
 
   const controllers = JSON.parse(
-    readFileSync(join(dirs.OUTPUT_DIR_SERVER, 'controllers.json'), 'utf8'),
-  ) as Record<string, Raw['_meta']>;
+    readFileSync(join(dirs.OUTPUT_DIR_SERVER, "controllers.json"), "utf8"),
+  ) as Record<string, Raw["_meta"]>;
 
   const raws: Raw[] = [];
 
@@ -29,7 +29,7 @@ export async function loadControllers() {
 
     const controller = controllers[key];
     const href = pathToFileURL(controller.file).href;
-    const content = (await import(href)) as Raw['content'];
+    const content = (await import(href)) as Raw["content"];
 
     raws.push({ content, _meta: controller });
   }

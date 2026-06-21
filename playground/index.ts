@@ -1,3 +1,1 @@
-import { run } from 'opensya/run';
-
-run();
+import 'opensya/dev';

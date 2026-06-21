@@ -1,14 +1,30 @@
-export default function Index() {
-  const message = 'Welcome to @fastify/react!';
-  return (
-    <>
-      <p>{message}</p>
+import { CheckCircle2Icon, InfoIcon } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@ui:components/ui/alert';
+import { ThemeModeToggle } from '@ui:components/theme-mode-toggle';
 
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi quasi a
-        atque numquam error vero inventore alias at ad officia incidunt quia
-        suscipit reprehenderit dicta, nisi quibusdam odio? Earum, enim!
-      </p>
-    </>
+export default function Index() {
+  return (
+    <div className="grid w-full max-w-md items-start gap-4">
+      <Alert>
+        <CheckCircle2Icon />
+        <AlertTitle>Payment successful</AlertTitle>
+        <AlertDescription>
+          Your payment of $29.99 has been processed. A receipt has been sent to
+          your email address. dsdfsdf
+        </AlertDescription>
+      </Alert>
+      <Alert>
+        <InfoIcon />
+        <AlertTitle>New feature available</AlertTitle>
+        <AlertDescription>
+          We&apos;ve added dark mode support. You can enable it in your account
+          settings.
+        </AlertDescription>
+      </Alert>
+
+      <div className="bg-amber-400">
+        <ThemeModeToggle />
+      </div>
+    </div>
   );
 }

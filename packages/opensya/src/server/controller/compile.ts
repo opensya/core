@@ -1,25 +1,25 @@
-import { join, relative } from 'node:path';
-import { existsSync, readFileSync } from 'node:fs';
-import { REGEXS } from '../utils';
-import { atomicWriteFile, getChildren } from '@opensya/utils';
-import { getDirs, runBootstrap } from '../../utils';
-import { resolveRouteFromFilePath } from './resolve_route';
-import { ControllerMeta } from './define';
-import chokidar from 'chokidar';
+import { join, relative } from "node:path";
+import { existsSync, readFileSync } from "node:fs";
+import { REGEXS } from "../utils";
+import { getDirs } from "../../utils";
+import { resolveRouteFromFilePath } from "./resolve_route";
+import type { ControllerMeta } from "./define";
+import chokidar from "chokidar";
+import { atomicWriteFile, getChildren } from "@opensya/utils";
 
 export function compileControllers() {
   const dirs = getDirs();
-  const controllersDir = join(dirs.INPUT_DIR_SERVER, 'controllers');
+  const controllersDir = join(dirs.INPUT_DIR_SERVER, "controllers");
 
-  const manifestDir = join(dirs.OUTPUT_DIR_SERVER, 'controllers.json');
-  atomicWriteFile(manifestDir, '{}');
+  const manifestDir = join(dirs.OUTPUT_DIR_SERVER, "controllers.json");
+  atomicWriteFile(manifestDir, "{}");
 
   detectControllers(controllersDir);
   listen(controllersDir);
 }
 
 function listen(controllersDir: string) {
-  if (!process.argv.includes('--dev')) return;
+  if (!process.argv.includes("--dev")) return;
   if (!existsSync(controllersDir)) return;
 
   chokidar
@@ -32,17 +32,17 @@ function listen(controllersDir: string) {
         return !isAccept;
       },
     })
-    .on('add', () => {
+    .on("add", () => {
       detectControllers(controllersDir);
-      runBootstrap();
+      // runBootstrap();
     })
-    .on('unlink', () => {
+    .on("unlink", () => {
       detectControllers(controllersDir);
-      runBootstrap();
+      // runBootstrap();
     })
-    .on('change', () => {
+    .on("change", () => {
       detectControllers(controllersDir);
-      runBootstrap();
+      // runBootstrap();
     });
 }
 
@@ -66,10 +66,10 @@ function detectControllers(parentDir: string) {
     controllers[idx] = { file: file.path, ...route };
   }
 
-  const manifestDir = join(dirs.OUTPUT_DIR_SERVER, 'controllers.json');
+  const manifestDir = join(dirs.OUTPUT_DIR_SERVER, "controllers.json");
 
   if (existsSync(manifestDir)) {
-    const _controllers = JSON.parse(readFileSync(manifestDir, 'utf8'));
+    const _controllers = JSON.parse(readFileSync(manifestDir, "utf8"));
     controllers = { ..._controllers, ...controllers };
   }
 

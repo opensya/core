@@ -1,15 +1,15 @@
-import 'reflect-metadata';
+import "reflect-metadata";
 
-import { randomUUID } from 'node:crypto';
-import { DefinedService } from './define';
-import { loadServices } from './load';
+import { randomUUID } from "node:crypto";
+import type { DefinedService } from "./define";
+import { loadServices } from "./load";
 
 const confidentialKey = randomUUID();
 function getConfidential() {
   return confidentialKey;
 }
 
-function registerService(name: string, handler: DefinedService['service']) {
+function registerService(name: string, handler: DefinedService["service"]) {
   Reflect.defineMetadata(name, handler, getConfidential);
 }
 
@@ -36,6 +36,6 @@ export async function registerServices() {
 export class ServiceNotFoundError extends Error {
   constructor(serviceName: string) {
     super(`Service "${serviceName}" not found`);
-    this.name = 'ServiceNotFoundError';
+    this.name = "ServiceNotFoundError";
   }
 }

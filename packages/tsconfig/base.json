@@ -3,6 +3,7 @@
   "compilerOptions": {
     "types": ["node"],
     "allowJs": true,
+    "jsx": "react-jsx",
 
     "composite": false,
     "esModuleInterop": true,

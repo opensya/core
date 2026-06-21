@@ -1,7 +1,7 @@
-import { defineController } from '../controller/define';
-import { defineSerice } from '../service/define';
+import { defineController } from "../controller/define";
+import { defineService } from "../service/define";
 
 export function defineGlobals() {
-  globalThis.defineSerice = defineSerice;
+  globalThis.defineService = defineService;
   globalThis.defineController = defineController;
 }

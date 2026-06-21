@@ -1,0 +1,7 @@
+{
+  "files": [],
+  "references": [
+    { "path": "../.opensya/tsconfig.server.json" },
+    { "path": "../.opensya/tsconfig.client.json" }
+  ]
+}

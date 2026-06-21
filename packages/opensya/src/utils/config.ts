@@ -1,4 +1,4 @@
-import { loadConfig } from 'c12';
+import { loadConfig } from "c12";
 
 export interface OpensyaConfig {
   srcDir?: string;
@@ -12,10 +12,10 @@ const resolvedConfig: { value?: Required<OpensyaConfig> } = {};
 
 export async function loadOpensyaConfig(): Promise<Required<OpensyaConfig>> {
   const result = await loadConfig<OpensyaConfig>({
-    configFile: 'opensya.config',
+    configFile: "opensya.config",
 
     defaultConfig: {
-      srcDir: '.',
+      srcDir: ".",
     },
   });
 
@@ -27,7 +27,7 @@ export async function loadOpensyaConfig(): Promise<Required<OpensyaConfig>> {
 export function getOpensyaConfig(): Required<OpensyaConfig> {
   if (!resolvedConfig.value) {
     throw new Error(
-      'Opensya config is not loaded. Call loadOpensyaConfig() first.',
+      "Opensya config is not loaded. Call loadOpensyaConfig() first.",
     );
   }
 

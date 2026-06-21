@@ -1,7 +1,5 @@
-import { defineOpensyaConfig } from './config';
-import { defineGlobals as serverDefineGlobals } from '../server/utils';
+import { defineOpensyaConfig } from "./config";
 
 export function defineGlobals() {
   globalThis.defineOpensyaConfig = defineOpensyaConfig;
-  serverDefineGlobals();
 }

@@ -1,11 +1,11 @@
-import { MayBePromise } from '@opensya/utils';
+import type { MayBePromise } from "@opensya/utils";
 
 export interface ServiceMeta {
   name: string;
   file: string;
 }
 
-export function defineSerice<P extends unknown[], R = unknown>(
+export function defineService<P extends unknown[], R = unknown>(
   handler: (...args: P) => MayBePromise<R>,
 ) {
   async function fn(...args: P) {
@@ -17,9 +17,9 @@ export function defineSerice<P extends unknown[], R = unknown>(
   };
 }
 
-export type DefineService = typeof defineSerice;
-export type DefinedService = ReturnType<typeof defineSerice>;
+export type DefineService = typeof defineService;
+export type DefinedService = ReturnType<typeof defineService>;
 
 declare global {
-  var defineSerice: DefineService;
+  var defineService: DefineService;
 }

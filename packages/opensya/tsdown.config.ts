@@ -1,26 +1,40 @@
-import { cpSync } from 'node:fs';
-import { defineConfig } from 'tsdown';
+import { defineConfig } from "tsdown";
 
 export default defineConfig({
-  entry: ['src/index.ts', 'src/run.ts', 'src/vite/index.ts'],
-  format: ['esm'],
-  dts: true,
+  entry: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "!./src/**/*.test.{js,jsx,ts,tsx}",
+    "!./src/**/*.spec.{js,jsx,ts,tsx}",
+  ],
+
+  tsconfig: "./tsconfig.build.json",
+  format: ["esm"],
+  dts: false,
   sourcemap: true,
   clean: true,
   unbundle: true,
 
-  external: [/^\/?\$(core|output):/],
+  css: { inject: true },
+
+  deps: {
+    // neverBundle: [
+    //   /^\/?@(core|ui):/,
+
+    //   "vite",
+    //   "@vitejs/plugin-react",
+    //   "esbuild",
+    //   "lightningcss",
+    //   "sass",
+    //   "sass-embedded",
+    //   "postcss",
+    //   "immutable",
+    // ],
+    neverBundle: [/^[^./]/, /^\/?@(core|ui):/],
+  },
 
   outExtensions: (ctx) => {
     return {
-      js: ctx.format === 'cjs' ? '.cjs' : '.js',
+      js: ctx.format === "cjs" ? ".cjs" : ".js",
     };
-  },
-
-  onSuccess() {
-    cpSync('./src/vite/output', './dist/vite/output', {
-      recursive: true,
-      force: true,
-    });
   },
 });

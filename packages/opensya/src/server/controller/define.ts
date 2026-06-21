@@ -3,9 +3,9 @@ import type {
   FastifyRequest,
   HTTPMethods,
   RouteGenericInterface,
-} from 'fastify';
-import type { ControllerContext, ControllerOptions } from './types';
-import type { MayBePromise } from '@opensya/utils';
+} from "fastify";
+import type { ControllerContext, ControllerOptions } from "./types";
+import type { MayBePromise } from "@opensya/utils";
 
 export interface ControllerMeta {
   file: string;
@@ -34,6 +34,8 @@ export function defineController<
         url: meta.path,
 
         handler: async (req, res) => {
+          console.log(options);
+
           return handler({
             req: req as FastifyRequest<T>,
             res,

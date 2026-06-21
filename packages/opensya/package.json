@@ -1,26 +1,18 @@
 {
   "name": "opensya",
+  "private": true,
   "version": "0.0.0",
-  "private": false,
   "type": "module",
-  "imports": {
-    "#core": "./src"
-  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
-    "./run": {
-      "types": "./dist/run.d.ts",
-      "import": "./dist/run.js",
-      "require": "./dist/run.cjs"
-    },
-    "./vite": {
-      "types": "./dist/run.d.ts",
-      "import": "./dist/run.js",
-      "require": "./dist/run.cjs"
+    "./dev": {
+      "types": "./dist/dev.d.ts",
+      "import": "./dist/dev.js",
+      "require": "./dist/dev.cjs"
     }
   },
   "main": "./dist/index.js",
@@ -30,45 +22,69 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsdown --tsconfig tsconfig.build.json",
-    "dev": "tsx watch src/index.ts",
-    "dev0": "tsx src/run.ts --dev",
-    "format": "prettier . --write",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "build": "pnpm build:js && pnpm build:types",
+    "build:js": "tsdown",
+    "build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly",
+    "dev": "tsx src/dev.ts --dev",
+    "dev:test": "tsx watch src/dev.ts"
   },
   "dependencies": {
+    "@base-ui/react": "^1.6.0",
+    "@fastify/middie": "^9.3.2",
     "@fastify/one-line-logger": "^2.0.2",
     "@fastify/react": "^1.1.7",
     "@fastify/vite": "^9.1.0",
-    "@opensya/utils": "workspace:*",
-    "@unhead/react": "^2.1.13",
-    "@vitejs/plugin-react": "^6.0.2",
+    "@fontsource-variable/geist": "^5.2.9",
+    "@fontsource-variable/inter": "^5.2.8",
+    "@opensya/utils": "workspace:^",
+    "@tailwindcss/vite": "^4.3.1",
     "c12": "4.0.0-beta.5",
     "chokidar": "^5.0.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "date-fns": "^4.4.0",
+    "embla-carousel-react": "^8.6.0",
     "fastify": "^5.8.5",
-    "history": "^5.3.0",
+    "fastify-plugin": "^6.0.0",
+    "input-otp": "^1.4.2",
+    "lodash": "^4.18.1",
+    "lucide-react": "^1.21.0",
     "magicast": "^0.5.3",
-    "minipass": "^7.1.2",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7",
-    "react-router": "^8.0.1",
+    "next-themes": "^0.4.6",
+    "radix-ui": "^1.6.0",
+    "react": "^19.2.6",
+    "react-day-picker": "^10.0.1",
+    "react-dom": "^19.2.6",
+    "react-resizable-panels": "^4.11.2",
     "react-router-dom": "^7.18.0",
+    "recharts": "3.8.0",
     "reflect-metadata": "^0.2.2",
-    "tinyexec": "^1.2.4",
-    "valtio": "^2.3.2",
-    "vite": "^8.0.16"
+    "shadcn": "^4.11.0",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "^4.3.1",
+    "tw-animate-css": "^1.4.0",
+    "vaul": "^1.1.2",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@opensya/eslint": "workspace:*",
-    "@opensya/tsconfig": "workspace:*",
-    "@types/node": "^25.9.3",
-    "@types/react": "^19.2.17",
+    "@eslint/js": "^10.0.1",
+    "@tsdown/css": "^0.22.3",
+    "@types/lodash": "^4.17.24",
+    "@types/node": "^24.12.3",
+    "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "eslint": "^10.5.0",
-    "prettier": "^3.8.4",
+    "@vitejs/plugin-react": "^6.0.1",
+    "eslint": "^10.3.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.6.0",
+    "sass-embedded": "^1.100.0",
     "tsdown": "^0.22.2",
     "tsx": "^4.22.4",
-    "typescript": "^6.0.3"
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.59.2",
+    "vite": "^8.0.16"
   }
 }
