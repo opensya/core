@@ -17,7 +17,7 @@ export function writeClientTsconfig() {
   const paths = {
     "@ui:*": [
       normalizeDir(
-        relative(dirs.OUTPUT_DIR, join(dirs.OUTPUT_DIR_CLIENT, "ui/*")),
+        relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR_CLIENT, "ui/*")),
       ),
     ],
   };
