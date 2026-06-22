@@ -22,6 +22,7 @@
   "include": [
     "./vite.config.ts",
     "./tsdown.config.ts",
+    "./opensya.config.ts",
     "./src/server",
     "./src/utils",
     "src/prepare.ts"

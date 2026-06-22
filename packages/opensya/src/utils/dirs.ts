@@ -1,6 +1,6 @@
 import { mkdirSync } from "node:fs";
 import { join } from "node:path";
-import { getOpensyaConfig } from "./config";
+import { getOpensyaConfig } from "../config";
 
 export const SERVER_DIRNAME = "server";
 export const CLIENT_DIRNAME = "client";

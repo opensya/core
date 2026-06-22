@@ -37,5 +37,7 @@ export function getOpensyaConfig(): Required<OpensyaConfig> {
 type DefineOpensyaConfig = typeof defineOpensyaConfig;
 
 declare global {
-  var defineOpensyaConfig: DefineOpensyaConfig;
+  const defineOpensyaConfig: DefineOpensyaConfig;
 }
+
+Object.assign(globalThis, { defineOpensyaConfig });
