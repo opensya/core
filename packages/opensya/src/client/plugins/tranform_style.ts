@@ -3,20 +3,53 @@ import { dirname, join, relative } from "node:path";
 import { getDirs } from "../../utils";
 import { existsSync } from "node:fs";
 import { imports, body } from "../css/content";
+import {
+  getOpensyaConfig,
+  loadModuleOpensyaConfig,
+  type UseOpensyaConfig,
+} from "../../config";
 
 export function viteTransformStylePlugin(): Plugin {
+  const { CORE_DIR_CLIENT } = getDirs();
+  const mainConfig = getOpensyaConfig();
+  const styleFile = join(CORE_DIR_CLIENT, "style.css");
+
+  async function getStyle(config: UseOpensyaConfig) {
+    const imports: string[] = [];
+
+    for (const module of config.modules) {
+      const config = await loadModuleOpensyaConfig(module);
+      imports.push(...(await getStyle(config)));
+    }
+
+    const stylesDir = join(config._dirs.INPUT_DIR_CLIENT, "styles");
+    const mainDir = join(stylesDir, "main.css");
+
+    if (!existsSync(mainDir)) return imports;
+
+    imports.push(`@import "${toImportPath(styleFile, mainDir)}";`);
+
+    return imports;
+  }
+
+  function toImportPath(styleFile: string, filePath: string) {
+    const relativePath = relative(dirname(styleFile), filePath).replaceAll(
+      "\\",
+      "/",
+    );
+    return relativePath.startsWith(".") ? relativePath : `./${relativePath}`;
+  }
+
   return {
     name: "viteTransformStylePlugin",
     enforce: "pre",
 
-    transform(code, id) {
+    async transform(code, id) {
       const dirs = getDirs();
-      const styleFile = join(dirs.CORE_DIR, "client/style.css");
 
       if (id !== styleFile) return;
 
-      const customStyle = getStyle(styleFile, dirs.INPUT_DIR_CLIENT);
-      if (customStyle) imports.push(customStyle);
+      imports.push(...(await getStyle(mainConfig)));
 
       const sources = [
         `@source "${relative(dirname(styleFile), join(dirs.INPUT_DIR_CLIENT, "**/*"))}";`,
@@ -28,22 +61,4 @@ export function viteTransformStylePlugin(): Plugin {
       return code;
     },
   };
-}
-
-function getStyle(styleFile: string, stylesDir: string): string | null {
-  const mainDir = join(stylesDir, "styles/main.css");
-
-  if (!existsSync(mainDir)) {
-    return null;
-  }
-
-  return `@import "${toImportPath(styleFile, mainDir)}";`;
-}
-
-function toImportPath(styleFile: string, filePath: string) {
-  const relativePath = relative(dirname(styleFile), filePath).replaceAll(
-    "\\",
-    "/",
-  );
-  return relativePath.startsWith(".") ? relativePath : `./${relativePath}`;
 }

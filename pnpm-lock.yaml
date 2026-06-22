@@ -84,6 +84,9 @@ importers:
       '@fastify/react':
         specifier: ^1.1.7
         version: 1.1.7(@types/react@19.2.17)(fastify@5.8.5)(vite@8.0.16)
+      '@fastify/restartable':
+        specifier: ^3.0.2
+        version: 3.0.2
       '@fastify/vite':
         specifier: ^9.1.0
         version: 9.1.0(fastify@5.8.5)(vite@8.0.16)
@@ -1524,6 +1527,12 @@ packages:
       - '@types/react'
       - fastify
       - vite
+    dev: false
+
+  /@fastify/restartable@3.0.2:
+    resolution: {integrity: sha512-MuhT/BR6ugeb39IPlk3Tn/u50PWDdTJXgVcb+UkfItec3KKak1aaOH4r70wAOOPRVSPRvK+Omka6hrJYHtzdVw==}
+    dependencies:
+      fastify: 5.8.5
     dev: false
 
   /@fastify/send@4.1.0:

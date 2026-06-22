@@ -1,3 +1,5 @@
-import { defineService } from "#server/service";
+import { defineService, tables } from "opensya/server";
 
-export default defineService(() => {});
+export default defineService(() => {
+  tables.user;
+});

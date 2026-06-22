@@ -4,26 +4,35 @@ import { REGEXS } from "../utils";
 import { getDirs } from "../../utils";
 import { resolveRouteFromFilePath } from "./resolve_route";
 import type { ControllerMeta } from "./define";
-import chokidar from "chokidar";
+import chokidar, { type FSWatcher } from "chokidar";
 import { atomicWriteFile, getChildren } from "@opensya/utils";
+import {
+  getOpensyaConfig,
+  loadModuleOpensyaConfig,
+  type UseOpensyaConfig,
+} from "../../config";
+import { restartServer } from "../run";
 
-export function compileControllers() {
+export async function compileControllers() {
   const dirs = getDirs();
-  const controllersDir = join(dirs.INPUT_DIR_SERVER, "controllers");
 
   const manifestDir = join(dirs.OUTPUT_DIR_SERVER, "controllers.json");
   atomicWriteFile(manifestDir, "{}");
 
-  detectControllers(controllersDir);
-  listen(controllersDir);
+  await detectControllers(getOpensyaConfig());
 }
 
-function listen(controllersDir: string) {
-  if (!process.argv.includes("--dev")) return;
-  if (!existsSync(controllersDir)) return;
+let watcher: FSWatcher;
 
-  chokidar
-    .watch(controllersDir, {
+function listen(config: UseOpensyaConfig) {
+  if (!process.argv.includes("--dev")) return;
+  if (watcher) return;
+
+  const parentDir = join(config._dirs.INPUT_DIR_SERVER, "controllers");
+  if (!existsSync(parentDir)) return;
+
+  watcher = chokidar
+    .watch(parentDir, {
       ignoreInitial: true,
       ignored: (path, stats) => {
         if (!stats?.isFile()) return false;
@@ -32,21 +41,27 @@ function listen(controllersDir: string) {
         return !isAccept;
       },
     })
-    .on("add", () => {
-      detectControllers(controllersDir);
-      // runBootstrap();
+    .on("add", async () => {
+      await detectControllers(config);
+      await restartServer();
     })
-    .on("unlink", () => {
-      detectControllers(controllersDir);
-      // runBootstrap();
+    .on("unlink", async () => {
+      await detectControllers(config);
+      await restartServer();
     })
-    .on("change", () => {
-      detectControllers(controllersDir);
-      // runBootstrap();
+    .on("change", async () => {
+      await detectControllers(config);
+      await restartServer();
     });
 }
 
-function detectControllers(parentDir: string) {
+async function detectControllers(config: UseOpensyaConfig) {
+  for (const module of config.modules) {
+    const config = await loadModuleOpensyaConfig(module);
+    await detectControllers(config);
+  }
+
+  const parentDir = join(config._dirs.INPUT_DIR_SERVER, "controllers");
   if (!existsSync(parentDir)) return {};
 
   const dirs = getDirs();
@@ -74,4 +89,6 @@ function detectControllers(parentDir: string) {
   }
 
   atomicWriteFile(manifestDir, JSON.stringify(controllers, undefined, 2));
+
+  if (config._main) listen(config);
 }

@@ -6,26 +6,34 @@ import { atomicWriteFile, getChildren } from "@opensya/utils";
 import { resolveServiceFromFilePath } from "./resolve_service";
 import { getDirs } from "../../utils";
 import { writeType } from "./typing";
-import chokidar from "chokidar";
+import chokidar, { type FSWatcher } from "chokidar";
+import {
+  getOpensyaConfig,
+  loadModuleOpensyaConfig,
+  type UseOpensyaConfig,
+} from "../../config";
+import { restartServer } from "../run";
 
-export function compileServices() {
+export async function compileServices() {
   const dirs = getDirs();
-
-  const servicesDir = join(dirs.INPUT_DIR_SERVER, "services");
 
   const manifestDir = join(dirs.OUTPUT_DIR_SERVER, "services.json");
   atomicWriteFile(manifestDir, "{}");
 
-  detectServices(servicesDir);
-  listen(servicesDir);
+  await detectServices(getOpensyaConfig());
 }
 
-function listen(servicesDir: string) {
-  if (!process.argv.includes("--dev")) return;
-  if (!existsSync(servicesDir)) return;
+let watcher: FSWatcher;
 
-  chokidar
-    .watch(servicesDir, {
+function listen(config: UseOpensyaConfig) {
+  if (!process.argv.includes("--dev")) return;
+  if (watcher) return;
+
+  const parentDir = join(config._dirs.INPUT_DIR_SERVER, "services");
+  if (!existsSync(parentDir)) return;
+
+  watcher = chokidar
+    .watch(parentDir, {
       ignoreInitial: true,
       ignored: (path, stats) => {
         if (!stats?.isFile()) return false;
@@ -34,22 +42,29 @@ function listen(servicesDir: string) {
         return !isAccept;
       },
     })
-    .on("add", () => {
-      detectServices(servicesDir);
-      // runBootstrap();
+    .on("add", async () => {
+      await detectServices(config);
+      restartServer();
     })
-    .on("unlink", () => {
-      detectServices(servicesDir);
-      // runBootstrap();
+    .on("unlink", async () => {
+      await detectServices(config);
+      restartServer();
     })
-    .on("change", () => {
-      detectServices(servicesDir);
-      // runBootstrap();
+    .on("change", async () => {
+      await detectServices(config);
+      restartServer();
     });
 }
 
-function detectServices(parentDir: string) {
-  if (!existsSync(parentDir)) return {};
+async function detectServices(config: UseOpensyaConfig) {
+  for (const module of config.modules) {
+    const config = await loadModuleOpensyaConfig(module);
+    await detectServices(config);
+  }
+
+  const parentDir = join(config._dirs.INPUT_DIR_SERVER, "services");
+
+  if (!existsSync(parentDir)) return;
 
   const dirs = getDirs();
 
@@ -79,6 +94,8 @@ function detectServices(parentDir: string) {
 
   atomicWriteFile(manifestDir, JSON.stringify(services, undefined, 2));
   writeTypes(services);
+
+  if (config._main) listen(config);
 }
 
 function writeTypes(services: Record<string, ServiceMeta>) {

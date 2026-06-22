@@ -13,6 +13,11 @@ import {
   writeDrizzleSchemaIndex,
 } from "./write_drizzle_schema";
 import { writeDrizzleConfig } from "./write_drizzle_config";
+import {
+  getOpensyaConfig,
+  loadModuleOpensyaConfig,
+  type UseOpensyaConfig,
+} from "../../config";
 
 export async function compileDatabase() {
   const dirs = getDirs();
@@ -20,12 +25,17 @@ export async function compileDatabase() {
 
   atomicWriteFile(manifestDir, "{}");
   writeDrizzleSchemaIndex();
-  await detectTables(dirs.INPUT_DIR_SERVER);
+  await detectTables(getOpensyaConfig());
   writeDrizzleConfig();
 }
 
-async function detectTables(parentDir: string) {
-  const tablesDir = join(parentDir, "database/tables");
+async function detectTables(config: UseOpensyaConfig) {
+  for (const module of config.modules) {
+    const config = await loadModuleOpensyaConfig(module);
+    await detectTables(config);
+  }
+
+  const tablesDir = join(config._dirs.INPUT_DIR_SERVER, "database/tables");
 
   if (!existsSync(tablesDir)) return {};
 
@@ -93,12 +103,12 @@ async function loadTable(meta: TableMeta) {
   const href = pathToFileURL(meta.file).href;
 
   const content = (await import(href)) as {
-    default?: DefineTable<any>;
+    default?: DefineTable<never>;
   };
 
   if (!content.default) return null;
 
   content.default.name ??= meta.tableName;
 
-  return content.default as DefineTable<any> & { name: string };
+  return content.default as DefineTable<never> & { name: string };
 }
