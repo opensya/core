@@ -18,14 +18,13 @@ export function writeServerTsconfig() {
     ),
 
     normalizeDir(
-      relative(
-        dirs.OUTPUT_DIR,
-        join(dirs.OUTPUT_DIR_SERVER, "types/**/*.d.ts"),
-      ),
+      relative(dirs.OUTPUT_DIR, join(dirs.OUTPUT_DIR_SERVER, "**/*.d.ts")),
     ),
   ];
 
   const exclude: string[] = [];
+
+  const paths = {};
 
   const tsconfig = {
     compilerOptions: {
@@ -59,6 +58,8 @@ export function writeServerTsconfig() {
 
       composite: true,
       declaration: true,
+
+      paths,
     },
 
     include,

@@ -41,7 +41,3 @@ export const defineController: DefineController = (handler, options = {}) => {
 };
 
 export type DefineControllerMeta = DefinedController;
-
-declare global {
-  var defineController: DefineController;
-}

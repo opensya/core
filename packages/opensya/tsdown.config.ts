@@ -8,7 +8,7 @@ export default defineConfig({
   ],
 
   tsconfig: "./tsconfig.build.json",
-  format: ["esm"],
+  format: ["esm", "cjs"],
   dts: false,
   sourcemap: true,
   clean: true,

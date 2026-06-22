@@ -2,8 +2,8 @@ import fp from "fastify-plugin";
 import middie from "@fastify/middie";
 import { createServer, type ViteDevServer } from "vite";
 import type { FastifyPluginAsync } from "fastify";
-import { getPlugins } from "../client/plugins";
-import { getIndexHtml } from "../client/html";
+import { getPlugins } from "../../client/plugins";
+import { getIndexHtml } from "../../client/html";
 
 declare module "fastify" {
   interface FastifyInstance {

@@ -19,7 +19,3 @@ export function defineService<P extends unknown[], R = unknown>(
 
 export type DefineService = typeof defineService;
 export type DefinedService = ReturnType<typeof defineService>;
-
-declare global {
-  var defineService: DefineService;
-}

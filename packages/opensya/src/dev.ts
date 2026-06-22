@@ -1,3 +1,3 @@
-import { runServer } from "./server/run";
+import { runServer } from "./server";
 
 runServer();

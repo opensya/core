@@ -23,6 +23,7 @@
     "./vite.config.ts",
     "./tsdown.config.ts",
     "./src/server",
-    "./src/utils"
+    "./src/utils",
+    "src/prepare.ts"
   ]
 }
