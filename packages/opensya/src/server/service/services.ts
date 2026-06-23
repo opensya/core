@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type Services = {};
+export interface Services {}
 
 export type ServiceName = keyof Services;
 
