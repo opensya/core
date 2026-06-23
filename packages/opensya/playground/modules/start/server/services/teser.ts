@@ -1,3 +1,3 @@
-import { defineService } from "opensya/server";
+import { defineService } from "../../../../../src/server";
 
 export default defineService(() => {});

@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface Tables {}
 
 export type TableName = keyof Tables;

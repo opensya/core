@@ -1,5 +1,5 @@
-import { defineController } from "opensya/server";
+import { services, defineController } from "../../../src/server";
 
-export default defineController(() => {
-  console.log("+");
+export default defineController(async () => {
+  return await services.hello();
 });
