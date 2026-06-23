@@ -5,6 +5,7 @@ import { registerControllers } from "../controller";
 import { registerServices } from "../service";
 import { registerDatabase } from "../database";
 import { runPrepare } from "./prepare";
+import { errorHandler } from "../error";
 
 async function createApp(
   factory: typeof Fastify,
@@ -16,12 +17,9 @@ async function createApp(
   await registerServices();
   await registerControllers(app);
 
-  await app.register(viteDevPlugin);
+  app.setErrorHandler(errorHandler);
 
-  app.setErrorHandler((error, req, reply) => {
-    console.error(error);
-    reply.send({ error });
-  });
+  await app.register(viteDevPlugin);
 
   return app;
 }

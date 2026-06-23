@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+
 import type {
   HTTPMethods,
   RouteHandlerMethod,
@@ -14,14 +16,21 @@ export interface RouteMeta {
   idx: string;
 }
 
-export type RouteOptions = Omit<
+export interface OpensyaRouteOptions {}
+
+type RouteOptionsExtra = Omit<
   FastifyRouteOptions,
   "method" | "url" | "handler"
->;
+> &
+  OpensyaRouteOptions;
+
+declare module "fastify" {
+  interface RouteOptions extends OpensyaRouteOptions {}
+}
 
 export type DefinedRoute<
   THandler extends RouteHandlerMethod = RouteHandlerMethod,
-  TOptions extends RouteOptions = RouteOptions,
+  TOptions extends RouteOptionsExtra = RouteOptionsExtra,
 > = {
   handler: THandler;
   options: TOptions;
@@ -31,11 +40,11 @@ export type DefinedRoute<
 export function defineRoute<THandler extends RouteHandlerMethod>(
   handler: THandler,
   ...transformers: RouteTransformer[]
-): DefinedRoute<THandler, RouteOptions>;
+): DefinedRoute<THandler, RouteOptionsExtra>;
 
 export function defineRoute<
   THandler extends RouteHandlerMethod,
-  TOptions extends RouteOptions,
+  TOptions extends RouteOptionsExtra,
 >(
   handler: THandler,
   options: TOptions,
@@ -44,12 +53,12 @@ export function defineRoute<
 
 export function defineRoute<
   THandler extends RouteHandlerMethod,
-  TOptions extends RouteOptions = RouteOptions,
+  TOptions extends RouteOptionsExtra = RouteOptionsExtra,
 >(
   handler: THandler,
   optionsOrTransformer?: TOptions | RouteTransformer,
   ...transformers: RouteTransformer[]
-): DefinedRoute<THandler, TOptions | RouteOptions> {
+): DefinedRoute<THandler, TOptions | RouteOptionsExtra> {
   const hasOptions =
     typeof optionsOrTransformer === "object" && optionsOrTransformer !== null;
 
@@ -66,7 +75,7 @@ export function defineRoute<
 
 export async function createFastifyRoute<
   THandler extends RouteHandlerMethod,
-  TOptions extends RouteOptions,
+  TOptions extends RouteOptionsExtra,
 >(
   meta: RouteMeta,
   controller: DefinedRoute<THandler, TOptions>,
