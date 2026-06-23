@@ -88,8 +88,8 @@ export async function createFastifyRoute<
   };
 
   for (const transformer of [
-    ...controller.transformers,
     ...Object.values(transformers),
+    ...controller.transformers,
   ]) {
     routeOptions = await transformer(routeOptions);
   }

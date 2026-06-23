@@ -48,6 +48,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
+    "@fastify/jwt": "^10.1.0",
     "@fastify/middie": "^9.3.2",
     "@fastify/one-line-logger": "^2.0.2",
     "@fastify/react": "^1.1.7",
@@ -58,6 +59,7 @@
     "@opensya/utils": "workspace:^",
     "@tailwindcss/vite": "^4.3.1",
     "@types/pg": "^8.20.0",
+    "bcryptjs": "^3.0.3",
     "c12": "4.0.0-beta.5",
     "chokidar": "^5.0.0",
     "class-variance-authority": "^0.7.1",
@@ -96,6 +98,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@tsdown/css": "^0.22.3",
+    "@types/bcryptjs": "^3.0.0",
     "@types/lodash": "^4.17.24",
     "@types/node": "^24.12.3",
     "@types/react": "^19.2.14",

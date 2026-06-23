@@ -2,7 +2,12 @@ import { defineTable, string, uuid } from "../../../../src/server";
 
 export default defineTable({
   columns: {
-    id: uuid().primaryKey().required(),
-    name: string().required(),
+    id: uuid().defaultRandom().primaryKey().required(),
+
+    firstName: string().required(),
+    lastName: string().required(),
+
+    email: string().required(),
+    password: string(),
   },
 });

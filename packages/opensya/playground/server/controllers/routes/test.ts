@@ -5,6 +5,9 @@ export default defineRoute(
   async () => {
     return await services.hello();
   },
-  { publicRoute: true },
+  {
+    publicRoute: true,
+  },
+
   requireRole(),
 );

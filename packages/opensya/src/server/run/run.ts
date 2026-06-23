@@ -1,11 +1,12 @@
 import Fastify, { type FastifyInstance } from "fastify";
 import { restartable } from "@fastify/restartable";
-import { viteDevPlugin } from "./vite_dev";
 import { registerControllers } from "../controller";
 import { registerServices } from "../service";
 import { registerDatabase } from "../database";
 import { runPrepare } from "./prepare";
 import { errorHandler } from "../error";
+
+import * as plugins from "../plugins";
 
 async function createApp(
   factory: typeof Fastify,
@@ -19,7 +20,8 @@ async function createApp(
 
   app.setErrorHandler(errorHandler);
 
-  await app.register(viteDevPlugin);
+  await app.register(plugins.jwt);
+  await app.register(plugins.vite);
 
   return app;
 }

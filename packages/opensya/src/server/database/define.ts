@@ -55,8 +55,8 @@ export class ColumnBuilder<
   declare readonly $required: TRequired;
   declare readonly $drizzle: TDrizzle;
 
-  private readonly definition: ColumnDefinition<TType, TValue, TRequired>;
-  private readonly drizzle: TDrizzle;
+  readonly definition: ColumnDefinition<TType, TValue, TRequired>;
+  readonly drizzle: TDrizzle;
 
   constructor(
     definition: ColumnDefinition<TType, TValue, TRequired>,
@@ -204,8 +204,23 @@ export function timestamp() {
 }
 
 export function uuid() {
-  return new ColumnBuilder<"uuid", string, false, ReturnType<typeof pgUuid>>(
-    { type: "uuid" },
-    pgUuid(),
-  );
+  class ColumnBuilderUuid extends ColumnBuilder<
+    "uuid",
+    string,
+    false,
+    ReturnType<typeof pgUuid>
+  > {
+    defaultRandom(): ColumnBuilderUuid {
+      return new ColumnBuilderUuid(
+        { ...this.definition },
+        this.drizzle.defaultRandom(),
+      );
+    }
+  }
+
+  return new ColumnBuilderUuid({ type: "uuid" }, pgUuid());
+  // return new ColumnBuilder<"uuid", string, false, ReturnType<typeof pgUuid>>(
+  //   { type: "uuid" },
+  //   pgUuid(),
+  // );
 }
