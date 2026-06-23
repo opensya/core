@@ -54,6 +54,15 @@ export async function runServer() {
   }
 }
 
+export async function runServer0() {
+  try {
+    await runPrepare();
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+}
+
 export async function restartServer(): Promise<void> {
   if (!app) {
     throw new Error("Server not initialized");

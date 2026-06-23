@@ -1,26 +1,25 @@
-import type { HTTPMethods } from 'fastify';
-import path from 'node:path';
+import type { HTTPMethods } from "fastify";
+import { extname, relative } from "node:path";
+import type { RouteMeta } from "./define";
+import { _ } from "@opensya/utils";
 
 const HTTP_METHODS = [
-  'GET',
-  'POST',
-  'PUT',
-  'PATCH',
-  'DELETE',
-  'OPTIONS',
-  'HEAD',
+  "GET",
+  "POST",
+  "PUT",
+  "PATCH",
+  "DELETE",
+  "OPTIONS",
+  "HEAD",
 ] satisfies HTTPMethods[];
 
-export function resolveRouteFromFilePath(filePath: string): {
-  path: string;
-  method: HTTPMethods;
-} {
-  let normalized = filePath.replaceAll('\\', '/');
+export function resolveRouteMeta(parentDir: string, file: string): RouteMeta {
+  let normalized = relative(parentDir, file).replaceAll("\\", "/");
 
-  const ext = path.extname(normalized);
+  const ext = extname(normalized);
   normalized = normalized.slice(0, -ext.length);
 
-  const segments = normalized.split('/');
+  const segments = normalized.split("/");
 
   let last = segments.at(-1)!;
   let method: HTTPMethods | undefined;
@@ -36,10 +35,10 @@ export function resolveRouteFromFilePath(filePath: string): {
     }
   }
 
-  method ??= 'GET';
+  method ??= "GET";
 
   const routeSegments = segments
-    .filter((segment) => segment !== 'index')
+    .filter((segment) => segment !== "index")
     .map((segment) => {
       const catchAllMatch = /^\[\.\.\.(.+)\]$/.exec(segment);
 
@@ -62,10 +61,16 @@ export function resolveRouteFromFilePath(filePath: string): {
       return segment;
     });
 
-  routeSegments.unshift('api');
+  routeSegments.unshift("api");
+  const path = "/" + routeSegments.join("/");
+  const idx = _.snakeCase(`${path}_${method}`);
+  const name = _.camelCase(idx);
 
   return {
-    path: '/' + routeSegments.join('/'),
     method,
+    path,
+    file,
+    idx,
+    name,
   };
 }
