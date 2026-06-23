@@ -4,8 +4,8 @@ import { existsSync } from "node:fs";
 import { atomicWriteFile, getChildren, readJson, _ } from "@opensya/utils";
 import { REGEXS } from "../utils";
 
-import { type DefineTable } from "./helper";
-import type { TableMeta } from "./define";
+import { type DefineTable } from "./define";
+import type { TableMeta } from "./types";
 import { pathToFileURL } from "node:url";
 import { writeType } from "./typing";
 import {

@@ -1,4 +1,4 @@
-import { defineTable, string, uuid } from "opensya/server";
+import { defineTable, string, uuid } from "../../../../src/server";
 
 export default defineTable({
   columns: {

@@ -1,26 +1,21 @@
 import { join, relative } from "node:path";
-import { atomicWriteFile, normalizeDir } from "@opensya/utils";
-import { getDirs } from "../dirs";
+import { atomicWriteFile, normalizeDirs } from "@opensya/utils";
+import { getDirs, SERVER_DIRNAME } from "../dirs";
 
 export function writeServerTsconfig() {
   const dirs = getDirs();
 
-  const include: string[] = [
-    normalizeDir(
-      relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR_SERVER, "**/*.ts")),
+  const include: string[] = normalizeDirs([
+    relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR_SERVER, "**/*.ts")),
+    relative(
+      dirs.OUTPUT_DIR,
+      join(dirs.INPUT_DIR, "modules", SERVER_DIRNAME, "**/*.ts"),
     ),
 
-    normalizeDir(
-      relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "server/**/*.ts")),
-    ),
-    normalizeDir(
-      relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "server/**/*.d.ts")),
-    ),
-
-    normalizeDir(
-      relative(dirs.OUTPUT_DIR, join(dirs.OUTPUT_DIR_SERVER, "**/*.d.ts")),
-    ),
-  ];
+    relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "server/**/*.ts")),
+    relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "server/**/*.d.ts")),
+    relative(dirs.OUTPUT_DIR, join(dirs.OUTPUT_DIR_SERVER, "**/*.d.ts")),
+  ]);
 
   const exclude: string[] = [];
 

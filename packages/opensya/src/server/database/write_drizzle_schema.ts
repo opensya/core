@@ -1,9 +1,9 @@
-import { _, atomicWriteFile, normalizeDir, readJson } from "@opensya/utils";
-import type { TableMeta } from "./define";
+import { atomicWriteFile, normalizeDir, readJson } from "@opensya/utils";
+import type { TableMeta } from "./types";
 import { getDirs } from "../../utils";
 import { join, relative } from "node:path";
 
-const template = `import { createDrizzleTable } from '{{core_db_helper_path}}'
+const template = `import { createDrizzleTable } from '{{core_server_path}}'
 import table from '{{import}}';
 
 table.name ??= "{{sql_table_name}}";
@@ -16,12 +16,13 @@ export function writeDrizzleSchema(meta: TableMeta) {
   const outputTablesDir = join(OUTPUT_DIR_SERVER, "database/tables");
 
   const importPath = normalizeDir(relative(outputTablesDir, meta.file));
-  const coreDbHelperPath = normalizeDir(
-    relative(outputTablesDir, join(CORE_DIR_SERVER, "database/helper")),
+
+  const coreDirServer = normalizeDir(
+    relative(outputTablesDir, CORE_DIR_SERVER),
   );
 
   const content = template
-    .replaceAll("{{core_db_helper_path}}", coreDbHelperPath)
+    .replaceAll("{{core_server_path}}", coreDirServer)
     .replaceAll("{{import}}", importPath)
     .replaceAll("{{table_name}}", meta.name)
     .replaceAll("{{sql_table_name}}", meta.tableName);
