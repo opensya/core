@@ -1,18 +1,16 @@
 import { join, relative } from "node:path";
-import { getDirs } from "../../utils";
 import { atomicWriteFile, normalizeDir } from "@opensya/utils";
-import type { TableMeta } from "./types";
+import type { TableMeta } from "./helper";
+import { getDirs } from "../../../utils";
 
-const template = `import type { InferTable, DrizzleTableFromDefineTable } from "{{core_server_path}}";
+const template = `import type { createDrizzleTable } from "{{core_server_path}}";
 
-type Table = (typeof import("{{import}}"))['default'];
-type NamedTable = Table & { name: "{{tableName}}" };
-
-type Row = InferTable<Table["columns"]>;
-type DrizzleTable = DrizzleTableFromDefineTable<NamedTable>;
+type Definition = (typeof import("{{import}}"))['default'];
+type Row = Definition["columns"];
+type Table = ReturnType<typeof createDrizzleTable<'{{tableName}}', Row>>;
 
 interface _Table {
-  {{name}}: DrizzleTable
+  {{name}}: Table
 }
 
 declare module '{{core_server_path}}' {

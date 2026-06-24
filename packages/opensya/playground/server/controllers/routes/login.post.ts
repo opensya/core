@@ -6,6 +6,11 @@ import {
   orm,
 } from "../../../../src/server";
 import bcrypt from "bcryptjs";
+import {
+  createRefreshToken,
+  getRefreshTokenExpiration,
+  hashRefreshToken,
+} from "../../tools/auth";
 
 interface LoginBody {
   email: string;
@@ -27,9 +32,17 @@ export default defineRoute(
     const isPasswordValid = await bcrypt.compare(body.password, user.password);
     if (!isPasswordValid) throw new UnauthorizedError("Invalid credentials");
 
-    const token = await reply.jwtSign({ sub: user.id });
+    const accessToken = await reply.jwtSign({ sub: user.id });
 
-    return { accessToken: token };
+    const refreshToken = createRefreshToken();
+
+    await db.insert(tables.session).values({
+      userId: user.id,
+      tokenHash: await hashRefreshToken(refreshToken),
+      expiresAt: getRefreshTokenExpiration(),
+    });
+
+    return { accessToken, refreshToken };
   },
 
   {

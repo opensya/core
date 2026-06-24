@@ -28,7 +28,7 @@ async function createApp(
 
 let app: FastifyInstance;
 
-export async function runServer() {
+export async function runServer0() {
   try {
     await runPrepare();
 
@@ -54,7 +54,7 @@ export async function runServer() {
   }
 }
 
-export async function runServer0() {
+export async function runServer() {
   try {
     await runPrepare();
   } catch (error) {

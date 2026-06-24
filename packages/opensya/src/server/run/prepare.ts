@@ -8,9 +8,9 @@ import { init, writeTsconfig } from "../../utils";
 export async function runPrepare() {
   await init();
 
-  await compileServices();
-  await compileControllers();
   await compileDatabase();
+  // await compileServices();
+  // await compileControllers();
 
   writeTsconfig();
 }

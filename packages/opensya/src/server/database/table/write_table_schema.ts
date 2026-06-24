@@ -1,12 +1,12 @@
 import { atomicWriteFile, normalizeDir, readJson } from "@opensya/utils";
-import type { TableMeta } from "./types";
-import { getDirs } from "../../utils";
+import type { TableMeta } from "./helper";
 import { join, relative } from "node:path";
+import { getDirs } from "../../../utils";
 
 const template = `import { createDrizzleTable } from '{{core_server_path}}'
 import table from '{{import}}';
 
-table.name ??= "{{sql_table_name}}";
+table.name = "{{sql_table_name}}";
 
 export const {{table_name}} = createDrizzleTable(table);
 `;

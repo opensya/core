@@ -195,12 +195,24 @@ export function json<TValue = unknown>() {
 }
 
 export function timestamp() {
-  return new ColumnBuilder<
+  class ColumnBuilderTimestap extends ColumnBuilder<
     "timestamp",
     Date,
     false,
     ReturnType<typeof pgTimestamp>
-  >({ type: "timestamp" }, pgTimestamp({ withTimezone: true }));
+  > {
+    defaultNow(): ColumnBuilderTimestap {
+      return new ColumnBuilderTimestap(
+        { ...this.definition },
+        this.drizzle.defaultNow(),
+      );
+    }
+  }
+
+  return new ColumnBuilderTimestap(
+    { type: "timestamp" },
+    pgTimestamp({ withTimezone: true }),
+  );
 }
 
 export function uuid() {
@@ -219,8 +231,4 @@ export function uuid() {
   }
 
   return new ColumnBuilderUuid({ type: "uuid" }, pgUuid());
-  // return new ColumnBuilder<"uuid", string, false, ReturnType<typeof pgUuid>>(
-  //   { type: "uuid" },
-  //   pgUuid(),
-  // );
 }

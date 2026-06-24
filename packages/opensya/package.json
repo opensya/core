@@ -41,7 +41,7 @@
     "build:js": "tsdown",
     "build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly",
     "dev": "tsx src/dev.ts",
-    "dev:test": "tsx watch src/dev.ts",
+    "dev:test": "tsx watch src/dev.ts --dev",
     "db:push": "drizzle-kit push --config=./.opensya/server/drizzle.config.js",
     "db:generate": "drizzle-kit generate --config=./.opensya/server/drizzle.config.js",
     "db:migrate": "drizzle-kit migrate --config=./.opensya/server/drizzle.config.js"
