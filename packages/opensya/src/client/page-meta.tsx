@@ -1,7 +1,6 @@
 import { useMatches } from "react-router-dom";
 
 export interface PageMeta {
-  auth?: boolean;
   layout?: string;
 }
 

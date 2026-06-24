@@ -1,21 +1,21 @@
-import { definePageMeta } from "@core/client/page-meta";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/components/AuthProvider";
-
-definePageMeta({
-  auth: true,
-});
+import { useNavigate } from "react-router-dom";
 
 export default function Page() {
-  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <>
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia ratione
-      expedita suscipit quidem vel veritatis id facere ducimus mollitia nihil
-      autem molestias, illum, impedit eaque quam. Quaerat ipsum similique
-      maxime.
-      <Button onClick={logout}>logout</Button>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia ratione
+        expedita suscipit quidem vel veritatis id facere ducimus mollitia nihil
+        autem molestias, illum, impedit eaque quam. Quaerat ipsum similique
+        maxime.
+      </p>
+
+      <Button onClick={() => navigate("/admin")} variant={"link"}>
+        Admin
+      </Button>
     </>
   );
 }

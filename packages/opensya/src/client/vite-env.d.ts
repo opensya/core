@@ -15,3 +15,9 @@ declare module "virtual:guards" {
 }
 
 declare module "virtual:style";
+
+declare module "virtual:layouts" {
+  import type { ComponentType, ReactNode } from "react";
+
+  export const layouts: Record<string, ComponentType<{ children: ReactNode }>>;
+}

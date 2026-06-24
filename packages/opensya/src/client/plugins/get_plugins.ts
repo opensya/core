@@ -6,6 +6,7 @@ import { viteTransformStylePlugin } from "./tranform_style";
 import type { Plugin } from "vite";
 import { viteTransformProvidersPlugin } from "./transform_providers";
 import { viteTransformGuardsPlugin } from "./transform_guards";
+import { viteTransformLayoutsPlugin } from "./transform_layouts";
 
 export function getPlugins(): Plugin[] {
   const plugins = [
@@ -16,6 +17,7 @@ export function getPlugins(): Plugin[] {
     viteTransformStylePlugin(),
     viteTransformProvidersPlugin(),
     viteTransformGuardsPlugin(),
+    viteTransformLayoutsPlugin(),
 
     tailwindcss(),
   ];
