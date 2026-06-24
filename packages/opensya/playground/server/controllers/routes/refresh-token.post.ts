@@ -9,6 +9,7 @@ import {
   createRefreshToken,
   getRefreshTokenExpiration,
   hashRefreshToken,
+  setTokensCookie,
   verifyRefreshToken,
 } from "../../tools/auth";
 
@@ -37,7 +38,7 @@ export default defineRoute(
       throw new UnauthorizedError("Refresh token expired");
     }
 
-    const accessToken = reply.jwtSign(
+    const accessToken = await reply.jwtSign(
       { sub: matchedToken.userId },
       { expiresIn: "15m" },
     );
@@ -57,7 +58,9 @@ export default defineRoute(
       expiresAt: getRefreshTokenExpiration(),
     });
 
-    return { accessToken, refreshToken: newRefreshToken };
+    setTokensCookie(reply, accessToken, newRefreshToken);
+
+    return { accessToken };
   },
   {
     publicRoute: true,

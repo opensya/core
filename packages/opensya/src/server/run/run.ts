@@ -5,6 +5,7 @@ import { registerServices } from "../service";
 import { registerDatabase } from "../database";
 import { runPrepare } from "./prepare";
 import { errorHandler } from "../error";
+import cookie from "@fastify/cookie";
 
 import * as plugins from "../plugins";
 
@@ -18,6 +19,10 @@ async function createApp(
   await registerServices();
   await registerControllers(app);
 
+  await app.register(cookie, {
+    secret: process.env.SECRET_KEY,
+  });
+
   app.setErrorHandler(errorHandler);
 
   await app.register(plugins.jwt);
@@ -28,7 +33,7 @@ async function createApp(
 
 let app: FastifyInstance;
 
-export async function runServer0() {
+export async function runServer() {
   try {
     await runPrepare();
 
@@ -54,7 +59,7 @@ export async function runServer0() {
   }
 }
 
-export async function runServer() {
+export async function runServer0() {
   try {
     await runPrepare();
   } catch (error) {

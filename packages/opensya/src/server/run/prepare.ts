@@ -9,8 +9,8 @@ export async function runPrepare() {
   await init();
 
   await compileDatabase();
-  // await compileServices();
-  // await compileControllers();
+  await compileServices();
+  await compileControllers();
 
   writeTsconfig();
 }

@@ -3,6 +3,7 @@ import middie from "@fastify/middie";
 import { createServer, type ViteDevServer } from "vite";
 import { getPlugins } from "../../client/plugins";
 import { getIndexHtml } from "../../client/html";
+import { getDirs } from "../../utils";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -26,6 +27,8 @@ declare module "fastify" {
 // }
 
 export const vite = fp(async (app) => {
+  const { INPUT_DIR_CLIENT } = getDirs();
+
   await app.register(middie);
 
   const vite = await createServer({
@@ -33,6 +36,12 @@ export const vite = fp(async (app) => {
     server: { middlewareMode: true },
     appType: "custom",
     plugins: getPlugins(),
+
+    resolve: {
+      alias: {
+        "@": INPUT_DIR_CLIENT,
+      },
+    },
   });
 
   app.decorate("vite", vite);

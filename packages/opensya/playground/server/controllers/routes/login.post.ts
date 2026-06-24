@@ -10,6 +10,7 @@ import {
   createRefreshToken,
   getRefreshTokenExpiration,
   hashRefreshToken,
+  setTokensCookie,
 } from "../../tools/auth";
 
 interface LoginBody {
@@ -33,7 +34,6 @@ export default defineRoute(
     if (!isPasswordValid) throw new UnauthorizedError("Invalid credentials");
 
     const accessToken = await reply.jwtSign({ sub: user.id });
-
     const refreshToken = createRefreshToken();
 
     await db.insert(tables.session).values({
@@ -42,7 +42,9 @@ export default defineRoute(
       expiresAt: getRefreshTokenExpiration(),
     });
 
-    return { accessToken, refreshToken };
+    setTokensCookie(reply, accessToken, refreshToken);
+
+    return { success: true };
   },
 
   {

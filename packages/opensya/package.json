@@ -48,6 +48,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
+    "@fastify/cookie": "^11.0.2",
     "@fastify/jwt": "^10.1.0",
     "@fastify/middie": "^9.3.2",
     "@fastify/one-line-logger": "^2.0.2",
@@ -77,6 +78,7 @@
     "lucide-react": "^1.21.0",
     "magicast": "^0.5.3",
     "next-themes": "^0.4.6",
+    "ofetch": "^1.5.1",
     "pg": "^8.22.0",
     "radix-ui": "^1.6.0",
     "react": "^19.2.6",

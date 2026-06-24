@@ -1,5 +1,5 @@
 import { join, relative } from "node:path";
-import { atomicWriteFile, normalizeDirs } from "@opensya/utils";
+import { atomicWriteFile, normalizeDir, normalizeDirs } from "@opensya/utils";
 import { getDirs, SERVER_DIRNAME } from "../dirs";
 
 export function writeServerTsconfig() {
@@ -19,7 +19,13 @@ export function writeServerTsconfig() {
 
   const exclude: string[] = [];
 
-  const paths = {};
+  const paths = {
+    "@@/*": [
+      normalizeDir(
+        relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR_SERVER, "./*")),
+      ),
+    ],
+  };
 
   const tsconfig = {
     compilerOptions: {

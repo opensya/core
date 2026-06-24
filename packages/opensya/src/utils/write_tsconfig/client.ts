@@ -14,8 +14,10 @@ export function writeClientTsconfig() {
     ),
 
     relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "client/**/*.d.ts")),
+    relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "client/**/*.ts")),
     relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "client/**/*.tsx")),
     relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "client/**/*.jsx")),
+    relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "client/**/*.js")),
   ]);
 
   const exclude: string[] = [];
@@ -24,6 +26,17 @@ export function writeClientTsconfig() {
     "@ui:*": [
       normalizeDir(
         relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR_CLIENT, "ui/*")),
+      ),
+    ],
+    "@ui/*": [
+      normalizeDir(
+        relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR_CLIENT, "ui/*")),
+      ),
+    ],
+
+    "@/*": [
+      normalizeDir(
+        relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR_CLIENT, "./*")),
       ),
     ],
   };
