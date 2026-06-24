@@ -4,14 +4,14 @@ import {
   tables,
   UnauthorizedError,
   orm,
-} from "../../../../src/server";
+} from "../../../../../src/server";
 import bcrypt from "bcryptjs";
 import {
   createRefreshToken,
   getRefreshTokenExpiration,
   hashRefreshToken,
   setTokensCookie,
-} from "../../tools/auth";
+} from "../../../tools/auth";
 
 interface LoginBody {
   email: string;
@@ -36,7 +36,7 @@ export default defineRoute(
     const accessToken = await reply.jwtSign({ sub: user.id });
     const refreshToken = createRefreshToken();
 
-    await db.insert(tables.session).values({
+    await db.insert(tables.auth).values({
       userId: user.id,
       tokenHash: await hashRefreshToken(refreshToken),
       expiresAt: getRefreshTokenExpiration(),

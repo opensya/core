@@ -7,10 +7,15 @@ export function writeClientTsconfig() {
 
   const include: string[] = normalizeDirs([
     relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR_CLIENT)),
+    relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR_CLIENT, "**/*.d.ts")),
 
     relative(
       dirs.OUTPUT_DIR,
       join(dirs.INPUT_DIR, "modules", CLIENT_DIRNAME, "**/*.ts"),
+    ),
+    relative(
+      dirs.OUTPUT_DIR,
+      join(dirs.INPUT_DIR, "modules", CLIENT_DIRNAME, "**/*.d.ts"),
     ),
 
     relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "client/**/*.d.ts")),
@@ -23,14 +28,9 @@ export function writeClientTsconfig() {
   const exclude: string[] = [];
 
   const paths = {
-    "@ui:*": [
+    "@core/client/*": [
       normalizeDir(
-        relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR_CLIENT, "ui/*")),
-      ),
-    ],
-    "@ui/*": [
-      normalizeDir(
-        relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR_CLIENT, "ui/*")),
+        relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR_CLIENT, "./*")),
       ),
     ],
 

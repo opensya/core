@@ -20,14 +20,11 @@ declare module "fastify" {
 //   if (url.startsWith("/src")) return false;
 //   if (url.startsWith("/node_modules")) return false;
 
-//   if (url.startsWith("/@core:")) return false;
-//   if (url.startsWith("/@ui:")) return false;
-
 //   return true;
 // }
 
 export const vite = fp(async (app) => {
-  const { INPUT_DIR_CLIENT } = getDirs();
+  const { INPUT_DIR_CLIENT, CORE_DIR } = getDirs();
 
   await app.register(middie);
 
@@ -40,6 +37,7 @@ export const vite = fp(async (app) => {
     resolve: {
       alias: {
         "@": INPUT_DIR_CLIENT,
+        "@core": CORE_DIR,
       },
     },
   });

@@ -19,9 +19,7 @@ async function createApp(
   await registerServices();
   await registerControllers(app);
 
-  await app.register(cookie, {
-    secret: process.env.SECRET_KEY,
-  });
+  await app.register(cookie, { secret: process.env.SECRET_KEY });
 
   app.setErrorHandler(errorHandler);
 

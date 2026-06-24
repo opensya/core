@@ -1,12 +1,11 @@
-import App from "./App";
 import { createBrowserRouter } from "react-router-dom";
-
-export const routes = [];
+import { routes } from "virtual:router";
+import { RootLayout } from "./root-layout";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <RootLayout />,
     children: routes,
   },
 ]);

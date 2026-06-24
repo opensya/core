@@ -4,14 +4,14 @@ import {
   tables,
   UnauthorizedError,
   orm,
-} from "../../../../src/server";
+} from "../../../../../src/server";
 import {
   createRefreshToken,
   getRefreshTokenExpiration,
   hashRefreshToken,
   setTokensCookie,
   verifyRefreshToken,
-} from "../../tools/auth";
+} from "../../../tools/auth";
 
 interface RefreshBody {
   refreshToken: string;
@@ -23,8 +23,8 @@ export default defineRoute(
 
     const tokens = await db
       .select()
-      .from(tables.session)
-      .where(orm.isNull(tables.session.revokedAt));
+      .from(tables.auth)
+      .where(orm.isNull(tables.auth.revokedAt));
 
     const matchedToken = await asyncFind(tokens, async (item) => {
       return verifyRefreshToken(body.refreshToken, item.tokenHash);
@@ -46,13 +46,13 @@ export default defineRoute(
     const newRefreshToken = createRefreshToken();
 
     await db
-      .update(tables.session)
+      .update(tables.auth)
       .set({
         revokedAt: new Date(),
       })
-      .where(orm.eq(tables.session.id, matchedToken.id));
+      .where(orm.eq(tables.auth.id, matchedToken.id));
 
-    await db.insert(tables.session).values({
+    await db.insert(tables.auth).values({
       userId: matchedToken.userId,
       tokenHash: await hashRefreshToken(newRefreshToken),
       expiresAt: getRefreshTokenExpiration(),

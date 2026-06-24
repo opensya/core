@@ -4,8 +4,8 @@ import {
   tables,
   UnauthorizedError,
   orm,
-} from "../../../../src/server";
-import { verifyRefreshToken } from "../../tools/auth";
+} from "../../../../../src/server";
+import { verifyRefreshToken } from "../../../tools/auth";
 
 interface LogoutBody {
   refreshToken: string;
@@ -17,8 +17,8 @@ export default defineRoute(
 
     const tokens = await db
       .select()
-      .from(tables.session)
-      .where(orm.isNull(tables.session.revokedAt));
+      .from(tables.auth)
+      .where(orm.isNull(tables.auth.revokedAt));
 
     const matchedToken = await asyncFind(tokens, async (item) => {
       return verifyRefreshToken(body.refreshToken, item.tokenHash);
@@ -27,11 +27,11 @@ export default defineRoute(
     if (!matchedToken) throw new UnauthorizedError("Invalid refresh token");
 
     await db
-      .update(tables.session)
+      .update(tables.auth)
       .set({
         revokedAt: new Date(),
       })
-      .where(orm.eq(tables.session.id, matchedToken.id));
+      .where(orm.eq(tables.auth.id, matchedToken.id));
 
     return { success: true };
   },

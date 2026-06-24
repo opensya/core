@@ -1,4 +1,4 @@
-import { $fetch } from "ofetch";
+import { $api } from "@/lib/api";
 
 export interface LoginPayload {
   email: string;
@@ -6,20 +6,31 @@ export interface LoginPayload {
 }
 
 export interface AuthResponse {
-  accessToken: string;
+  success: string;
 }
 
 export async function login(payload: LoginPayload): Promise<AuthResponse> {
-  return $fetch<AuthResponse>("/api/login", {
+  return $api<AuthResponse>("/api/auth/login", {
     method: "POST",
-    credentials: "include",
     body: payload,
   });
 }
 
-export async function refreshToken(): Promise<AuthResponse> {
-  return $fetch<AuthResponse>("/api/refresh-token", {
+export async function logout(): Promise<AuthResponse> {
+  return $api<AuthResponse>("/api/auth/logout", {
     method: "POST",
-    credentials: "include",
   });
+}
+
+export async function refreshToken(): Promise<AuthResponse> {
+  return $api<AuthResponse>("/api/auth/refresh-token", { method: "POST" });
+}
+
+export interface AuthUser {
+  id: string;
+  email: string;
+}
+
+export async function getCurrentUser(): Promise<AuthUser> {
+  return $api<AuthUser>("/api/auth/me");
 }

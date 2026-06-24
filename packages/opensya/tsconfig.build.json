@@ -10,8 +10,7 @@
     "outDir": "./dist",
 
     "paths": {
-      "@ui:*": ["./src/client/ui/*"],
-      "@core:*": ["./src/*"]
+      "@core/*": ["./src/*"]
     },
 
     "declaration": true,

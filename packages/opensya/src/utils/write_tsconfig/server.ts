@@ -25,6 +25,12 @@ export function writeServerTsconfig() {
         relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR_SERVER, "./*")),
       ),
     ],
+
+    "@core/server/*": [
+      normalizeDir(
+        relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR_SERVER, "./*")),
+      ),
+    ],
   };
 
   const tsconfig = {

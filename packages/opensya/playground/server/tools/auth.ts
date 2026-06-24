@@ -46,14 +46,6 @@ export function setTokensCookie(
     path: "/",
     maxAge: 60 * 60 * 24 * 30,
   });
-
-  reply.setCookie(REFRESH_TOKEN_COOKIE, refreshToken, {
-    path: "/",
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 60 * 24 * 30, // 30 jours
-  });
 }
 
 export function clearRefreshTokenCookie(reply: FastifyReply) {

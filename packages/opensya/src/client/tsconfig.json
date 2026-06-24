@@ -2,9 +2,8 @@
   "extends": "../../tsconfig.client.json",
   "compilerOptions": {
     "paths": {
-      "@core:*": ["../*"],
-      "@ui:*": ["./ui/*"]
+      "@core/client/*": ["./*"]
     }
   },
-  "include": ["./**/*.tsx"]
+  "include": ["./**/*.tsx", "./vite-env.d.ts"]
 }

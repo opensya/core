@@ -5,6 +5,11 @@ import fastifyJw from "@fastify/jwt";
 export const jwt = fp(async (app) => {
   await app.register(fastifyJw, {
     secret: process.env.SECRET_KEY ?? "dev-secret-change-me",
+
+    cookie: {
+      cookieName: "access_token",
+      signed: false,
+    },
   });
 
   app.decorate("authenticate", async (request) => {

@@ -1,11 +1,21 @@
-import { LoginForm } from "../components/login-form";
+import { definePageMeta } from "@core/client/page-meta";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/components/AuthProvider";
+
+definePageMeta({
+  auth: true,
+});
 
 export default function Page() {
+  const { logout } = useAuth();
+
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-sm">
-        <LoginForm />
-      </div>
-    </div>
+    <>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia ratione
+      expedita suscipit quidem vel veritatis id facere ducimus mollitia nihil
+      autem molestias, illum, impedit eaque quam. Quaerat ipsum similique
+      maxime.
+      <Button onClick={logout}>logout</Button>
+    </>
   );
 }

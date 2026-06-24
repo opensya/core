@@ -1,64 +1,81 @@
 import type { Plugin } from "vite";
-import { dirname, join, relative } from "node:path";
-import { getDirs } from "../../utils";
+import { join, relative } from "node:path";
 import { existsSync } from "node:fs";
-import { imports, body } from "../css/content";
+
+import { getDirs } from "../../utils";
 import {
   getOpensyaConfig,
   loadModuleOpensyaConfig,
   type UseOpensyaConfig,
 } from "../../config";
 
-export function viteTransformStylePlugin(): Plugin {
-  const { CORE_DIR_CLIENT } = getDirs();
-  const mainConfig = getOpensyaConfig();
-  const styleFile = join(CORE_DIR_CLIENT, "style.css");
+import { imports as baseImports, body } from "../css/content";
+import { normalizeDir } from "@opensya/utils";
 
-  async function getStyle(config: UseOpensyaConfig) {
-    const imports: string[] = [];
+const VIRTUAL_ID = "virtual:style";
+const RESOLVED_VIRTUAL_ID = "\0virtual:style.css";
+
+export function viteTransformStylePlugin(): Plugin {
+  const mainConfig = getOpensyaConfig();
+
+  async function getStyleImports(config: UseOpensyaConfig): Promise<string[]> {
+    const styleImports: string[] = [];
 
     for (const module of config.modules) {
-      const config = await loadModuleOpensyaConfig(module);
-      imports.push(...(await getStyle(config)));
+      const moduleConfig = await loadModuleOpensyaConfig(module);
+      styleImports.push(...(await getStyleImports(moduleConfig)));
     }
 
     const stylesDir = join(config._dirs.INPUT_DIR_CLIENT, "styles");
-    const mainDir = join(stylesDir, "main.css");
+    const mainCssFile = join(stylesDir, "main.css");
 
-    if (!existsSync(mainDir)) return imports;
+    if (!existsSync(mainCssFile)) {
+      return styleImports;
+    }
 
-    imports.push(`@import "${toImportPath(styleFile, mainDir)}";`);
+    styleImports.push(`@import "${toImportPath(mainCssFile)}";`);
 
-    return imports;
+    return styleImports;
   }
 
-  function toImportPath(styleFile: string, filePath: string) {
-    const relativePath = relative(dirname(styleFile), filePath).replaceAll(
-      "\\",
-      "/",
+  function toImportPath(filePath: string) {
+    return normalizeDir(
+      relative(process.cwd(), filePath.replaceAll("\\", "/")),
     );
-    return relativePath.startsWith(".") ? relativePath : `./${relativePath}`;
+  }
+
+  async function generateCode() {
+    const dirs = getDirs();
+    const moduleStyleImports = await getStyleImports(mainConfig);
+
+    const sources = [
+      `@source "${toImportPath(join(dirs.INPUT_DIR_CLIENT, "**/*"))}";`,
+    ];
+
+    return [
+      ...baseImports,
+      ...moduleStyleImports,
+      "",
+      ...sources,
+      "",
+      body,
+    ].join("\n");
   }
 
   return {
-    name: "viteTransformStylePlugin",
+    name: "vite-opensya-style",
     enforce: "pre",
 
-    async transform(code, id) {
-      const dirs = getDirs();
+    resolveId(id) {
+      if (id === VIRTUAL_ID) {
+        return RESOLVED_VIRTUAL_ID;
+      }
+    },
 
-      if (id !== styleFile) return;
+    async load(id) {
+      if (id !== RESOLVED_VIRTUAL_ID) return null;
 
-      imports.push(...(await getStyle(mainConfig)));
-
-      const sources = [
-        `@source "${relative(dirname(styleFile), join(dirs.INPUT_DIR_CLIENT, "**/*"))}";`,
-        `@source "${relative(dirname(styleFile), join(dirs.CORE_DIR_CLIENT, "ui/**/*"))}";`,
-      ];
-
-      code += [imports.join("\n"), sources.join("\n"), body].join("\n\n");
-
-      return code;
+      return generateCode();
     },
   };
 }

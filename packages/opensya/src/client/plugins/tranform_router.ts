@@ -1,40 +1,54 @@
 import type { Plugin } from "vite";
-import { extname, join, relative, dirname } from "node:path";
+import { extname, join, relative } from "node:path";
 import { existsSync } from "node:fs";
 import { getChildren } from "@opensya/utils";
-import { getDirs } from "../../utils";
 import {
   getOpensyaConfig,
   loadModuleOpensyaConfig,
   type UseOpensyaConfig,
 } from "../../config";
 
+const VIRTUAL_ID = "virtual:router";
+const RESOLVED_VIRTUAL_ID = "\0virtual:router";
+
 const routeTemplate = `
-  {
-    path: '{{path}}',
-    lazy: async () => {
-      const module = await import('{{import}}');
-      return { Component: module.default };
-    },
+{
+  path: "{{path}}",
+  lazy: async () => {
+    const context = {
+      _meta: undefined,
+    };
+
+    const module = await withPageMetaContext(context, async () => {
+      return import("{{import}}");
+    });
+
+    return {
+      Component: module.default,
+      handle: {
+        meta: module.meta ?? context._meta,
+      }
+    };
   },
+}
 `;
 
 export function viteTransformRouterPlugin(): Plugin {
-  const dirs = getDirs();
-  const routerDir = join(dirs.CORE_DIR_CLIENT, "router");
   const mainConfig = getOpensyaConfig();
 
-  // function getRoutes(routerDir: string, pagesDir: string) {
-  async function getRoutes(config: UseOpensyaConfig) {
-    const routes: Record<string, string> = {};
+  async function getRoutes(config: UseOpensyaConfig): Promise<string[]> {
+    const routes: string[] = [];
 
     for (const module of config.modules) {
-      const config = await loadModuleOpensyaConfig(module);
-      Object.assign(routes, await getRoutes(config));
+      const moduleConfig = await loadModuleOpensyaConfig(module);
+      routes.push(...(await getRoutes(moduleConfig)));
     }
 
     const pagesDir = join(config._dirs.INPUT_DIR_CLIENT, "pages");
-    if (!existsSync(pagesDir)) return {};
+
+    if (!existsSync(pagesDir)) {
+      return routes;
+    }
 
     const pages = getChildren(pagesDir, {
       recursive: true,
@@ -44,22 +58,20 @@ export function viteTransformRouterPlugin(): Plugin {
 
     for (const page of pages) {
       const routePath = resolveRouteFromFilePath(pagesDir, page.path);
-      const importPath = toImportPath(routerDir, page.path);
+      const importPath = toImportPath(page.path);
 
-      routes[routePath] = routeTemplate
-        .replaceAll("{{path}}", routePath)
-        .replaceAll("{{import}}", importPath);
+      routes.push(
+        routeTemplate
+          .replaceAll("{{path}}", routePath)
+          .replaceAll("{{import}}", importPath),
+      );
     }
 
     return routes;
   }
 
-  function toImportPath(routerDir: string, filePath: string) {
-    const relativePath = relative(dirname(routerDir), filePath).replaceAll(
-      "\\",
-      "/",
-    );
-    return relativePath.startsWith(".") ? relativePath : `./${relativePath}`;
+  function toImportPath(filePath: string) {
+    return filePath.replaceAll("\\", "/");
   }
 
   function resolveRouteFromFilePath(pagesDir: string, filePath: string) {
@@ -94,25 +106,36 @@ export function viteTransformRouterPlugin(): Plugin {
         return segment;
       });
 
-    return "/" + routeSegments.join("/");
+    const path = "/" + routeSegments.join("/");
+
+    return path === "/" ? "/" : path.replace(/\/+$/, "");
+  }
+
+  async function generateCode() {
+    const routes = await getRoutes(mainConfig);
+
+    return `import { withPageMetaContext } from "@core/client/page-meta";
+
+export const routes = [
+${routes.join(",\n")}
+];
+`;
   }
 
   return {
-    name: "viteOpensyaTransformRouterlugin",
+    name: "vite-opensya-router",
     enforce: "pre",
 
-    async transform(code, id) {
-      const isRouter = routerDir === id.replace(/\.[^/.]+$/, "");
+    resolveId(id) {
+      if (id === VIRTUAL_ID) {
+        return RESOLVED_VIRTUAL_ID;
+      }
+    },
 
-      if (!isRouter) return;
+    async load(id) {
+      if (id !== RESOLVED_VIRTUAL_ID) return null;
 
-      const routes = await getRoutes(mainConfig);
-      const _code = code.replace(
-        /const routes = \[\];/,
-        `const routes = [${Object.values(routes).join("\n")}];`,
-      );
-
-      return _code;
+      return generateCode();
     },
   };
 }
