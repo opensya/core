@@ -14,8 +14,10 @@ export function RootLayout() {
   const content = composeGuards(<Outlet />);
 
   const layoutName = meta?.layout ?? "default";
-  const Layout = layouts[layoutName] ?? layouts.default;
-  if (!Layout) return content;
+  if (layoutName) {
+    const Layout = layouts[layoutName] ?? layouts.default;
+    if (Layout) return <Layout>{content}</Layout>;
+  }
 
-  return <Layout>{content}</Layout>;
+  return content;
 }

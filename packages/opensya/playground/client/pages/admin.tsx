@@ -32,7 +32,7 @@ export default function Page() {
   }
 
   return (
-    <>
+    <div>
       <p>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia ratione
         expedita suscipit quidem vel veritatis id facere ducimus mollitia nihil
@@ -41,8 +41,8 @@ export default function Page() {
       </p>
 
       <Button onClick={handleSubmit} disabled={isLoading}>
-        logout
+        logoutdfdf
       </Button>
-    </>
+    </div>
   );
 }
