@@ -17,6 +17,7 @@ export function defineOpensyaConfig<T extends OpensyaConfig>(config: T): T {
 export type UseOpensyaConfig = Required<OpensyaConfig> & {
   _main: boolean;
   _dirs: {
+    cwd: string;
     INPUT_DIR: string;
     INPUT_DIR_SERVER: string;
     INPUT_DIR_CLIENT: string;
@@ -41,10 +42,12 @@ export async function loadOpensyaConfig({
 
   const _config = result.config as UseOpensyaConfig;
 
+  cwd ??= result.cwd ?? process.cwd();
   _config._main = false;
 
-  const inputDir = join(cwd ?? result.cwd ?? process.cwd(), _config.srcDir);
+  const inputDir = join(cwd, _config.srcDir);
   _config._dirs = {
+    cwd,
     INPUT_DIR: inputDir,
     INPUT_DIR_CLIENT: join(inputDir, CLIENT_DIRNAME),
     INPUT_DIR_SERVER: join(inputDir, SERVER_DIRNAME),

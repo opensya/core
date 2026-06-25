@@ -50,18 +50,20 @@ export function NavMain({ blocks }: { blocks: Block[] }) {
               >
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
-                    <SidebarMenuButton tooltip={item.title}>
-                      {item.icon && <item.icon className="opacity-50" />}
+                    <a href={item.url}>
+                      <SidebarMenuButton tooltip={item.title}>
+                        {item.icon && <item.icon className="opacity-50" />}
 
-                      <span>{item.title}</span>
+                        <span>{item.title}</span>
 
-                      {item.items?.length && (
-                        <ChevronRight
-                          size={1}
-                          className="transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
-                        />
-                      )}
-                    </SidebarMenuButton>
+                        {item.items?.length && (
+                          <ChevronRight
+                            size={1}
+                            className="transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
+                          />
+                        )}
+                      </SidebarMenuButton>
+                    </a>
                   </CollapsibleTrigger>
 
                   {item.items?.length && (

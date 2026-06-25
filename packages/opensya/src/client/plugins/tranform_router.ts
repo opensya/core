@@ -134,7 +134,6 @@ ${routes.join(",\n")}
 
     async load(id) {
       if (id !== RESOLVED_VIRTUAL_ID) return null;
-
       return generateCode();
     },
   };

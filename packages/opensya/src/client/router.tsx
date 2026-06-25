@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter } from "react-router";
 import { routes } from "virtual:router";
 import { RootLayout } from "./root-layout";
 

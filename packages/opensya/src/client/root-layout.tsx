@@ -13,10 +13,13 @@ export function RootLayout() {
   const meta = usePageMeta();
   const content = composeGuards(<Outlet />);
 
-  const layoutName = meta?.layout ?? "default";
-  if (layoutName) {
-    const Layout = layouts[layoutName] ?? layouts.default;
-    if (Layout) return <Layout>{content}</Layout>;
+  let layout = meta?.layout ?? "default";
+
+  if (typeof layout === "string") layout = { name: layout };
+
+  if (layout) {
+    const Layout = layouts[layout.name] ?? layouts.default;
+    if (Layout) return <Layout {...layout}>{content}</Layout>;
   }
 
   return content;

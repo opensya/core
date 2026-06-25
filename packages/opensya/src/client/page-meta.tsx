@@ -1,7 +1,8 @@
 import { useMatches } from "react-router-dom";
 
 export interface PageMeta {
-  layout?: string | false;
+  name?: string;
+  layout?: string | false | { name: string; [key: string]: unknown };
 }
 
 interface PageMetaContext {

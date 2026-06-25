@@ -1,6 +1,5 @@
-import { join, relative } from "node:path";
+import { join } from "node:path";
 import { getDirs } from "../utils";
-import { normalizeDir } from "@opensya/utils";
 
 const template = `
 <!doctype html>
@@ -18,8 +17,5 @@ const template = `
 
 export function getIndexHtml() {
   const { CORE_DIR_CLIENT } = getDirs();
-  return template.replace(
-    "{{main}}",
-    normalizeDir(relative(process.cwd(), join(CORE_DIR_CLIENT, "main.tsx"))),
-  );
+  return template.replace("{{main}}", join(CORE_DIR_CLIENT, "main.tsx"));
 }

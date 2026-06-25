@@ -8,6 +8,7 @@ import {
   SidebarHeader,
   SidebarFooter,
   useSidebar,
+  SidebarRail,
 } from "@/components/ui/sidebar";
 import { NavMain, type Block } from "./nav-main";
 import { Button } from "../ui/button";
@@ -63,6 +64,8 @@ export function AppSidebar({
           </Button>
         </div>
       </SidebarFooter>
+
+      <SidebarRail />
     </Sidebar>
   );
 }
