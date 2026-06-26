@@ -2,32 +2,55 @@ import { atomicWriteFile, normalizeDir, readJson } from "@opensya/utils";
 import type { TableMeta } from "./helper";
 import { join, relative } from "node:path";
 import { getDirs } from "../../../utils";
+import { writeTableType } from "./write_type";
 
 const template = `import { createDrizzleTable } from '{{core_server_path}}'
-import table from '{{import}}';
 
-table.name = "{{sql_table_name}}";
+{{imports_columns}}
 
-export const {{table_name}} = createDrizzleTable(table);
+export default createDrizzleTable(
+  '{{sql_table_name}}', 
+  {
+    {{columns}}
+  }
+)
 `;
 
 export function writeDrizzleSchema(meta: TableMeta) {
   const { OUTPUT_DIR_SERVER, CORE_DIR_SERVER } = getDirs();
   const outputTablesDir = join(OUTPUT_DIR_SERVER, "database/tables");
 
-  const importPath = normalizeDir(relative(outputTablesDir, meta.file));
-
   const coreDirServer = normalizeDir(
     relative(outputTablesDir, CORE_DIR_SERVER),
   );
 
-  const content = template
-    .replaceAll("{{core_server_path}}", coreDirServer)
-    .replaceAll("{{import}}", importPath)
-    .replaceAll("{{table_name}}", meta.name)
-    .replaceAll("{{sql_table_name}}", meta.tableName);
+  const imports: string[] = [];
+  const columns: string[] = [];
 
-  atomicWriteFile(join(outputTablesDir, `${meta.tableName}.js`), content);
+  for (const key in meta.columns) {
+    if (!Object.hasOwn(meta.columns, key)) continue;
+    if (key === "default") continue;
+
+    const path = normalizeDir(
+      relative(outputTablesDir, meta.columns[key].file),
+    );
+
+    imports.push(`import { ${key} } from '${path}'`);
+    columns.push(key);
+  }
+
+  atomicWriteFile(
+    join(outputTablesDir, `${meta.tableName}.js`),
+
+    template
+      .replaceAll("{{core_server_path}}", coreDirServer)
+      .replaceAll("{{imports_columns}}", imports.join(";\n"))
+      .replaceAll("{{table_name}}", meta.name)
+      .replaceAll("{{columns}}", columns.join(",\n    "))
+      .replaceAll("{{sql_table_name}}", meta.tableName),
+  );
+
+  if (process.argv.includes("--dev")) writeTableType(meta);
 }
 
 export function writeDrizzleSchemaIndex() {
@@ -38,7 +61,10 @@ export function writeDrizzleSchemaIndex() {
   );
 
   const content = Object.entries(metas)
-    .map(([, meta]) => `export * from "./tables/${meta.tableName}";`)
+    .map(
+      ([, meta]) =>
+        `export { default as ${meta.name} } from "./tables/${meta.tableName}";`,
+    )
     .join("\n");
 
   atomicWriteFile(

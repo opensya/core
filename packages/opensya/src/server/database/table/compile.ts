@@ -3,8 +3,7 @@ import { existsSync } from "node:fs";
 import { atomicWriteFile, getChildren, readJson, _ } from "@opensya/utils";
 import { REGEXS } from "../../utils";
 
-import type { DefineTable, TableMeta } from "./helper";
-import { writeType } from "./write_type";
+import type { AnyDrizzleColumnBuilder, TableMeta } from "./helper";
 import {
   writeDrizzleSchema,
   writeDrizzleSchemaIndex,
@@ -15,7 +14,7 @@ import {
   type UseOpensyaConfig,
 } from "../../../config";
 import { getDirs } from "../../../utils";
-import { loadDefaultJs } from "../../utils/load_js";
+import { loadJs } from "../../utils/load_js";
 import { writeDrizzleConfig } from "../write_drizzle_config";
 
 export async function compileTables() {
@@ -59,6 +58,7 @@ async function detectTables(config: UseOpensyaConfig) {
           tableName,
           typeName,
           file: file.path,
+          columns: {},
         },
       ];
     }),
@@ -72,28 +72,24 @@ async function detectTables(config: UseOpensyaConfig) {
   writeDrizzleSchemaIndex();
 }
 
-async function compileTable(meta: TableMeta) {
-  const table = await loadDefaultJs<DefineTable<string, never>>(meta.file);
-  if (!table) return;
-
-  table.name = meta.tableName;
-
+async function compileTable(meta: TableMeta & { file: string }) {
   const { OUTPUT_DIR_SERVER } = getDirs();
   const manifestPath = join(OUTPUT_DIR_SERVER, "database/tables.json");
 
-  atomicWriteFile(
-    manifestPath,
-    JSON.stringify(
-      {
-        ...readJson<Record<string, TableMeta>>(manifestPath, {}),
-        [meta.tableName]: meta,
-      },
-      null,
-      2,
-    ),
+  const columns = await loadJs<Record<string, AnyDrizzleColumnBuilder>>(
+    meta.file,
   );
 
-  if (process.argv.includes("--dev")) writeType(meta);
+  const manifest = readJson<Record<string, TableMeta>>(manifestPath, {});
+  manifest[meta.name] ??= meta;
 
-  writeDrizzleSchema(meta);
+  for (const key in columns) {
+    if (!Object.hasOwn(columns, key)) continue;
+    if (key === "default") continue;
+
+    manifest[meta.name].columns[key] = { file: meta.file };
+  }
+
+  atomicWriteFile(manifestPath, JSON.stringify(manifest, null, 2));
+  writeDrizzleSchema(manifest[meta.name]);
 }

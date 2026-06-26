@@ -3,5 +3,10 @@
   "references": [
     { "path": "./tsconfig.client.json" },
     { "path": "./tsconfig.server.json" }
-  ]
+  ],
+  "compilerOptions": {
+    "paths": {
+      "@core/server": ["./src/server"]
+    }
+  }
 }

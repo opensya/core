@@ -1,16 +1,12 @@
-import { defineTable, string, uuid, timestamp } from "../../../../src/server";
+import { string, uuid, timestamp } from "../../../../src/server";
 
-export default defineTable({
-  columns: {
-    id: uuid().defaultRandom().primary().require(),
+export const id = uuid().defaultRandom().primary().require();
 
-    userId: uuid().require(),
-    // .references(() => user.id, { onDelete: "cascade" }),
+export const userId = uuid().require();
+//  .references(() => user.id, { onDelete ="cascade" })
 
-    tokenHash: string().require(),
+export const tokenHash = string().require();
 
-    expiresAt: timestamp().require(),
-    revokedAt: timestamp(),
-    createdAt: timestamp().defaultNow().require(),
-  },
-});
+export const expiresAt = timestamp().require();
+export const revokedAt = timestamp();
+export const createdAt = timestamp().defaultNow().require();
