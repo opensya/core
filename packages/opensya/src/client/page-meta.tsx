@@ -5,17 +5,7 @@ export interface PageMeta {
   layout?: string | false | { name: string; [key: string]: unknown };
 }
 
-interface PageMetaContext {
-  _meta?: PageMeta;
-}
-
-let currentPageMetaContext: PageMetaContext | null = null;
-
 export function definePageMeta(meta: PageMeta): PageMeta {
-  if (currentPageMetaContext) {
-    currentPageMetaContext._meta = meta;
-  }
-
   return meta;
 }
 
@@ -23,25 +13,29 @@ interface RouteHandle {
   meta?: PageMeta;
 }
 
-export async function withPageMetaContext<T>(
-  context: PageMetaContext,
-  callback: () => Promise<T>,
-): Promise<T> {
-  const previousContext = currentPageMetaContext;
+function resolveLayout(
+  matches: Array<{ handle?: RouteHandle }>,
+): PageMeta["layout"] {
+  for (let i = matches.length - 1; i >= 0; i--) {
+    const layout = matches[i].handle?.meta?.layout;
 
-  currentPageMetaContext = context;
-
-  try {
-    return await callback();
-  } finally {
-    currentPageMetaContext = previousContext;
+    if (layout !== undefined) return layout;
   }
+
+  return undefined;
 }
 
-export function usePageMeta(): PageMeta | undefined {
-  const matches = useMatches();
+export function usePageMeta(): PageMeta {
+  const matches = useMatches() as Array<{ handle?: RouteHandle }>;
 
-  const match = matches.at(-1) as { handle?: RouteHandle } | undefined;
+  const metas = matches
+    .map((match) => match.handle?.meta)
+    .filter(Boolean) as PageMeta[];
 
-  return match?.handle?.meta;
+  const currentMeta = metas.at(-1);
+
+  return {
+    ...currentMeta,
+    layout: resolveLayout(matches),
+  };
 }

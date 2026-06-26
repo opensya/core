@@ -1,84 +1,7 @@
-import { definePageMeta } from "@core/client/page-meta";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/AuthProvider";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, Bot, Settings2, SquareTerminal } from "lucide-react";
-
-definePageMeta({
-  auth: true,
-  layout: {
-    name: "admin",
-    blocks: getBlocks,
-  },
-});
-
-function getBlocks() {
-  return [
-    {
-      title: "Platforms",
-      items: [
-        {
-          title: "Playground",
-          url: "#",
-          icon: SquareTerminal,
-          isActive: true,
-        },
-        {
-          title: "Models",
-          url: "#",
-          icon: Bot,
-          items: [
-            {
-              title: "Genesis",
-              url: "#",
-            },
-            {
-              title: "Explorer",
-              url: "#",
-            },
-            {
-              title: "Quantum",
-              url: "#",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      items: [
-        {
-          title: "Documentation",
-          url: "#",
-          icon: BookOpen,
-          items: [
-            {
-              title: "Introduction",
-              url: "#",
-            },
-            {
-              title: "Get Started",
-              url: "#",
-            },
-            {
-              title: "Tutorials",
-              url: "#",
-            },
-            {
-              title: "Changelog",
-              url: "#",
-            },
-          ],
-        },
-        {
-          title: "Settings",
-          url: "/admin/settings",
-          icon: Settings2,
-        },
-      ],
-    },
-  ];
-}
 
 export default function Page() {
   const { logout } = useAuth();
@@ -112,8 +35,10 @@ export default function Page() {
       </p>
 
       <Button onClick={handleSubmit} disabled={isLoading}>
-        logoutdfdf
+        logout
       </Button>
+
+      <Button onClick={() => navigate("/admin/settings")}>settings</Button>
     </div>
   );
 }

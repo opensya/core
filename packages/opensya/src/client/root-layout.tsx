@@ -14,7 +14,6 @@ export function RootLayout() {
   const content = composeGuards(<Outlet />);
 
   let layout = meta?.layout ?? "default";
-
   if (typeof layout === "string") layout = { name: layout };
 
   if (layout) {
