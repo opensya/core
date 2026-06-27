@@ -17,14 +17,15 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/components/AuthProvider";
+import { useSession } from "@/providers/02.session.global";
+import { login } from "@/lib/auth/api";
 
 export default function LoginPage({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { load } = useSession();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -40,6 +41,7 @@ export default function LoginPage({
       setIsLoading(true);
 
       await login({ email, password });
+      await load();
 
       navigate("/");
     } catch {

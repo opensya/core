@@ -6,6 +6,8 @@ export function writeClientTsconfig() {
   const dirs = getDirs();
 
   const include: string[] = normalizeDirs([
+    relative(dirs.OUTPUT_DIR, join(dirs.OUTPUT_DIR_CLIENT, "**/*.d.ts")),
+
     relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR_CLIENT)),
     relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR_CLIENT, "**/*.d.ts")),
 
@@ -32,6 +34,9 @@ export function writeClientTsconfig() {
       normalizeDir(
         relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR_CLIENT, "./*")),
       ),
+    ],
+    "@core/client": [
+      normalizeDir(relative(dirs.OUTPUT_DIR, dirs.CORE_DIR_CLIENT)),
     ],
 
     "@/*": [

@@ -17,6 +17,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import { Link } from "react-router-dom";
 
 export interface Block {
   title?: string;
@@ -47,20 +48,17 @@ export function NavMain({ blocks }: { blocks: Block[] }) {
           >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
-                <a href={item.url}>
+                <Link to={item.url}>
                   <SidebarMenuButton tooltip={item.title}>
                     {item.icon && <item.icon className="opacity-50" />}
 
                     <span>{item.title}</span>
 
                     {item.items?.length && (
-                      <ChevronRight
-                        size={1}
-                        className="transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
-                      />
+                      <ChevronRight className="transition-transform duration-200 size-3! opacity-50 group-data-[state=open]/collapsible:rotate-90" />
                     )}
                   </SidebarMenuButton>
-                </a>
+                </Link>
               </CollapsibleTrigger>
 
               {item.items?.length && (
@@ -69,9 +67,9 @@ export function NavMain({ blocks }: { blocks: Block[] }) {
                     {item.items?.map((subItem) => (
                       <SidebarMenuSubItem key={subItem.title}>
                         <SidebarMenuSubButton asChild>
-                          <a href={subItem.url}>
+                          <Link to={subItem.url}>
                             <span>{subItem.title}</span>
-                          </a>
+                          </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     ))}

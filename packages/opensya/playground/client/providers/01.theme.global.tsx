@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/sonner";
 import { createContext, useContext, useEffect, useState } from "react";
 
 type Theme = "dark" | "light" | "system";
@@ -59,11 +60,11 @@ export default function ThemeProvider({
   return (
     <ThemeProviderContext.Provider {...props} value={value}>
       {children}
+      <Toaster position="bottom-right" />
     </ThemeProviderContext.Provider>
   );
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useTheme = () => {
   const context = useContext(ThemeProviderContext);
 

@@ -13,13 +13,9 @@ import {
   verifyRefreshToken,
 } from "../../../tools/auth";
 
-interface RefreshBody {
-  refreshToken: string;
-}
-
 export default defineRoute(
   async (request, reply) => {
-    const body = request.body as RefreshBody;
+    const refreshToken = request.cookies.refresh_token as string;
 
     const tokens = await db
       .select()
@@ -27,7 +23,7 @@ export default defineRoute(
       .where(orm.isNull(tables.auth.revokedAt));
 
     const matchedToken = await asyncFind(tokens, async (item) => {
-      return verifyRefreshToken(body.refreshToken, item.tokenHash);
+      return verifyRefreshToken(refreshToken, item.tokenHash);
     });
 
     if (!matchedToken) {
@@ -62,19 +58,7 @@ export default defineRoute(
 
     return { accessToken };
   },
-  {
-    publicRoute: true,
-
-    schema: {
-      body: {
-        type: "object",
-        required: ["refreshToken"],
-        properties: {
-          refreshToken: { type: "string", minLength: 64 },
-        },
-      },
-    },
-  },
+  { publicRoute: true },
 );
 
 async function asyncFind<T>(

@@ -29,3 +29,18 @@ export class NotFoundError extends AppError {
     });
   }
 }
+
+export class BadRequestError extends AppError {
+  constructor(
+    message = "Bad request",
+    details?: unknown,
+    code = "BAD_REQUEST",
+  ) {
+    super({
+      statusCode: 400,
+      message,
+      code,
+      details,
+    });
+  }
+}

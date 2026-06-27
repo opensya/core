@@ -1,14 +1,16 @@
-import { useAuth } from "@/components/AuthProvider";
+import { useSession } from "@/providers/02.session.global";
 import { usePageMeta } from "@core/client/page-meta";
 import { Navigate } from "react-router-dom";
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const meta = usePageMeta();
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading } = useSession();
 
   if (isLoading) return null;
 
-  if (meta?.auth && !isAuthenticated) {
+  const requiresAuth = meta?.auth === true;
+
+  if (requiresAuth && !isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 

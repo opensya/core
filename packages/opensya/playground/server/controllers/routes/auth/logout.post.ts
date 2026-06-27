@@ -7,13 +7,9 @@ import {
 } from "../../../../../src/server";
 import { verifyRefreshToken } from "../../../tools/auth";
 
-interface LogoutBody {
-  refreshToken: string;
-}
-
 export default defineRoute(
   async (request) => {
-    const body = request.body as LogoutBody;
+    const refreshToken = request.cookies.refresh_token as string;
 
     const tokens = await db
       .select()
@@ -21,7 +17,7 @@ export default defineRoute(
       .where(orm.isNull(tables.auth.revokedAt));
 
     const matchedToken = await asyncFind(tokens, async (item) => {
-      return verifyRefreshToken(body.refreshToken, item.tokenHash);
+      return verifyRefreshToken(refreshToken, item.tokenHash);
     });
 
     if (!matchedToken) throw new UnauthorizedError("Invalid refresh token");

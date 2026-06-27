@@ -10,6 +10,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 import type { PgColumnBuilderBase } from "drizzle-orm/pg-core";
+import { BadRequestError } from "../../error";
 
 export type AnyDrizzleColumnBuilder = PgColumnBuilderBase;
 
@@ -86,22 +87,6 @@ export const boolean = () => buildColumn(pgBoolean());
 
 export type AnyEnhancedColumn = EnhancedColumn<AnyDrizzleColumnBuilder>;
 
-// Erreur agrégée avec le détail par champ
-export class TableValidationError extends Error {
-  readonly errors: Record<string, string>;
-
-  constructor(errors: Record<string, string>) {
-    const lines = Object.entries(errors)
-      .map(([field, msg]) => `  - ${field}: ${msg}`)
-      .join("\n");
-
-    super(`Validation failed:\n${lines}`);
-
-    this.errors = errors;
-    this.name = "TableValidationError";
-  }
-}
-
 export type TableMeta = {
   name: string;
   tableName: string;
@@ -121,22 +106,17 @@ export function createDrizzleTable<
 >(name: TName, columns: TColumns) {
   const table = pgTable(name, columns);
 
-  async function validateRow(data: InferTableInput<TColumns>): Promise<void> {
-    const errors: Record<string, string> = {};
-
+  async function validateRow(data: Record<string, any>) {
     for (const [field, col] of Object.entries(columns)) {
       const fn = (col as AnyEnhancedColumn)._validateFn;
       if (!fn) continue;
 
       const value = (data as Record<string, unknown>)[field];
       const error = await fn(value as any, data);
-      if (error !== null) {
-        errors[field] = error;
-      }
-    }
 
-    if (Object.keys(errors).length > 0) {
-      throw new TableValidationError(errors);
+      if (error !== null) {
+        throw new BadRequestError(error);
+      }
     }
   }
 

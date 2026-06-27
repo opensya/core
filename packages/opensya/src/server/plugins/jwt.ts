@@ -12,6 +12,14 @@ export const jwt = fp(async (app) => {
     },
   });
 
+  app.addHook("onRequest", async (request) => {
+    try {
+      await request.jwtVerify();
+    } catch {
+      request.user = null as unknown as AuthUser;
+    }
+  });
+
   app.decorate("authenticate", async (request) => {
     await request.jwtVerify();
   });
