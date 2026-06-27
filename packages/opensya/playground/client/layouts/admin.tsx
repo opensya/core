@@ -1,12 +1,15 @@
 import { AppSidebar } from "@/components/sidebar-app";
 import type { Block } from "@/components/sidebar-app/nav-main";
 import { AuthMenu } from "@/components/sidebar-app/auth-menu";
-import { Button } from "@/components/ui/button";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import {
-  ArrowLeft,
+  SidebarInset,
+  SidebarMenuButton,
+  SidebarProvider,
+} from "@/components/ui/sidebar";
+import {
   BookOpen,
   Bot,
+  ChevronLeft,
   Settings2,
   SquareTerminal,
 } from "lucide-react";
@@ -96,13 +99,15 @@ export default function AdminLayout({
           !blocks ? (
             <AuthMenu />
           ) : (
-            <div>
-              <Button variant="ghost" size="sm" className="rounded-4xl" asChild>
-                <Link to="/admin" replace>
-                  <ArrowLeft /> Back to home
-                </Link>
-              </Button>
-            </div>
+            <SidebarMenuButton className="w-fit px-1.5" asChild>
+              <Link to="/admin" replace>
+                <div className="flex aspect-square size-5 items-center justify-center rounded-md">
+                  <ChevronLeft />
+                </div>
+
+                <span className="truncate font-medium">Back to home</span>
+              </Link>
+            </SidebarMenuButton>
           )
         }
       ></AppSidebar>
