@@ -1,3 +1,4 @@
+import type { MayBePromise } from "@opensya/utils";
 import {
   boolean as pgBoolean,
   integer,
@@ -14,14 +15,28 @@ export type AnyDrizzleColumnBuilder = PgColumnBuilderBase;
 
 export type HiddenDrizzleMethods = "primaryKey" | "notNull";
 
-export type EnhancedColumn<T> = EnhanceDrizzleMethods<T> & {
+// Infère le type de valeur d'une colonne Drizzle
+export type InferColumnValue<T> = T extends { _: { data: infer D } }
+  ? D
+  : unknown;
+
+export type ValidateFn<TColumn, TData = unknown> = (
+  value: InferColumnValue<TColumn>,
+  data: TData,
+) => MayBePromise<string | null>;
+
+export type EnhancedColumn<T, TData = unknown> = EnhanceDrizzleMethods<T> & {
+  _validateFn?: ValidateFn<T, TData>;
+
   primary(): T extends { primaryKey(): infer R }
-    ? EnhancedColumn<R>
-    : EnhancedColumn<T>;
+    ? EnhancedColumn<R, TData>
+    : EnhancedColumn<T, TData>;
 
   require(): T extends { notNull(): infer R }
-    ? EnhancedColumn<R>
-    : EnhancedColumn<T>;
+    ? EnhancedColumn<R, TData>
+    : EnhancedColumn<T, TData>;
+
+  validate(fn: ValidateFn<T, TData>): EnhancedColumn<T, TData>;
 };
 
 export type EnhanceMethod<TFn> = TFn extends (...args: infer Args) => infer R
@@ -36,20 +51,30 @@ export type EnhanceDrizzleMethods<T> = {
   >;
 };
 
-export function buildColumn<TDrizzle extends AnyDrizzleColumnBuilder>(
+export function buildColumn<
+  TDrizzle extends AnyDrizzleColumnBuilder,
+  TData = unknown,
+>(
   column: TDrizzle,
-): EnhancedColumn<TDrizzle> {
+  validateFn?: ValidateFn<TDrizzle, TData>,
+): EnhancedColumn<TDrizzle, TData> {
   const wrapped = Object.assign(column, {
+    _validateFn: validateFn,
+
     primary() {
-      return buildColumn((column as any).primaryKey());
+      return buildColumn((column as any).primaryKey(), validateFn);
     },
 
     require() {
-      return buildColumn((column as any).notNull());
+      return buildColumn((column as any).notNull(), validateFn);
+    },
+
+    validate(fn: ValidateFn<TDrizzle, TData>) {
+      return buildColumn(column, fn);
     },
   });
 
-  return wrapped as unknown as EnhancedColumn<TDrizzle>;
+  return wrapped as unknown as EnhancedColumn<TDrizzle, TData>;
 }
 
 export const uuid = () => buildColumn(pgUuid());
@@ -61,6 +86,22 @@ export const boolean = () => buildColumn(pgBoolean());
 
 export type AnyEnhancedColumn = EnhancedColumn<AnyDrizzleColumnBuilder>;
 
+// Erreur agrégée avec le détail par champ
+export class TableValidationError extends Error {
+  readonly errors: Record<string, string>;
+
+  constructor(errors: Record<string, string>) {
+    const lines = Object.entries(errors)
+      .map(([field, msg]) => `  - ${field}: ${msg}`)
+      .join("\n");
+
+    super(`Validation failed:\n${lines}`);
+
+    this.errors = errors;
+    this.name = "TableValidationError";
+  }
+}
+
 export type TableMeta = {
   name: string;
   tableName: string;
@@ -68,9 +109,36 @@ export type TableMeta = {
   columns: Record<string, { file: string }>;
 };
 
+export type InferTableInput<
+  TColumns extends Record<string, AnyEnhancedColumn>,
+> = {
+  [K in keyof TColumns]: InferColumnValue<TColumns[K]>;
+};
+
 export function createDrizzleTable<
   TName extends string,
   TColumns extends Record<string, AnyEnhancedColumn>,
 >(name: TName, columns: TColumns) {
-  return pgTable(name, columns);
+  const table = pgTable(name, columns);
+
+  async function validateRow(data: InferTableInput<TColumns>): Promise<void> {
+    const errors: Record<string, string> = {};
+
+    for (const [field, col] of Object.entries(columns)) {
+      const fn = (col as AnyEnhancedColumn)._validateFn;
+      if (!fn) continue;
+
+      const value = (data as Record<string, unknown>)[field];
+      const error = await fn(value as any, data);
+      if (error !== null) {
+        errors[field] = error;
+      }
+    }
+
+    if (Object.keys(errors).length > 0) {
+      throw new TableValidationError(errors);
+    }
+  }
+
+  return Object.assign(table, { validateRow });
 }

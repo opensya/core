@@ -27,7 +27,7 @@ declare module '{{core_server_path}}' {
 const clientTemplate = `${shareTemplate}
 
 declare global {
- type {{type_name}} = Table
+  type {{type_name}} = Table['$inferSelect']
 }
 `;
 
