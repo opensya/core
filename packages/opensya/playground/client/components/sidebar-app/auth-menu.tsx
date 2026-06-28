@@ -19,7 +19,7 @@ import {
 import { useSession } from "@/providers/02.session.global";
 import { Spinner } from "../ui/spinner";
 import { Link, useNavigate } from "react-router-dom";
-import { FileImage } from "../file-image";
+import { FileImage } from "@@/modules/storage/client/components/file-image";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export function AuthMenu() {

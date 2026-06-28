@@ -1,5 +1,5 @@
 import { validateDocFile } from "@@/modules/storage/server/tools";
-import { string, uuid } from "../../../../src/server";
+import { string, uuid } from "@core/server";
 
 export const id = uuid().primary().defaultRandom();
 export const name = string()

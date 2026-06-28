@@ -14,11 +14,12 @@ import {
 
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { uploadFile, useApi } from "@/lib/api";
+import { uploadFile } from "@@/modules/storage/client/lib/api";
+import { useApi } from "@/lib/api";
 import { Spinner } from "@/components/ui/spinner";
 import { useState } from "react";
 import { useSession } from "@/providers/02.session.global";
-import { FileImage } from "../file-image";
+import { FileImage } from "@@/modules/storage/client/components/file-image";
 import { X } from "lucide-react";
 import {
   Tooltip,

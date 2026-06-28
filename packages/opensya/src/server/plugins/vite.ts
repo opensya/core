@@ -24,7 +24,7 @@ declare module "fastify" {
 // }
 
 export const vite = fp(async (app) => {
-  const { INPUT_DIR_CLIENT, CORE_DIR } = getDirs();
+  const { INPUT_DIR, INPUT_DIR_CLIENT, CORE_DIR } = getDirs();
 
   await app.register(middie);
 
@@ -37,6 +37,7 @@ export const vite = fp(async (app) => {
     resolve: {
       alias: {
         "@": INPUT_DIR_CLIENT,
+        "@@": INPUT_DIR,
         "@core": CORE_DIR,
       },
     },

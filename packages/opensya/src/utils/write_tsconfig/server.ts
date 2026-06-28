@@ -12,8 +12,8 @@ export function writeServerTsconfig() {
       join(dirs.INPUT_DIR, "modules/**", SERVER_DIRNAME, "**/*.ts"),
     ),
 
-    relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "server/**/*.ts")),
-    relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "server/**/*.d.ts")),
+    relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "server/*/*.ts")),
+    relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "server/*/*.d.ts")),
     relative(dirs.OUTPUT_DIR, join(dirs.OUTPUT_DIR_SERVER, "**/*.d.ts")),
   ]);
 
