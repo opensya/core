@@ -1,3 +1,4 @@
+import { OrganisationLogoUpdate } from "@/components/organisation/update-logo";
 import { OrganisationNameUpdate } from "@/components/organisation/update-name";
 import { Card, CardContent } from "@/components/ui/card";
 import { definePageMeta } from "@core/client/page-meta";
@@ -11,14 +12,9 @@ export default function Page() {
 
       <Card className="[--card-spacing:--spacing(0)]">
         <CardContent className="divide-y *:py-3 *:px-5 ">
-          <OrganisationNameUpdate />
+          <OrganisationLogoUpdate />
 
-          <div className="flex items-center">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit quia
-            soluta sed rem possimus dignissimos ea voluptatem ullam? Consectetur
-            aliquam mollitia est consequuntur numquam voluptas unde voluptatem
-            ex repudiandae dolorem?
-          </div>
+          <OrganisationNameUpdate />
         </CardContent>
       </Card>
 

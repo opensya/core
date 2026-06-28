@@ -26,6 +26,7 @@ export default defineRoute(
       .select()
       .from(tables.user)
       .where(orm.eq(tables.user.email, body.email));
+    console.log(user);
 
     if (!user) throw new UnauthorizedError("Invalid credentials");
     if (!user.password) throw new UnauthorizedError("Invalid credentials");

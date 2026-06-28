@@ -7,3 +7,11 @@ export const name = string()
     if (name.length === 0) return "Name cannot be empty";
     return null;
   });
+
+export const logoId = uuid().relation({
+  to: "docFile.id",
+  type: "one",
+
+  alias: "logo",
+  inverse: { alias: "organisations" },
+});

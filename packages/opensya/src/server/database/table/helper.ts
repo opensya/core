@@ -9,10 +9,10 @@ import {
   pgTable,
 } from "drizzle-orm/pg-core";
 
-import type { PgColumnBuilderBase } from "drizzle-orm/pg-core";
+import type { PgColumnBuilder, PgTimestampConfig } from "drizzle-orm/pg-core";
 import { BadRequestError } from "../../error";
 
-export type AnyDrizzleColumnBuilder = PgColumnBuilderBase;
+export type AnyDrizzleColumnBuilder = PgColumnBuilder<any>;
 
 export type HiddenDrizzleMethods = "primaryKey" | "notNull";
 
@@ -26,8 +26,22 @@ export type ValidateFn<TColumn, TData = unknown> = (
   data: TData,
 ) => MayBePromise<string | null>;
 
+export type RelationDef = {
+  type: "one" | "many";
+  to: `${string}.${string}`;
+
+  alias?: string;
+
+  optional?: boolean;
+
+  inverse?: {
+    alias: string;
+  };
+};
+
 export type EnhancedColumn<T, TData = unknown> = EnhanceDrizzleMethods<T> & {
   _validateFn?: ValidateFn<T, TData>;
+  _relation?: RelationDef;
 
   primary(): T extends { primaryKey(): infer R }
     ? EnhancedColumn<R, TData>
@@ -38,6 +52,8 @@ export type EnhancedColumn<T, TData = unknown> = EnhanceDrizzleMethods<T> & {
     : EnhancedColumn<T, TData>;
 
   validate(fn: ValidateFn<T, TData>): EnhancedColumn<T, TData>;
+
+  relation(def: RelationDef): EnhancedColumn<T, TData>;
 };
 
 export type EnhanceMethod<TFn> = TFn extends (...args: infer Args) => infer R
@@ -58,20 +74,26 @@ export function buildColumn<
 >(
   column: TDrizzle,
   validateFn?: ValidateFn<TDrizzle, TData>,
+  relationDef?: RelationDef,
 ): EnhancedColumn<TDrizzle, TData> {
   const wrapped = Object.assign(column, {
     _validateFn: validateFn,
+    _relation: relationDef,
 
     primary() {
-      return buildColumn((column as any).primaryKey(), validateFn);
+      return buildColumn((column as any).primaryKey(), validateFn, relationDef);
     },
 
     require() {
-      return buildColumn((column as any).notNull(), validateFn);
+      return buildColumn((column as any).notNull(), validateFn, relationDef);
     },
 
     validate(fn: ValidateFn<TDrizzle, TData>) {
-      return buildColumn(column, fn);
+      return buildColumn(column, fn, relationDef);
+    },
+
+    relation(def: RelationDef) {
+      return buildColumn(column, validateFn, def);
     },
   });
 
@@ -79,19 +101,26 @@ export function buildColumn<
 }
 
 export const uuid = () => buildColumn(pgUuid());
+
 export const int = () => buildColumn(integer());
+
 export const json = <T = unknown>() => buildColumn(jsonb().$type<T>());
+
 export const string = () => buildColumn(text());
-export const timestamp = () => buildColumn(pgTimestamp());
+
+export const date = (config?: PgTimestampConfig) =>
+  buildColumn(pgTimestamp(config));
+
 export const boolean = () => buildColumn(pgBoolean());
 
 export type AnyEnhancedColumn = EnhancedColumn<AnyDrizzleColumnBuilder>;
 
 export type TableMeta = {
+  outputFile: string;
   name: string;
   tableName: string;
   typeName: string;
-  columns: Record<string, { file: string }>;
+  columns: Record<string, { file: string; relation?: RelationDef }>;
 };
 
 export type InferTableInput<

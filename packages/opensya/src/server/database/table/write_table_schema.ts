@@ -5,6 +5,7 @@ import { getDirs } from "../../../utils";
 import { writeTableType } from "./write_type";
 
 const template = `import { createDrizzleTable } from '{{core_server_path}}'
+import { readJson } from '@opensya/utils'
 
 {{imports_columns}}
 
@@ -12,11 +13,16 @@ export default createDrizzleTable(
   '{{sql_table_name}}', 
   {
     {{columns}}
-  }
+  },
 )
 `;
 
-export function writeDrizzleSchema(meta: TableMeta) {
+export function writeDrizzleSchema(
+  manifest: Record<string, TableMeta>,
+  name: string,
+) {
+  const meta = manifest[name];
+
   const { OUTPUT_DIR_SERVER, CORE_DIR_SERVER } = getDirs();
   const outputTablesDir = join(OUTPUT_DIR_SERVER, "database/tables");
 
@@ -44,16 +50,18 @@ export function writeDrizzleSchema(meta: TableMeta) {
 
     template
       .replaceAll("{{core_server_path}}", coreDirServer)
+
       .replaceAll("{{imports_columns}}", imports.join(";\n"))
-      .replaceAll("{{table_name}}", meta.name)
       .replaceAll("{{columns}}", columns.join(",\n    "))
+
+      .replaceAll("{{table_name}}", meta.name)
       .replaceAll("{{sql_table_name}}", meta.tableName),
   );
 
   if (process.argv.includes("--dev")) writeTableType(meta);
 }
 
-export function writeDrizzleSchemaIndex() {
+export function generateTablesJs() {
   const { OUTPUT_DIR_SERVER } = getDirs();
   const metas = readJson<Record<string, TableMeta>>(
     join(OUTPUT_DIR_SERVER, "database/tables.json"),
@@ -68,7 +76,17 @@ export function writeDrizzleSchemaIndex() {
     .join("\n");
 
   atomicWriteFile(
-    join(OUTPUT_DIR_SERVER, "database/schema.js"),
+    join(OUTPUT_DIR_SERVER, "database/tables.js"),
     `${content}\n`,
+  );
+}
+
+export function generateSchemaJS() {
+  const { OUTPUT_DIR_SERVER } = getDirs();
+  const imports = ["export * from './tables';", "export * from './relations';"];
+
+  atomicWriteFile(
+    join(OUTPUT_DIR_SERVER, "database/schema.js"),
+    `${imports.join("\n")}\n`,
   );
 }

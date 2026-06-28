@@ -1,21 +1,17 @@
 import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
 export * as orm from "drizzle-orm";
 
 export let db: ReturnType<typeof drizzle>;
 
-export let pool: Pool;
-
-export async function connectDatabase() {
-  if (db) return db;
-
-  pool = new Pool({ connectionString: process.env.DATABASE_URL });
-
-  db = drizzle(pool);
-
-  return db;
+export async function disconnectDatabase() {
+  await db?.$client.end();
 }
 
-export async function disconnectDatabase() {
-  await pool?.end();
+export function connectDatabase() {
+  db = drizzle({
+    connection: {
+      connectionString: process.env.DATABASE_URL!,
+      ssl: true,
+    },
+  });
 }
