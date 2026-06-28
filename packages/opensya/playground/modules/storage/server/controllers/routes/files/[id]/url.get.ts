@@ -1,14 +1,17 @@
 import { defineRoute } from "@core/server";
-import { fileService } from "../../../../tools/storage";
+import { fileService } from "@@/modules/storage/server/tools";
 
 export default defineRoute(
   async (request) => {
     const { id } = request.params as { id: string };
+    const url = await fileService.getDownloadUrl(id);
 
-    return fileService.deleteFile(id);
+    return { url };
   },
 
   {
+    publicRoute: true,
+
     schema: {
       params: {
         type: "object",

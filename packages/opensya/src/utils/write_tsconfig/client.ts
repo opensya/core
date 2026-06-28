@@ -13,11 +13,11 @@ export function writeClientTsconfig() {
 
     relative(
       dirs.OUTPUT_DIR,
-      join(dirs.INPUT_DIR, "modules", CLIENT_DIRNAME, "**/*.ts"),
+      join(dirs.INPUT_DIR, "modules/**", CLIENT_DIRNAME, "**/*.ts"),
     ),
     relative(
       dirs.OUTPUT_DIR,
-      join(dirs.INPUT_DIR, "modules", CLIENT_DIRNAME, "**/*.d.ts"),
+      join(dirs.INPUT_DIR, "modules/**", CLIENT_DIRNAME, "**/*.d.ts"),
     ),
 
     relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "client/**/*.d.ts")),

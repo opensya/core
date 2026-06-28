@@ -1,12 +1,10 @@
 import { defineRoute } from "@core/server";
-import { fileService } from "../../../../tools/storage";
+import { fileService } from "@@/modules/storage/server/tools";
 
 export default defineRoute(
   async (request) => {
     const { id } = request.params as { id: string };
-    const url = await fileService.getDownloadUrl(id);
-
-    return { url };
+    return fileService.confirmUpload(id);
   },
 
   {

@@ -9,7 +9,7 @@ export function writeServerTsconfig() {
     relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR_SERVER, "**/*.ts")),
     relative(
       dirs.OUTPUT_DIR,
-      join(dirs.INPUT_DIR, "modules", SERVER_DIRNAME, "**/*.ts"),
+      join(dirs.INPUT_DIR, "modules/**", SERVER_DIRNAME, "**/*.ts"),
     ),
 
     relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "server/**/*.ts")),
@@ -21,9 +21,7 @@ export function writeServerTsconfig() {
 
   const paths = {
     "@@/*": [
-      normalizeDir(
-        relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR_SERVER, "./*")),
-      ),
+      normalizeDir(relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR, "./*"))),
     ],
 
     "@core/server/*": [

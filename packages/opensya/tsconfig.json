@@ -6,7 +6,9 @@
   ],
   "compilerOptions": {
     "paths": {
-      "@core/server": ["./src/server"]
+      "@core/server": ["./src/server"],
+      "@@/*": ["./playground/*"],
+      "@/*": ["./playground/client/*"]
     }
   }
 }

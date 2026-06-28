@@ -1,6 +1,6 @@
 // routes/files/upload/[...key].ts
 import { defineRoute } from "@core/server";
-import { verifyUploadToken } from "../../../../../../tools/storage";
+import { verifyUploadToken } from "@@/modules/storage/server/tools";
 import { writeFile, mkdir } from "node:fs/promises";
 import { join } from "node:path";
 

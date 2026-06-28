@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import { FileService, LocalAdapter, setFileService } from "../tools/storage";
+import { FileService, LocalAdapter, setFileService } from "../tools";
 import { definePlugin } from "@core/server";
 
 type StorageAdapterKey = "local";

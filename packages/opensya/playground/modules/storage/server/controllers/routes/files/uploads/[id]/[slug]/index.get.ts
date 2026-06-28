@@ -1,7 +1,7 @@
 import { defineRoute } from "@core/server";
 import { createReadStream, existsSync } from "node:fs";
 import { join } from "node:path";
-import { verifyUploadToken } from "../../../../../../tools/storage";
+import { verifyUploadToken } from "@@/modules/storage/server/tools";
 
 export default defineRoute(
   async (request, reply) => {

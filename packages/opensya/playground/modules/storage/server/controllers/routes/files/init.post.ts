@@ -1,4 +1,4 @@
-import { fileService } from "../../../tools/storage";
+import { fileService } from "../../../tools";
 import { defineRoute } from "@core/server";
 
 export default defineRoute(
