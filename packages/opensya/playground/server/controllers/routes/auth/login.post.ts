@@ -12,6 +12,7 @@ import {
   hashRefreshToken,
   setTokensCookie,
 } from "../../../tools/auth";
+import { _ } from "@opensya/utils";
 
 interface LoginBody {
   email: string;
@@ -26,13 +27,14 @@ export default defineRoute(
       .select()
       .from(tables.user)
       .where(orm.eq(tables.user.email, body.email));
-    console.log(user);
 
     if (!user) throw new UnauthorizedError("Invalid credentials");
     if (!user.password) throw new UnauthorizedError("Invalid credentials");
 
     const isPasswordValid = await bcrypt.compare(body.password, user.password);
     if (!isPasswordValid) throw new UnauthorizedError("Invalid credentials");
+
+    _.unset(user, "password");
 
     const accessToken = await reply.jwtSign({ sub: user.id });
     const refreshToken = createRefreshToken();

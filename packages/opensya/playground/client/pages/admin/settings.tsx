@@ -31,7 +31,7 @@ export function getBlocks(): Block[] {
         },
         {
           title: "Profile",
-          // url: "/admin/settings/profile",
+          url: "/admin/settings/account/profile",
           icon: User,
         },
         {

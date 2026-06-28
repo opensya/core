@@ -12,11 +12,25 @@ import {
 
 import type { PgColumnBuilder, PgTimestampConfig } from "drizzle-orm/pg-core";
 import { BadRequestError } from "../../error";
+import type { ColumnBuilderBaseConfig } from "drizzle-orm";
 
 export type AnyDrizzleColumnBuilder = PgColumnBuilder<any>;
+
 export type HiddenDrizzleMethods = "primaryKey" | "notNull";
 
-export type ValidateFn = (value: any, data: any) => MayBePromise<string | null>;
+export type InferColumnValue<T> =
+  T extends EnhancedColumn<infer TDrizzle>
+    ? InferColumnValue<TDrizzle>
+    : T extends PgColumnBuilder<infer TConfig>
+      ? TConfig extends ColumnBuilderBaseConfig<any>
+        ? TConfig["data"]
+        : unknown
+      : unknown;
+
+export type ValidateFn<TColumn> = (
+  value: InferColumnValue<TColumn>,
+  data: any,
+) => MayBePromise<string | null>;
 
 export type RelationDef = {
   type: "one" | "many";
@@ -44,7 +58,7 @@ export type EnhanceDrizzleMethods<T> = {
 };
 
 export type EnhancedColumn<T> = EnhanceDrizzleMethods<T> & {
-  _validateFn?: ValidateFn;
+  _validateFn?: ValidateFn<T>;
   _relation?: RelationDef;
   _enumValues?: { name: string; values: string[] };
 
@@ -56,14 +70,14 @@ export type EnhancedColumn<T> = EnhanceDrizzleMethods<T> & {
     ? EnhancedColumn<R>
     : EnhancedColumn<T>;
 
-  validate(fn: ValidateFn): EnhancedColumn<T>;
+  validate(fn: ValidateFn<T>): EnhancedColumn<T>;
 
   relation(def: RelationDef): EnhancedColumn<T>;
 };
 
 export function buildColumn<TDrizzle extends AnyDrizzleColumnBuilder>(
   column: TDrizzle,
-  validateFn?: ValidateFn,
+  validateFn?: ValidateFn<TDrizzle>,
   relationDef?: RelationDef,
 ): EnhancedColumn<TDrizzle> {
   const wrapped = Object.assign(column, {
@@ -78,7 +92,7 @@ export function buildColumn<TDrizzle extends AnyDrizzleColumnBuilder>(
       return buildColumn((column as any).notNull(), validateFn, relationDef);
     },
 
-    validate(fn: ValidateFn) {
+    validate(fn: ValidateFn<TDrizzle>) {
       return buildColumn(column, fn, relationDef);
     },
 
@@ -129,6 +143,12 @@ export type TableMeta = {
       enumeration?: { name: string; values: string[] };
     }
   >;
+};
+
+export type InferTableInput<
+  TColumns extends Record<string, AnyEnhancedColumn>,
+> = {
+  [K in keyof TColumns]: InferColumnValue<TColumns[K]>;
 };
 
 export function createDrizzleTable<
