@@ -13,7 +13,7 @@ export async function registerDatabase() {
 
   const metas = readJson<Record<string, TableMeta>>(path, {});
   for (const meta of Object.values(metas)) {
-    const { default: content } = await import(meta.outputFile);
-    Object.assign(tables, { [meta.name]: content });
+    const content = await import(meta.outputFile);
+    Object.assign(tables, { [meta.name]: content[`_${meta.name}`] });
   }
 }

@@ -7,6 +7,7 @@ import {
   timestamp as pgTimestamp,
   uuid as pgUuid,
   pgTable,
+  pgEnum,
 } from "drizzle-orm/pg-core";
 
 import type { PgColumnBuilder, PgTimestampConfig } from "drizzle-orm/pg-core";
@@ -42,6 +43,7 @@ export type RelationDef = {
 export type EnhancedColumn<T, TData = unknown> = EnhanceDrizzleMethods<T> & {
   _validateFn?: ValidateFn<T, TData>;
   _relation?: RelationDef;
+  _enumValues?: { name: string; values: string[] };
 
   primary(): T extends { primaryKey(): infer R }
     ? EnhancedColumn<R, TData>
@@ -113,6 +115,17 @@ export const date = (config?: PgTimestampConfig) =>
 
 export const boolean = () => buildColumn(pgBoolean());
 
+export function enumeration<
+  const TName extends string,
+  const TValues extends readonly [string, ...string[]],
+>(name: TName, values: TValues) {
+  const enumBuilder = pgEnum(name, values);
+
+  return Object.assign(buildColumn(enumBuilder().$type<TValues[number]>()), {
+    _enumValues: { name, values },
+  });
+}
+
 export type AnyEnhancedColumn = EnhancedColumn<AnyDrizzleColumnBuilder>;
 
 export type TableMeta = {
@@ -120,7 +133,14 @@ export type TableMeta = {
   name: string;
   tableName: string;
   typeName: string;
-  columns: Record<string, { file: string; relation?: RelationDef }>;
+  columns: Record<
+    string,
+    {
+      file: string;
+      relation?: RelationDef;
+      enumeration?: { name: string; values: string[] };
+    }
+  >;
 };
 
 export type InferTableInput<

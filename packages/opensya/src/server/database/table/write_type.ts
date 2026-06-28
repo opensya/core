@@ -23,7 +23,7 @@ declare module '{{core_server_path}}' {
   interface Tables extends _Table {}
 }
 
-export default Table;
+export const _{{name}}: Table;
 `;
 
 const clientTemplate = `${shareTemplate}

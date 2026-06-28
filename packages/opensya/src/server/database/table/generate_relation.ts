@@ -131,7 +131,7 @@ export function generateAllRelations(
       .map((t) => {
         const m = manifest[t];
         if (!m) throw new Error(`Table "${t}" not found in manifest`);
-        return `import ${t} from './${m.tableName}'`;
+        return `import { _${t} as ${t} } from './${m.tableName}'`;
       })
       .join(";\n");
 

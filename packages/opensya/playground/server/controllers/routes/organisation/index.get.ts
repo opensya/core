@@ -1,4 +1,4 @@
-import { db, defineRoute, tables } from "../../../../../src/server";
+import { db, defineRoute, tables } from "@core/server";
 
 export default defineRoute(
   async () => {

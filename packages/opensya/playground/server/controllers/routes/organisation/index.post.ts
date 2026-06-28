@@ -1,4 +1,4 @@
-import { db, defineRoute, tables } from "../../../../../src/server";
+import { db, defineRoute, tables } from "@core/server";
 
 export default defineRoute(
   async (request) => {
@@ -18,13 +18,6 @@ export default defineRoute(
     schema: {
       body: {
         type: "object",
-
-        // required: ["email", "password"],
-
-        // properties: {
-        //   email: { type: "string", format: "email" },
-        //   password: { type: "string", minLength: 6 },
-        // },
       },
     },
   },

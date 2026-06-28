@@ -9,7 +9,7 @@ import {
   writeDrizzleSchema,
   generateTablesJs,
   generateSchemaJS,
-} from "./write_table_schema";
+} from "./generate_table";
 import {
   getOpensyaConfig,
   loadModuleOpensyaConfig,
@@ -39,8 +39,9 @@ export async function compileTables() {
 
   chokidar
     .watch(manifestDir)
-    .on("add", () => onFinish)
-    .on("change", () => onFinish);
+    .on("add", () => onFinish())
+    .on("change", () => onFinish())
+    .on("unlink", () => onFinish());
 }
 
 async function detectTables(config: UseOpensyaConfig) {
@@ -113,9 +114,11 @@ async function compileTable(meta: TableMeta & { file: string }) {
 
     const column = columns[key];
     const relation = column._relation;
+    const enumeration = column._enumValues;
 
     manifestData.columns[key] = { file: meta.file };
     manifestData.columns[key].relation = relation;
+    manifestData.columns[key].enumeration = enumeration;
   }
 
   manifest[meta.name] = manifestData;

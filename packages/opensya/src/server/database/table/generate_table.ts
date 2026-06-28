@@ -6,15 +6,26 @@ import { writeTableType } from "./write_type";
 
 const template = `import { createDrizzleTable } from '{{core_server_path}}'
 import { readJson } from '@opensya/utils'
+import { pgEnum } from "drizzle-orm/pg-core";
 
 {{imports_columns}}
 
-export default createDrizzleTable(
-  '{{sql_table_name}}', 
+{{enums}}
+
+export const _{{name}} = createDrizzleTable(
+  '{{table_name}}', 
   {
     {{columns}}
   },
 )
+`;
+
+const enumTemplate = `export const _{{enum_name}}_enum = pgEnum(
+  '{{enum_name}}',
+  [
+    {{values}}
+  ]
+);
 `;
 
 export function writeDrizzleSchema(
@@ -32,17 +43,30 @@ export function writeDrizzleSchema(
 
   const imports: string[] = [];
   const columns: string[] = [];
+  const enums: string[] = [];
 
   for (const key in meta.columns) {
     if (!Object.hasOwn(meta.columns, key)) continue;
     if (key === "default") continue;
 
-    const path = normalizeDir(
-      relative(outputTablesDir, meta.columns[key].file),
-    );
+    const column = meta.columns[key];
+    const path = normalizeDir(relative(outputTablesDir, column.file));
 
     imports.push(`import { ${key} } from '${path}'`);
     columns.push(key);
+
+    if (column.enumeration) {
+      enums.push(
+        enumTemplate
+          .replaceAll("{{enum_name}}", column.enumeration.name)
+          .replaceAll(
+            "{{values}}",
+            column.enumeration.values
+              .map((value) => `'${value}'`)
+              .join(",\n    "),
+          ),
+      );
+    }
   }
 
   atomicWriteFile(
@@ -54,8 +78,12 @@ export function writeDrizzleSchema(
       .replaceAll("{{imports_columns}}", imports.join(";\n"))
       .replaceAll("{{columns}}", columns.join(",\n    "))
 
-      .replaceAll("{{table_name}}", meta.name)
-      .replaceAll("{{sql_table_name}}", meta.tableName),
+      .replaceAll("{{name}}", meta.name)
+      .replaceAll("{{table_name}}", meta.tableName)
+
+      .replaceAll("{{enums}}", enums.join("\n")),
+
+    // .replaceAll(/\n\n/, "\n"),
   );
 
   if (process.argv.includes("--dev")) writeTableType(meta);
@@ -69,10 +97,7 @@ export function generateTablesJs() {
   );
 
   const content = Object.entries(metas)
-    .map(
-      ([, meta]) =>
-        `export { default as ${meta.name} } from "./tables/${meta.tableName}";`,
-    )
+    .map(([, meta]) => `export * from "./tables/${meta.tableName}";`)
     .join("\n");
 
   atomicWriteFile(
@@ -83,7 +108,10 @@ export function generateTablesJs() {
 
 export function generateSchemaJS() {
   const { OUTPUT_DIR_SERVER } = getDirs();
-  const imports = ["export * from './tables';", "export * from './relations';"];
+  const imports = [
+    "export * from './tables.js';",
+    "export * from './relations.js';",
+  ];
 
   atomicWriteFile(
     join(OUTPUT_DIR_SERVER, "database/schema.js"),

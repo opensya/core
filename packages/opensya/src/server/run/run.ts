@@ -6,8 +6,10 @@ import { registerDatabase } from "../database";
 import { runPrepare } from "./prepare";
 import { errorHandler } from "../error";
 import cookie from "@fastify/cookie";
+import cors from "@fastify/cors";
 
-import * as plugins from "../plugins";
+import plugins from "../plugins/in_plugibs";
+import { registerPlugins } from "../plugins";
 
 async function createApp(
   factory: typeof Fastify,
@@ -17,14 +19,22 @@ async function createApp(
 
   await registerDatabase();
   await registerServices();
-  await registerControllers(app);
 
-  await app.register(cookie, { secret: process.env.SECRET_KEY });
+  app.register(cors, {
+    origin: (origin, cb) => cb(null, origin ?? true),
+    credentials: true,
+    methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
+  });
 
   app.setErrorHandler(errorHandler);
 
-  await app.register(plugins.jwt);
-  await app.register(plugins.vite);
+  await app.register(cookie, { secret: process.env.SECRET_KEY });
+
+  for (const plugin of plugins) await app.register(plugin);
+
+  await registerPlugins(app);
+
+  await registerControllers(app);
 
   return app;
 }
@@ -48,9 +58,7 @@ export async function runServer() {
     });
 
     const port = parseInt(process.env.PORT ?? "3000");
-    const address = await app.listen({ port });
-
-    app.log.info(`Server listening at ${address}`);
+    await app.listen({ port });
   } catch (error) {
     console.error(error);
     process.exit(1);

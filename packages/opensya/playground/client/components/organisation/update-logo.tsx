@@ -4,104 +4,147 @@ import {
   FieldDescription,
   FieldLabel,
 } from "@/components/ui/field";
+
+import {
+  Avatar,
+  AvatarBadge,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar";
+
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { useApi } from "@/lib/api";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
+import { uploadFile, useApi } from "@/lib/api";
 import { Spinner } from "@/components/ui/spinner";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSession } from "@/providers/02.session.global";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { FileImage } from "../file-image";
+import { X } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function OrganisationLogoUpdate() {
   const api = useApi();
   const [submitting, setSubmitting] = useState(false);
   const { organisation, reload } = useSession();
 
-  interface OrganisationNameForm {
-    name: string;
+  interface OrganisationLogoForm {
+    logo: FileList | null;
   }
 
-  const form = useForm<OrganisationNameForm>({
-    defaultValues: { name: "" },
+  const form = useForm<OrganisationLogoForm>({
+    defaultValues: { logo: null },
   });
 
-  useEffect(() => {
-    form.reset({
-      name: organisation?.name ?? "",
-    });
-  }, [organisation?.name, form]);
-
-  async function onSubmit() {
-    const values = form.getValues();
-
+  async function onSubmit(file: File) {
     if (!organisation) return;
-    if (values.name === organisation.name) return;
+
+    setSubmitting(true);
+
+    try {
+      const { fileId } = await uploadFile(file, {
+        ownerId: organisation.id,
+        ownerType: "organisation",
+      });
+
+      await api("/api/organisation", {
+        method: "post",
+        body: { logoId: fileId },
+      });
+
+      toast.success("Logo updated");
+      await reload();
+    } catch {
+      toast.error("Failed to upload logo");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function onRemove(e: React.MouseEvent) {
+    e.stopPropagation();
+    if (!organisation) return;
 
     setSubmitting(true);
 
     try {
       await api("/api/organisation", {
         method: "post",
-        body: values,
+        body: { logoId: null },
       });
 
-      toast.success("Organisation name updated");
-
+      toast.success("Logo removed");
       await reload();
+    } catch {
+      toast.error("Failed to remove logo");
     } finally {
       setSubmitting(false);
     }
   }
 
+  function upload() {
+    const input = document.createElement("input");
+
+    input.type = "file";
+    input.accept = "image/png, image/jpeg";
+
+    input.addEventListener("change", () => {
+      const file = input.files?.item(0);
+      if (file) onSubmit(file);
+    });
+
+    input.click();
+  }
   return (
     <Controller
-      name="name"
+      name="logo"
       control={form.control}
-      render={({ field, fieldState }) => (
+      render={({ fieldState }) => (
         <Field data-invalid={fieldState.invalid} orientation="horizontal">
           <FieldContent>
-            <FieldLabel htmlFor={field.name}>Logo</FieldLabel>
+            <FieldLabel>Logo</FieldLabel>
             <FieldDescription>Recommended size is 256x256px</FieldDescription>
           </FieldContent>
 
-          <div>
-            <Avatar size="lg">
-              <AvatarImage
-                src="https://github.com/shadcn.png"
-                alt="@shadcn"
-                className="rounded-md"
-              />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
+          <div className="flex items-center gap-3">
+            <FileImage fileId={organisation?.logoId}>
+              {(url) => (
+                <Avatar size="lg" className="cursor-pointer " onClick={upload}>
+                  {submitting ? (
+                    <Spinner className="absolute inset-1/2 -translate-1/2" />
+                  ) : (
+                    <>
+                      <AvatarImage src={url ?? undefined} />
 
-            {/* <InputGroup>
-              <InputGroupInput
-                {...field}
-                id={field.name}
-                aria-invalid={fieldState.invalid}
-                placeholder={organisation?.name}
-                autoComplete="off"
-                onBlur={onSubmit}
-                disabled={submitting}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    onSubmit();
-                  }
-                }}
-              />
+                      {organisation && (
+                        <AvatarFallback>
+                          {organisation.name.at(0)}
+                        </AvatarFallback>
+                      )}
 
-              {submitting && (
-                <InputGroupAddon align="inline-end">
-                  <Spinner />
-                </InputGroupAddon>
+                      {url && (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <AvatarBadge
+                              className="size-5 bg-red-500"
+                              onClick={onRemove}
+                            >
+                              <X />
+                            </AvatarBadge>
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom">
+                            <p>Delete logo</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      )}
+                    </>
+                  )}
+                </Avatar>
               )}
-            </InputGroup> */}
+            </FileImage>
           </div>
         </Field>
       )}

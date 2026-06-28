@@ -1,6 +1,6 @@
 "use client";
 
-import { Building2, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -19,6 +19,8 @@ import {
 import { useSession } from "@/providers/02.session.global";
 import { Spinner } from "../ui/spinner";
 import { Link, useNavigate } from "react-router-dom";
+import { FileImage } from "../file-image";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export function AuthMenu() {
   const navigate = useNavigate();
@@ -36,9 +38,21 @@ export function AuthMenu() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <SidebarMenuButton className="w-fit px-1.5">
-                <div className="flex aspect-square size-5 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
-                  <Building2 className="size-3!" />
-                </div>
+                <FileImage fileId={organisation?.logoId}>
+                  {(url) => (
+                    <Avatar size="sm" className="cursor-pointer ">
+                      <>
+                        <AvatarImage src={url ?? undefined} />
+
+                        {organisation && (
+                          <AvatarFallback>
+                            {organisation.name.at(0)}
+                          </AvatarFallback>
+                        )}
+                      </>
+                    </Avatar>
+                  )}
+                </FileImage>
 
                 <span className="truncate font-medium">
                   {organisation.name}

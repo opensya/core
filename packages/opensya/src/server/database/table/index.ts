@@ -1,4 +1,4 @@
 export * from "./compile";
 export * from "./helper";
-export * from "./write_table_schema";
+export * from "./generate_table";
 export * from "./write_type";
