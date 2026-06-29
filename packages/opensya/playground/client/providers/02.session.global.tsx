@@ -116,3 +116,5 @@ export function useSession() {
 
   return context;
 }
+
+export const useAuth = useSession;

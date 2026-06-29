@@ -6,7 +6,6 @@ import {
 } from "@/components/ui/field";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { useApi } from "@/lib/api";
 import {
   InputGroup,
   InputGroupAddon,
@@ -14,7 +13,7 @@ import {
 } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
 import { useEffect, useState } from "react";
-import { useSession } from "@/providers/02.session.global";
+import { useUser } from "@/providers/user";
 
 interface UserUpdateProfileForm {
   firstName: string;
@@ -25,11 +24,10 @@ interface UserUpdateProfileForm {
 }
 
 export function UserUpdateProfile() {
-  const api = useApi();
   const [submitting, setSubmitting] = useState<
     keyof UserUpdateProfileForm | null
   >(null);
-  const { user, reload } = useSession();
+  const { user, update } = useUser();
 
   const form = useForm<UserUpdateProfileForm>({
     defaultValues: {
@@ -59,13 +57,9 @@ export function UserUpdateProfile() {
     setSubmitting(field);
 
     try {
-      await api("/api/auth/profile", {
-        method: "post",
-        body: { [field]: values[field] },
-      });
+      await update({ [field]: values[field] });
 
       toast.success("Profile updated");
-      await reload();
     } finally {
       setSubmitting(null);
     }

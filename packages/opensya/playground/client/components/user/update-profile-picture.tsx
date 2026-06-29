@@ -10,10 +10,8 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { uploadFile } from "@@/modules/storage/client/lib/api";
-import { useApi } from "@/lib/api";
 import { Spinner } from "@/components/ui/spinner";
 import { useState } from "react";
-import { useSession } from "@/providers/02.session.global";
 import { FileImage } from "@@/modules/storage/client/components/file-image";
 import { X } from "lucide-react";
 import {
@@ -21,11 +19,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useUser } from "@/providers/user";
 
-export function AuthUpdateProfilePicture() {
-  const api = useApi();
+export function UserUpdateProfilePicture() {
+  const { user, update } = useUser();
+
   const [submitting, setSubmitting] = useState(false);
-  const { user, reload } = useSession();
 
   interface UserProfilePictureForm {
     profilePicture: FileList | null;
@@ -46,15 +45,9 @@ export function AuthUpdateProfilePicture() {
         ownerType: "user",
       });
 
-      await api("/api/auth/profile", {
-        method: "post",
-        body: { profilePictureId: fileId },
-      });
+      await update({ profilePictureId: fileId });
 
       toast.success("Profile picture updated");
-      await reload();
-    } catch {
-      toast.error("Failed to upload profile picture");
     } finally {
       setSubmitting(false);
     }
@@ -67,15 +60,8 @@ export function AuthUpdateProfilePicture() {
     setSubmitting(true);
 
     try {
-      await api("/api/auth/profile", {
-        method: "post",
-        body: { profilePictureId: null },
-      });
-
+      await update({ profilePictureId: null });
       toast.success("Profile picture removed");
-      await reload();
-    } catch {
-      toast.error("Failed to remove profile picture");
     } finally {
       setSubmitting(false);
     }
