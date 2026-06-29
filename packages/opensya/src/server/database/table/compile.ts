@@ -6,7 +6,7 @@ import { REGEXS } from "../../utils";
 
 import type { AnyEnhancedColumn, TableMeta } from "./helper";
 import {
-  writeDrizzleSchema,
+  generateTable,
   generateTablesJs,
   generateSchemaJS,
 } from "./generate_table";
@@ -124,5 +124,5 @@ async function compileTable(meta: TableMeta & { file: string }) {
   manifest[meta.name] = manifestData;
 
   atomicWriteFile(manifestPath, JSON.stringify(manifest, null, 2));
-  writeDrizzleSchema(manifest, meta.name);
+  generateTable(manifest, meta.name);
 }

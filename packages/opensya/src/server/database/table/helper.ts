@@ -8,9 +8,15 @@ import {
   uuid as pgUuid,
   pgTable,
   pgEnum,
+  index as pgIndex,
+  uniqueIndex as pgUniqueIndex,
 } from "drizzle-orm/pg-core";
 
-import type { PgColumnBuilder, PgTimestampConfig } from "drizzle-orm/pg-core";
+import type {
+  IndexBuilder,
+  PgColumnBuilder,
+  PgTimestampConfig,
+} from "drizzle-orm/pg-core";
 import { BadRequestError } from "../../error";
 
 export type AnyDrizzleColumnBuilder = PgColumnBuilder<any>;
@@ -31,6 +37,20 @@ export type RelationDef = {
   };
 };
 
+export type IndexDef = {
+  name?: string;
+  unique?: boolean;
+};
+export type IndexHelpers = {
+  index: typeof pgIndex;
+  uniqueIndex: typeof pgUniqueIndex;
+};
+export type IndexFactory = (
+  table: any,
+  helpers: IndexHelpers,
+) => IndexBuilder[];
+export type ColumnIndexDef = IndexDef | IndexFactory;
+
 export type EnhanceMethod<TFn> = TFn extends (...args: infer Args) => infer R
   ? R extends AnyDrizzleColumnBuilder
     ? (...args: Args) => EnhancedColumn<R>
@@ -43,10 +63,18 @@ export type EnhanceDrizzleMethods<T> = {
   >;
 };
 
+type ColumnMeta = {
+  validateFn?: ValidateFn;
+  relationDef?: RelationDef;
+  enumValues?: { name: string; values: readonly string[] };
+  indexes?: ColumnIndexDef[];
+};
+
 export type EnhancedColumn<T> = EnhanceDrizzleMethods<T> & {
   _validateFn?: ValidateFn;
   _relation?: RelationDef;
-  _enumValues?: { name: string; values: string[] };
+  _enumValues?: { name: string; values: readonly string[] };
+  _indexes?: ColumnIndexDef[];
 
   primary(): T extends { primaryKey(): infer R }
     ? EnhancedColumn<R>
@@ -59,31 +87,47 @@ export type EnhancedColumn<T> = EnhanceDrizzleMethods<T> & {
   validate(fn: ValidateFn): EnhancedColumn<T>;
 
   relation(def: RelationDef): EnhancedColumn<T>;
+
+  index(def?: ColumnIndexDef): EnhancedColumn<T>;
 };
 
 export function buildColumn<TDrizzle extends AnyDrizzleColumnBuilder>(
   column: TDrizzle,
-  validateFn?: ValidateFn,
-  relationDef?: RelationDef,
+  meta: ColumnMeta = {},
 ): EnhancedColumn<TDrizzle> {
   const wrapped = Object.assign(column, {
-    _validateFn: validateFn,
-    _relation: relationDef,
+    _validateFn: meta.validateFn,
+    _relation: meta.relationDef,
+    _enumValues: meta.enumValues,
+    _indexes: meta.indexes,
 
     primary() {
-      return buildColumn((column as any).primaryKey(), validateFn, relationDef);
+      return buildColumn((column as any).primaryKey(), meta);
     },
 
     require() {
-      return buildColumn((column as any).notNull(), validateFn, relationDef);
+      return buildColumn((column as any).notNull(), meta);
     },
 
     validate(fn: ValidateFn) {
-      return buildColumn(column, fn, relationDef);
+      return buildColumn(column, {
+        ...meta,
+        validateFn: fn,
+      });
     },
 
     relation(def: RelationDef) {
-      return buildColumn(column, validateFn, def);
+      return buildColumn(column, {
+        ...meta,
+        relationDef: def,
+      });
+    },
+
+    index(def: ColumnIndexDef = {}) {
+      return buildColumn(column, {
+        ...meta,
+        indexes: [...(meta.indexes ?? []), def],
+      });
     },
   });
 
@@ -126,7 +170,7 @@ export type TableMeta = {
     {
       file: string;
       relation?: RelationDef;
-      enumeration?: { name: string; values: string[] };
+      enumeration?: { name: string; values: readonly string[] };
     }
   >;
 };
@@ -135,7 +179,38 @@ export function createDrizzleTable<
   TName extends string,
   TColumns extends Record<string, AnyEnhancedColumn>,
 >(name: TName, columns: TColumns) {
-  const table = pgTable(name, columns);
+  const table = pgTable(name, columns, (t) => {
+    const indexes: IndexBuilder[] = [];
+
+    for (const [field, col] of Object.entries(columns)) {
+      const _indexes = (col as AnyEnhancedColumn)._indexes ?? [];
+
+      for (const indexDef of _indexes) {
+        if (typeof indexDef === "function") {
+          indexes.push(
+            ...indexDef(t, {
+              index: pgIndex,
+              uniqueIndex: pgUniqueIndex,
+            }),
+          );
+
+          continue;
+        }
+
+        const indexName =
+          indexDef.name ??
+          `${name}_${field}_${indexDef.unique ? "unique_idx" : "idx"}`;
+
+        indexes.push(
+          indexDef.unique
+            ? pgUniqueIndex(indexName).on((t as any)[field])
+            : pgIndex(indexName).on((t as any)[field]),
+        );
+      }
+    }
+
+    return indexes;
+  });
 
   async function validateRow(data: Record<string, any>) {
     for (const [field, col] of Object.entries(columns)) {

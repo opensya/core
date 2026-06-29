@@ -28,7 +28,7 @@ const enumTemplate = `export const _{{enum_name}}_enum = pgEnum(
 );
 `;
 
-export function writeDrizzleSchema(
+export function generateTable(
   manifest: Record<string, TableMeta>,
   name: string,
 ) {
