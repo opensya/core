@@ -23,7 +23,7 @@ interface UserUpdateProfileForm {
   email: string;
 }
 
-export function UserUpdateProfile() {
+export function UserUpdateProfileItems() {
   const [submitting, setSubmitting] = useState<
     keyof UserUpdateProfileForm | null
   >(null);

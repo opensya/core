@@ -16,7 +16,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { useSession } from "@/components/providers/auth";
+import { useAuth } from "@/components/providers/auth";
 import { Spinner } from "../ui/spinner";
 import { Link, useNavigate } from "react-router-dom";
 import { FileImage } from "@@/modules/storage/client/components/file-image";
@@ -24,7 +24,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export function AuthMenu() {
   const navigate = useNavigate();
-  const { organisation, logout, isLogouting } = useSession();
+  const { organisation, logout, isLogouting } = useAuth();
 
   async function handleLogout() {
     await logout();

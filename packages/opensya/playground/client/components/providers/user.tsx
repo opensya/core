@@ -40,20 +40,24 @@ export function UserProvider({
 
   const reload = useCallback(async () => {
     try {
-      setUser(await $api<User>(`/api/user/${id}`));
+      if (isAuth) setUser(auth.user);
+      else setUser(await $api<User>(`/api/user/${id}`));
     } catch {
       setUser(null);
     }
-  }, [id]);
+  }, [id, isAuth, auth]);
 
   const update = useCallback(
     async (data: Partial<User>) => {
       try {
         if (isAuth) {
-          await $api<User>(`/api/auth/me`, { method: "post", body: data });
+          const u = await $api<User>(`/api/auth/me`, {
+            method: "post",
+            body: data,
+          });
 
-          setUser(auth.user);
-          await auth.reload();
+          auth.setUser(u);
+          setUser(u);
         } else {
           setUser(
             await $api<User>(`/api/user/${id}`, { method: "post", body: data }),

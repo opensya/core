@@ -17,7 +17,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { useSession } from "@/components/providers/auth";
+import { useAuth } from "@/components/providers/auth";
 import { login } from "@/lib/auth/api";
 
 export default function LoginPage({
@@ -25,7 +25,7 @@ export default function LoginPage({
   ...props
 }: React.ComponentProps<"div">) {
   const navigate = useNavigate();
-  const { load } = useSession();
+  const { load } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

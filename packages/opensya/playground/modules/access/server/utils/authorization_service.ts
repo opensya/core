@@ -20,7 +20,7 @@ export class AuthorizationService {
    * (compte supprimé, invitation révoquée, etc.)
    */
   async resolveActor(userId: string): Promise<Actor | null> {
-    const { db, tables, orm } = await import("@core/server");
+    const { orm } = await import("@core/server");
 
     // ── Membership org-level
     const [membership] = await db

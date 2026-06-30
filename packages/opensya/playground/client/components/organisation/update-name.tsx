@@ -9,12 +9,12 @@ import {
 } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
 import { useEffect, useState } from "react";
-import { useSession } from "@/components/providers/auth";
+import { useAuth } from "@/components/providers/auth";
 
 export function OrganisationNameUpdate() {
   const api = useApi();
   const [submitting, setSubmitting] = useState(false);
-  const { organisation, reload } = useSession();
+  const { organisation, reload } = useAuth();
 
   interface OrganisationNameForm {
     name: string;

@@ -9,18 +9,27 @@ import {
 } from "react";
 
 import { useApi } from "@/lib/api";
+import type { UserAuthorization } from "@/lib/auth/types";
 
-export interface Session {
+export type AuthMeta = UserAuthorization;
+
+export interface Session extends AuthMeta {
   user: User;
   organisation: Organisation;
 }
 
 interface AuthContextValue {
-  session: Session | null;
   user: User | null;
+  setUser: (user: User) => void;
+
   organisation: Organisation | null;
+  setOrganisation: (organisation: Organisation) => void;
+
+  meta: AuthMeta | null;
+
   isAuthenticated: boolean;
   isLoading: boolean;
+
   load: () => Promise<void>;
   reload: () => Promise<void>;
   clear: () => void;
@@ -34,35 +43,45 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const api = useApi();
 
-  const [session, setSession] = useState<Session | null>(null);
+  const [organisation, setOrganisation] = useState<Organisation | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [meta, setMeta] = useState<AuthMeta | null>(null);
+
   const [isLoading, setIsLoading] = useState(true);
   const [isLogouting, setLogouting] = useState(false);
+
+  const clear = useCallback(() => {
+    setUser(null);
+    setOrganisation(null);
+    setMeta(null);
+  }, []);
 
   const load = useCallback(async () => {
     setIsLoading(true);
 
     try {
       const currentSession = await api<Session>("/api/auth");
-      setSession(currentSession);
+
+      setUser(currentSession.user);
+      setOrganisation(currentSession.organisation);
     } catch {
-      setSession(null);
+      clear();
     } finally {
       setIsLoading(false);
     }
-  }, [api]);
+  }, [api, clear]);
 
   const reload = useCallback(async () => {
     try {
       const currentSession = await api<Session>("/api/auth");
-      setSession(currentSession);
-    } catch {
-      setSession(null);
-    }
-  }, [api]);
 
-  const clear = useCallback(() => {
-    setSession(null);
-  }, []);
+      setUser(currentSession.user);
+      setOrganisation(currentSession.organisation);
+      setMeta(currentSession);
+    } catch {
+      clear();
+    }
+  }, [api, clear]);
 
   const logout = useCallback(async () => {
     setLogouting(true);
@@ -85,12 +104,15 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<AuthContextValue>(() => {
     return {
-      session,
+      user,
+      setUser,
 
-      user: session?.user ?? null,
-      organisation: session?.organisation ?? null,
+      organisation,
+      setOrganisation,
 
-      isAuthenticated: Boolean(session?.user),
+      meta,
+
+      isAuthenticated: Boolean(user),
       isLoading,
 
       load,
@@ -100,19 +122,27 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       logout,
       isLogouting,
     };
-  }, [session, isLoading, load, reload, clear, logout, isLogouting]);
+  }, [
+    user,
+    organisation,
+    meta,
+    isLoading,
+    load,
+    reload,
+    clear,
+    logout,
+    isLogouting,
+  ]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-export function useSession() {
+export function useAuth() {
   const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error("useSession must be used inside AuthProvider");
+    throw new Error("useAuth must be used inside AuthProvider");
   }
 
   return context;
 }
-
-export const useAuth = useSession;

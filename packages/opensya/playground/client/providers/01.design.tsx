@@ -1,4 +1,5 @@
 import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { createContext, useContext, useEffect, useState } from "react";
 
 type Theme = "dark" | "light" | "system";
@@ -59,8 +60,11 @@ export default function ThemeProvider({
 
   return (
     <ThemeProviderContext.Provider {...props} value={value}>
-      {children}
-      <Toaster position="bottom-right" />
+      <TooltipProvider>
+        {children}
+
+        <Toaster position="bottom-right" />
+      </TooltipProvider>
     </ThemeProviderContext.Provider>
   );
 }

@@ -31,7 +31,7 @@ export function viteTransformProvidersPlugin(): Plugin {
     const files = getChildren(clientDir, {
       recursive: true,
       onlyFile: true,
-      endWith: /\.global\.(tsx|jsx)$/,
+      endWith: /\.(tsx|jsx)$/,
     });
 
     for (const file of files) {
