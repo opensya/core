@@ -3,7 +3,7 @@ import { existsSync } from "node:fs";
 import { REGEXS } from "../../utils";
 import { getDirs } from "../../../utils";
 import { resolveRouteMeta } from "./resolve_meta";
-import type { RouteMeta, DefinedRoute } from "./define";
+import type { RouteMeta, DefinedRoute } from "./helpers";
 import { atomicWriteFile, getChildren, readJson } from "@opensya/utils";
 import {
   getOpensyaConfig,

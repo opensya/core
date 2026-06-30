@@ -3,12 +3,14 @@ import { _ } from "@opensya/utils";
 
 export default defineRoute(
   async (request) => {
+    const [organisation] = await db.select().from(tables.organisation);
+
+    if (!request.user) return { organisation };
+
     const [user] = await db
       .select()
-      .from(tables.user)
-      .where(orm.eq(tables.user.id, request.user.sub));
-
-    const [organisation] = await db.select().from(tables.organisation);
+      .from(tables.users)
+      .where(orm.eq(tables.users.id, request.user.sub));
 
     if (user) {
       _.unset(user, "password");

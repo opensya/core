@@ -3,17 +3,17 @@ import { _ } from "@opensya/utils";
 
 export default defineRoute(
   async (request) => {
-    const body = request.body as typeof tables.user.$inferInsert;
+    const body = request.body as typeof tables.users.$inferInsert;
 
     _.unset(body, "password");
     _.unset(body, "email");
 
-    await tables.user.validateRow(body);
+    await tables.users.validateRow(body);
 
     const [user] = await db
-      .update(tables.user)
+      .update(tables.users)
       .set(body)
-      .where(orm.eq(tables.user.id, request.user.sub))
+      .where(orm.eq(tables.users.id, request.user.sub))
       .returning();
 
     return user;

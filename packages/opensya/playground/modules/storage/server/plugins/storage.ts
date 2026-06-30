@@ -9,7 +9,7 @@ export default definePlugin((app) => {
     done(null, body),
   );
 
-  app.addHook("onListen", () => {
+  app.addHook("onReady", () => {
     let adapterKey = process.env.STORAGE_ADAPTER as StorageAdapterKey;
     adapterKey ??= "local";
 

@@ -1,20 +1,7 @@
-import { loadServices } from "./load";
-import { services } from "./services";
-
-export interface GetService {
-  <R = unknown, P extends unknown[] = []>(
-    name: string,
-  ): (...args: P) => Promise<R>;
-}
+import { getDirs } from "../../utils";
+import { join } from "node:path";
 
 export async function registerServices() {
-  const _services = await loadServices();
-
-  for (const service of _services) {
-    if (!service.content.default) continue;
-
-    Object.assign(services, {
-      [service._meta.name]: service.content.default.service,
-    });
-  }
+  const { OUTPUT_DIR_SERVER } = getDirs();
+  await import(join(OUTPUT_DIR_SERVER, "services/index.js"));
 }

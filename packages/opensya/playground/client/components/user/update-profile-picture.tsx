@@ -19,7 +19,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useUser } from "@/providers/user";
+import { useUser } from "@/components/providers/user";
 
 export function UserUpdateProfilePicture() {
   const { user, update } = useUser();

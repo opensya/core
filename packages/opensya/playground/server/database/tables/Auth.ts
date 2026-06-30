@@ -2,7 +2,7 @@ import { string, uuid, date } from "../../../../src/server";
 
 export const id = uuid().defaultRandom().primary().require();
 
-export const userId = uuid().require();
+export const userId = uuid().require().index();
 //  .references(() => user.id, { onDelete ="cascade" })
 
 export const tokenHash = string().require();

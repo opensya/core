@@ -10,3 +10,7 @@ export const tables = {} as Tables;
 export function getTable<TKey extends TableName>(name: TKey): Table<TKey> {
   return tables[name];
 }
+
+declare global {
+  const tables: Tables;
+}

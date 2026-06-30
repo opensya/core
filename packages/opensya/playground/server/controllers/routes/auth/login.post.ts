@@ -25,8 +25,8 @@ export default defineRoute(
 
     const [user] = await db
       .select()
-      .from(tables.user)
-      .where(orm.eq(tables.user.email, body.email));
+      .from(tables.users)
+      .where(orm.eq(tables.users.email, body.email));
 
     if (!user) throw new UnauthorizedError("Invalid credentials");
     if (!user.password) throw new UnauthorizedError("Invalid credentials");

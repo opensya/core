@@ -1,26 +1,20 @@
 import { join, relative } from "node:path";
 import { getDirs } from "../../utils";
 import { atomicWriteFile, normalizeDir } from "@opensya/utils";
+import type { ServiceMeta } from "./helper";
 
-const template = `type Service = (typeof import("{{import}}"))['default']['service'];
-
-interface _Service {
-  {{name}}: Service
-}
-
-declare module '{{core_server_path}}' {
-  interface Services extends _Service {}
+const template = `declare global {
+  const {{name}}: (typeof import("{{import}}"))["default"];
 }
 
 export {};
 `;
 
-export function writeType(filePath: string, { name }: { name: string }) {
+export function writeType({ name, file }: ServiceMeta) {
   const { OUTPUT_DIR_SERVER, CORE_DIR_SERVER } = getDirs();
 
   const outputServicesDir = join(OUTPUT_DIR_SERVER, "services");
-
-  const rPath = normalizeDir(relative(outputServicesDir, filePath));
+  const rPath = normalizeDir(relative(outputServicesDir, file));
 
   const coreDirServer = normalizeDir(
     relative(outputServicesDir, CORE_DIR_SERVER),

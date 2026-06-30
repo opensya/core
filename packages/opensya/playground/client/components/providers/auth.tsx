@@ -15,7 +15,7 @@ export interface Session {
   organisation: Organisation;
 }
 
-interface SessionContextValue {
+interface AuthContextValue {
   session: Session | null;
   user: User | null;
   organisation: Organisation | null;
@@ -29,9 +29,9 @@ interface SessionContextValue {
   isLogouting: boolean;
 }
 
-const SessionContext = createContext<SessionContextValue | null>(null);
+const AuthContext = createContext<AuthContextValue | null>(null);
 
-export default function SessionProvider({ children }: { children: ReactNode }) {
+export default function AuthProvider({ children }: { children: ReactNode }) {
   const api = useApi();
 
   const [session, setSession] = useState<Session | null>(null);
@@ -83,7 +83,7 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
     load();
   }, [load]);
 
-  const value = useMemo<SessionContextValue>(() => {
+  const value = useMemo<AuthContextValue>(() => {
     return {
       session,
 
@@ -102,16 +102,14 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
     };
   }, [session, isLoading, load, reload, clear, logout, isLogouting]);
 
-  return (
-    <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useSession() {
-  const context = useContext(SessionContext);
+  const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error("useSession must be used inside SessionProvider");
+    throw new Error("useSession must be used inside AuthProvider");
   }
 
   return context;

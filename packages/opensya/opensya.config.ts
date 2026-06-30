@@ -1,4 +1,4 @@
 export default defineOpensyaConfig({
   srcDir: "playground",
-  modules: ["modules/start", "modules/storage"],
+  modules: ["modules/storage", "modules/access", "modules/start"],
 });

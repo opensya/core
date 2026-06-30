@@ -1,29 +1,29 @@
-import { defineRoute, tables, db, orm } from "@core/server";
-import { _ } from "@opensya/utils";
+import authorize from "@@/modules/access/server/controllers/transformers/authorize";
+import { defineRoute } from "@core/server";
 
 export default defineRoute(
   async (request) => {
-    const body = request.body as typeof tables.user.$inferInsert;
+    const { id } = request.params as { id: string };
+    const body = request.body as typeof tables.users.$inferInsert;
 
-    _.unset(body, "password");
-    _.unset(body, "email");
-
-    await tables.user.validateRow(body);
-
-    const [user] = await db
-      .update(tables.user)
-      .set(body)
-      .where(orm.eq(tables.user.id, request.user.sub))
-      .returning();
-
-    return user;
+    return await updateUser(id, body);
   },
 
   {
     schema: {
+      params: {
+        type: "object",
+        required: ["id"],
+        properties: {
+          id: { type: "string" },
+        },
+      },
+
       body: {
         type: "object",
       },
     },
   },
+
+  authorize("member:update"),
 );

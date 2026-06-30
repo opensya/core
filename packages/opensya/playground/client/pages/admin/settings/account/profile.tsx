@@ -3,7 +3,7 @@ import { UserUpdateProfile } from "@/components/user/update";
 import { Card, CardContent } from "@/components/ui/card";
 import { definePageMeta } from "@core/client/page-meta";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useUser } from "@/providers/user";
+import { useUser } from "@/components/providers/user";
 
 export const meta = definePageMeta({ auth: true });
 

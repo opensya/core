@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
 import { useEffect, useState } from "react";
-import { useSession } from "@/providers/02.session.global";
+import { useSession } from "@/components/providers/auth";
 
 export function OrganisationNameUpdate() {
   const api = useApi();

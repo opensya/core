@@ -1,19 +1,14 @@
 import { join } from "node:path";
 import { getDirs } from "../../utils";
-import { tables } from "./tables";
 import { connectDatabase } from "./connection";
-import { readJson } from "@opensya/utils";
-import type { TableMeta } from "./table";
+import { tables } from "./tables";
 
 export async function registerDatabase() {
-  await connectDatabase();
-
   const { OUTPUT_DIR_SERVER } = getDirs();
-  const path = join(OUTPUT_DIR_SERVER, "database/tables.json");
+  const path = join(OUTPUT_DIR_SERVER, "database/schema.js");
 
-  const metas = readJson<Record<string, TableMeta>>(path, {});
-  for (const meta of Object.values(metas)) {
-    const content = await import(meta.outputFile);
-    Object.assign(tables, { [meta.name]: content[`_${meta.name}`] });
-  }
+  connectDatabase();
+  await import(path);
+
+  Object.assign(globalThis, { tables });
 }

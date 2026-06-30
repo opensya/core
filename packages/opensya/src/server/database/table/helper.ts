@@ -3,34 +3,49 @@ import {
   boolean as pgBoolean,
   integer,
   jsonb,
-  text,
+  text as pgText,
+  varchar,
   timestamp as pgTimestamp,
   uuid as pgUuid,
   pgTable,
   pgEnum,
   index as pgIndex,
   uniqueIndex as pgUniqueIndex,
+  primaryKey as pgPrimaryKey,
 } from "drizzle-orm/pg-core";
 
 import type {
   IndexBuilder,
   PgColumnBuilder,
   PgTimestampConfig,
+  PgVarcharConfig,
+  PrimaryKeyBuilder,
 } from "drizzle-orm/pg-core";
 import { BadRequestError } from "../../error";
 
 export type AnyDrizzleColumnBuilder = PgColumnBuilder<any>;
-export type HiddenDrizzleMethods = "primaryKey" | "notNull";
+export type HiddenDrizzleMethods = "primaryKey" | "notNull" | "references";
 
 export type ValidateFn = (value: any, data: any) => MayBePromise<string | null>;
 
+export type ReferenceAction =
+  | "cascade"
+  | "restrict"
+  | "no action"
+  | "set null"
+  | "set default";
+
 export type RelationDef = {
   type: "one" | "many";
-  to: `${string}.${string}`;
+  to: `${string}.${string}`; // table.field
 
   alias?: string;
 
   optional?: boolean;
+
+  onDelete?: ReferenceAction;
+
+  onUpdate?: ReferenceAction;
 
   inverse?: {
     alias: string;
@@ -44,11 +59,13 @@ export type IndexDef = {
 export type IndexHelpers = {
   index: typeof pgIndex;
   uniqueIndex: typeof pgUniqueIndex;
+  primaryKey: typeof pgPrimaryKey;
 };
 export type IndexFactory = (
   table: any,
   helpers: IndexHelpers,
-) => IndexBuilder[];
+) => Array<IndexBuilder | PrimaryKeyBuilder>;
+
 export type ColumnIndexDef = IndexDef | IndexFactory;
 
 export type EnhanceMethod<TFn> = TFn extends (...args: infer Args) => infer R
@@ -140,7 +157,10 @@ export const int = () => buildColumn(integer());
 
 export const json = <T = unknown>() => buildColumn(jsonb().$type<T>());
 
-export const string = () => buildColumn(text());
+export const string = (config: PgVarcharConfig = {}) =>
+  buildColumn(varchar(config));
+
+export const text = () => buildColumn(pgText());
 
 export const date = (config?: PgTimestampConfig) =>
   buildColumn(pgTimestamp(config));
@@ -180,8 +200,7 @@ export function createDrizzleTable<
   TColumns extends Record<string, AnyEnhancedColumn>,
 >(name: TName, columns: TColumns) {
   const table = pgTable(name, columns, (t) => {
-    const indexes: IndexBuilder[] = [];
-
+    const indexes: Array<IndexBuilder | PrimaryKeyBuilder> = [];
     for (const [field, col] of Object.entries(columns)) {
       const _indexes = (col as AnyEnhancedColumn)._indexes ?? [];
 
@@ -191,6 +210,7 @@ export function createDrizzleTable<
             ...indexDef(t, {
               index: pgIndex,
               uniqueIndex: pgUniqueIndex,
+              primaryKey: pgPrimaryKey,
             }),
           );
 

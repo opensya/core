@@ -14,4 +14,10 @@ export function connectDatabase() {
       ssl: false,
     },
   });
+
+  Object.assign(globalThis, { db });
+}
+
+declare global {
+  const db: ReturnType<typeof drizzle>;
 }

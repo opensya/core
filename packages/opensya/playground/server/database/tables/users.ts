@@ -67,9 +67,9 @@ export const username = string().validate(
 
     const { db, tables, orm } = await import("@core/server");
     const [existing] = await db
-      .select({ id: tables.user.id })
-      .from(tables.user)
-      .where(orm.eq(tables.user.username, value))
+      .select({ id: tables.users.id })
+      .from(tables.users)
+      .where(orm.eq(tables.users.username, value))
       .limit(1);
 
     if (existing && existing.id !== data?.id) return "Username already taken";
@@ -78,5 +78,5 @@ export const username = string().validate(
   },
 );
 
-export const email = string().require().unique();
+export const email = string().require().unique().index({ unique: true });
 export const password = string();

@@ -1,5 +1,5 @@
 import { atomicWriteFile, normalizeDir, readJson } from "@opensya/utils";
-import type { RouteMeta } from "./define";
+import type { RouteMeta } from "./helpers";
 import { getDirs } from "../../../utils";
 import { join, relative } from "node:path";
 

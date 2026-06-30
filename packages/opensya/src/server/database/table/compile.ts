@@ -23,106 +23,119 @@ import { generateRelations } from "./generate_relation";
 export async function compileTables() {
   const dirs = getDirs();
   const manifestDir = join(dirs.OUTPUT_DIR_SERVER, "database/tables.json");
+  let manifest = readJson<Record<string, TableMeta>>(manifestDir, {});
 
-  atomicWriteFile(manifestDir, "{}");
   generateSchemaJS();
-  generateTablesJs();
-  await detectTables(getOpensyaConfig());
+  writeDrizzleConfig();
 
-  const onFinish = _.debounce(() => {
-    writeDrizzleConfig();
+  const onFinish = _.debounce(async () => {
+    manifest = {};
+
+    await detectTables(getOpensyaConfig());
+
+    atomicWriteFile(manifestDir, JSON.stringify(manifest, null, 2));
+
+    for (const key in manifest) {
+      if (!Object.hasOwn(manifest, key)) continue;
+      generateTable(manifest, manifest[key].name);
+    }
+
     generateRelations();
     generateTablesJs();
   }, 300);
 
-  onFinish();
-
   chokidar
-    .watch(manifestDir)
+    .watch(join(dirs.INPUT_DIR_SERVER, "database/tables"), {
+      ignoreInitial: true,
+    })
     .on("add", () => onFinish())
     .on("change", () => onFinish())
     .on("unlink", () => onFinish());
-}
 
-async function detectTables(config: UseOpensyaConfig) {
-  const { OUTPUT_DIR_SERVER } = getDirs();
+  onFinish();
 
-  for (const module of config.modules) {
-    const config = await loadModuleOpensyaConfig(module);
-    await detectTables(config);
-  }
+  async function detectTables(config: UseOpensyaConfig) {
+    const { OUTPUT_DIR_SERVER } = getDirs();
 
-  const tablesDir = join(config._dirs.INPUT_DIR_SERVER, "database/tables");
+    for (const module of config.modules) {
+      const moduleConfig = await loadModuleOpensyaConfig(module);
+      await detectTables(moduleConfig);
+    }
 
-  if (!existsSync(tablesDir)) return {};
+    const tablesDir = join(config._dirs.INPUT_DIR_SERVER, "database/tables");
 
-  const files = getChildren(tablesDir, {
-    recursive: true,
-    onlyFile: true,
-    endWith: REGEXS.acceptFiles,
-  });
+    if (!existsSync(tablesDir)) return;
 
-  const tables = Object.fromEntries(
-    files.map((file) => {
-      const baseName = parse(file.name).name;
+    const files = getChildren(tablesDir, {
+      recursive: true,
+      onlyFile: true,
+      endWith: REGEXS.acceptFiles,
+    });
 
-      const name = _.camelCase(baseName);
-      const tableName = _.snakeCase(baseName);
-      const typeName = _.upperFirst(_.camelCase(baseName));
+    const tables = Object.fromEntries(
+      files.map((file) => {
+        const baseName = parse(file.name).name;
 
-      const outputFile = join(
-        OUTPUT_DIR_SERVER,
-        "database/tables",
-        `${tableName}.js`,
-      );
+        const name = _.camelCase(baseName);
+        const tableName = _.snakeCase(baseName);
+        const typeName = _.upperFirst(_.camelCase(baseName));
 
-      return [
-        tableName,
-        {
-          outputFile,
+        const outputFile = join(
+          OUTPUT_DIR_SERVER,
+          "database/tables",
+          `${tableName}.js`,
+        );
+
+        return [
           name,
-          tableName,
-          typeName,
-          file: file.path,
-          columns: {},
-          relations: {},
-        },
-      ];
-    }),
-  ) satisfies Record<string, TableMeta>;
+          {
+            outputFile,
+            name,
+            tableName,
+            typeName,
+            file: file.path,
+            columns: {},
+            relations: {},
+          },
+        ];
+      }),
+    ) satisfies Record<string, TableMeta & { file: string }>;
 
-  for (const key in tables) {
-    if (!Object.hasOwn(tables, key)) continue;
-    await compileTable(tables[key]);
-  }
-}
-
-async function compileTable(meta: TableMeta & { file: string }) {
-  const { OUTPUT_DIR_SERVER } = getDirs();
-  const manifestPath = join(OUTPUT_DIR_SERVER, "database/tables.json");
-
-  const columns = await loadJs<Record<string, AnyEnhancedColumn>>(meta.file);
-
-  const manifest = readJson<Record<string, TableMeta>>(manifestPath, {});
-  manifest[meta.name] ??= meta;
-
-  const manifestData = manifest[meta.name];
-
-  for (const key in columns) {
-    if (!Object.hasOwn(columns, key)) continue;
-    if (key === "default") continue;
-
-    const column = columns[key];
-    const relation = column._relation;
-    const enumeration = column._enumValues;
-
-    manifestData.columns[key] = { file: meta.file };
-    manifestData.columns[key].relation = relation;
-    manifestData.columns[key].enumeration = enumeration;
+    for (const key in tables) {
+      if (!Object.hasOwn(tables, key)) continue;
+      await writeTableManifest(manifest, tables[key]);
+    }
   }
 
-  manifest[meta.name] = manifestData;
+  async function writeTableManifest(
+    manifest: Record<string, TableMeta>,
+    meta: TableMeta & { file: string },
+  ) {
+    const columns = await loadJs<Record<string, AnyEnhancedColumn>>(meta.file);
 
-  atomicWriteFile(manifestPath, JSON.stringify(manifest, null, 2));
-  generateTable(manifest, meta.name);
+    manifest[meta.name] ??= {
+      outputFile: meta.outputFile,
+      name: meta.name,
+      tableName: meta.tableName,
+      typeName: meta.typeName,
+      columns: {},
+    };
+
+    const manifestData = manifest[meta.name];
+
+    for (const key in columns) {
+      if (!Object.hasOwn(columns, key)) continue;
+      if (key === "default") continue;
+
+      const column = columns[key];
+
+      manifestData.columns[key] = {
+        file: meta.file,
+        relation: column._relation,
+        enumeration: column._enumValues,
+      };
+    }
+
+    manifest[meta.name] = manifestData;
+  }
 }

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
 import { useEffect, useState } from "react";
-import { useUser } from "@/providers/user";
+import { useUser } from "@/components/providers/user";
 
 interface UserUpdateProfileForm {
   firstName: string;

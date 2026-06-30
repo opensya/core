@@ -6,7 +6,7 @@ import type {
   RouteOptions as FastifyRouteOptions,
 } from "fastify";
 import type { RouteTransformer } from "../transformer";
-import { transformers } from "./transformers";
+import { globalTtransformers } from "./transformers";
 
 export interface RouteMeta {
   name: string;
@@ -88,7 +88,7 @@ export async function createFastifyRoute<
   };
 
   for (const transformer of [
-    ...Object.values(transformers),
+    ...Object.values(globalTtransformers),
     ...controller.transformers,
   ]) {
     routeOptions = await transformer(routeOptions);

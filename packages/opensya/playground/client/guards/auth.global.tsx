@@ -1,4 +1,4 @@
-import { useSession } from "@/providers/02.session.global";
+import { useSession } from "@/components/providers/auth";
 import { usePageMeta } from "@core/client/page-meta";
 import { Navigate } from "react-router-dom";
 

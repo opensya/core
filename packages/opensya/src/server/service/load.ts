@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
-import type { DefinedService, ServiceMeta } from "./define";
+import type { DefinedService, ServiceMeta } from "./helper";
 import { getDirs } from "../../utils";
 
 export async function loadServices() {

@@ -1,6 +1,6 @@
 import type { HTTPMethods } from "fastify";
 import { extname, relative } from "node:path";
-import type { RouteMeta } from "./define";
+import type { RouteMeta } from "./helpers";
 import { _ } from "@opensya/utils";
 
 const HTTP_METHODS = [

@@ -1,24 +1,43 @@
 import { join, parse } from "node:path";
 import { existsSync } from "node:fs";
 import { REGEXS } from "../../utils";
-import { _, getChildren } from "@opensya/utils";
+import { _, atomicWriteFile, getChildren, readJson } from "@opensya/utils";
 import {
   getOpensyaConfig,
   loadModuleOpensyaConfig,
   type UseOpensyaConfig,
 } from "../../../config";
 import { loadDefaultJs } from "../../utils/load_js";
-import { listen } from "../../utils/listen";
 import type {
+  RouteTransformer,
   RouteTransformerGlobalHandler,
   RouteTransformerMeta,
-} from "./define";
-import { clearTransformers, transformers } from "../routes/transformers";
+} from "./helpers";
+import {
+  clearTransformers,
+  globalTtransformers,
+  transformers,
+} from "../routes/transformers";
+import { getDirs } from "../../../utils";
 
 export async function compileTransformers() {
-  clearTransformers();
+  const dirs = getDirs();
+  const mainConfig = getOpensyaConfig();
 
-  await detectTransformers(getOpensyaConfig());
+  const manifestDir = join(
+    dirs.OUTPUT_DIR_SERVER,
+    "controllers/transformers.json",
+  );
+
+  const manifest = readJson<Record<string, RouteTransformerMeta>>(
+    manifestDir,
+    {},
+  );
+
+  clearTransformers();
+  await detectTransformers(mainConfig);
+
+  atomicWriteFile(manifestDir, JSON.stringify(manifest, undefined, 2));
 
   async function detectTransformers(config: UseOpensyaConfig) {
     for (const module of config.modules) {
@@ -57,24 +76,22 @@ export async function compileTransformers() {
       if (!Object.hasOwn(transformerMetas, key)) continue;
       await compile(transformerMetas[key]);
     }
-
-    if (config._main) {
-      listen(config, "controllers/transformers", async () => {
-        clearTransformers();
-        await detectTransformers(config);
-      });
-    }
   }
 
   async function compile(meta: RouteTransformerMeta) {
-    if (!meta.global) return;
+    // if (!meta.global) return;
 
-    const transformer = await loadDefaultJs<RouteTransformerGlobalHandler>(
-      meta.file,
-    );
+    const transformer = await loadDefaultJs<RouteTransformer>(meta.file);
 
     if (!transformer) return;
 
-    transformers[meta.name] = transformer();
+    transformers[meta.name] = transformer;
+    manifest[meta.name] = meta;
+
+    if (meta.global) {
+      globalTtransformers[meta.name] = (
+        transformer as unknown as RouteTransformerGlobalHandler
+      )();
+    }
   }
 }

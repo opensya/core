@@ -1,110 +1,79 @@
-import type { ServiceMeta } from "./define";
-import { REGEXS } from "../utils";
-import { join, relative } from "node:path";
-import { existsSync, readFileSync } from "node:fs";
-import { atomicWriteFile, getChildren } from "@opensya/utils";
+import type { ServiceMeta } from "./helper";
+import { getWatchDirs, REGEXS } from "../utils";
+import { join } from "node:path";
+import { existsSync } from "node:fs";
+import { atomicWriteFile, getChildren, readJson, _ } from "@opensya/utils";
 import { resolveServiceFromFilePath } from "./resolve_service";
 import { getDirs } from "../../utils";
-import { writeType } from "./typing";
-import chokidar, { type FSWatcher } from "chokidar";
+import chokidar from "chokidar";
 import {
   getOpensyaConfig,
   loadModuleOpensyaConfig,
   type UseOpensyaConfig,
 } from "../../config";
-import { restartServer } from "../run";
+import { loadDefaultJs } from "../utils/load_js";
+import { generateServices } from "./generate_service";
 
 export async function compileServices() {
   const dirs = getDirs();
 
-  const manifestDir = join(dirs.OUTPUT_DIR_SERVER, "services.json");
-  atomicWriteFile(manifestDir, "{}");
+  const manifestDir = join(dirs.OUTPUT_DIR_SERVER, "services/services.json");
+  let manifest = readJson<Record<string, ServiceMeta>>(manifestDir, {});
 
-  await detectServices(getOpensyaConfig());
-}
+  const onFinish = _.debounce(async () => {
+    manifest = {};
 
-let watcher: FSWatcher;
+    await detectServices(getOpensyaConfig());
+    atomicWriteFile(manifestDir, JSON.stringify(manifest, undefined, 2));
+    generateServices(manifest);
 
-function listen(config: UseOpensyaConfig) {
-  if (!process.argv.includes("--dev")) return;
-  if (watcher) return;
+    //  restartServer();
+  }, 300);
 
-  const parentDir = join(config._dirs.INPUT_DIR_SERVER, "services");
-  if (!existsSync(parentDir)) return;
+  chokidar
+    .watch(
+      getWatchDirs(getOpensyaConfig()._dirs.INPUT_DIR_SERVER, "services"),
+      {
+        ignoreInitial: true,
+        ignored: (path, stats) => {
+          if (!stats?.isFile()) return false;
 
-  watcher = chokidar
-    .watch(parentDir, {
-      ignoreInitial: true,
-      ignored: (path, stats) => {
-        if (!stats?.isFile()) return false;
-
-        const isAccept = REGEXS.acceptFiles.test(path);
-        return !isAccept;
+          const isAccept = REGEXS.acceptFiles.test(path);
+          return !isAccept;
+        },
       },
-    })
-    .on("add", async () => {
+    )
+    .on("add", () => onFinish())
+    .on("change", () => onFinish())
+    .on("unlink", () => onFinish());
+
+  onFinish();
+
+  async function detectServices(config: UseOpensyaConfig) {
+    for (const module of config.modules) {
+      const config = await loadModuleOpensyaConfig(module);
       await detectServices(config);
-      restartServer();
-    })
-    .on("unlink", async () => {
-      await detectServices(config);
-      restartServer();
-    })
-    .on("change", async () => {
-      await detectServices(config);
-      restartServer();
+    }
+
+    const parentDir = join(config._dirs.INPUT_DIR_SERVER, "services");
+
+    if (!existsSync(parentDir)) return;
+
+    const files = getChildren(parentDir, {
+      recursive: true,
+      onlyFile: true,
+      endWith: REGEXS.acceptFiles,
     });
-}
 
-async function detectServices(config: UseOpensyaConfig) {
-  for (const module of config.modules) {
-    const config = await loadModuleOpensyaConfig(module);
-    await detectServices(config);
-  }
+    for (const file of files) {
+      const service = resolveServiceFromFilePath(parentDir, file.path);
 
-  const parentDir = join(config._dirs.INPUT_DIR_SERVER, "services");
+      const content = await loadDefaultJs(file.path);
+      if (!content) continue;
 
-  if (!existsSync(parentDir)) return;
+      manifest[service.name] = service;
+    }
 
-  const dirs = getDirs();
-
-  const files = getChildren(parentDir, {
-    recursive: true,
-    onlyFile: true,
-    endWith: REGEXS.acceptFiles,
-  });
-
-  let services: Record<string, ServiceMeta> = {};
-
-  for (const file of files) {
-    const service = resolveServiceFromFilePath(relative(parentDir, file.path));
-
-    services[service.name] = {
-      file: file.path,
-      ...service,
-    };
-  }
-
-  const manifestDir = join(dirs.OUTPUT_DIR_SERVER, "services.json");
-
-  if (existsSync(manifestDir)) {
-    const _services = JSON.parse(readFileSync(manifestDir, "utf8"));
-    services = { ..._services, ...services };
-  }
-
-  atomicWriteFile(manifestDir, JSON.stringify(services, undefined, 2));
-  writeTypes(services);
-
-  if (config._main) listen(config);
-}
-
-function writeTypes(services: Record<string, ServiceMeta>) {
-  if (!process.argv.includes("--dev")) return;
-
-  for (const key in services) {
-    if (!Object.hasOwn(services, key)) continue;
-
-    const service = services[key];
-    writeType(service.file, service);
+    // writeTypes(services);
   }
 }

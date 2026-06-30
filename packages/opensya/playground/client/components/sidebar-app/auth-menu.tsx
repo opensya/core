@@ -16,7 +16,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { useSession } from "@/providers/02.session.global";
+import { useSession } from "@/components/providers/auth";
 import { Spinner } from "../ui/spinner";
 import { Link, useNavigate } from "react-router-dom";
 import { FileImage } from "@@/modules/storage/client/components/file-image";

@@ -9,7 +9,7 @@ import {
 } from "react";
 
 import { $api } from "@/lib/api";
-import { useAuth } from "./02.session.global";
+import { useAuth } from "./auth";
 
 interface UserContextValue {
   user: User | null;
@@ -49,11 +49,16 @@ export function UserProvider({
   const update = useCallback(
     async (data: Partial<User>) => {
       try {
-        setUser(
-          await $api<User>(`/api/user/${id}`, { method: "post", body: data }),
-        );
+        if (isAuth) {
+          await $api<User>(`/api/auth/me`, { method: "post", body: data });
 
-        if (!isAuth) await auth.reload();
+          setUser(auth.user);
+          await auth.reload();
+        } else {
+          setUser(
+            await $api<User>(`/api/user/${id}`, { method: "post", body: data }),
+          );
+        }
       } catch {
         setUser(null);
       }

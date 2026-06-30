@@ -4,7 +4,7 @@ import { join, relative } from "node:path";
 import { getDirs } from "../../../utils";
 import { writeTableType } from "./write_type";
 
-const template = `import { createDrizzleTable } from '{{core_server_path}}'
+const template = `import { createDrizzleTable, tables } from '{{core_server_path}}'
 import { readJson } from '@opensya/utils'
 import { pgEnum } from "drizzle-orm/pg-core";
 
@@ -18,6 +18,8 @@ export const _{{name}} = createDrizzleTable(
     {{columns}}
   },
 )
+
+tables.{{name}} = _{{name}}
 `;
 
 const enumTemplate = `export const _{{enum_name}}_enum = pgEnum(
