@@ -80,3 +80,11 @@ export function appendPreHandler(
 
   return options;
 }
+
+type DefineRouteHandler = typeof defineRouteHandler;
+type AppendPreHandler = typeof appendPreHandler;
+
+declare global {
+  const defineRouteHandler: DefineRouteHandler;
+  const appendPreHandler: AppendPreHandler;
+}
