@@ -1,4 +1,6 @@
 import Fastify from "fastify";
+
+import { api } from "./plugins/api/index";
 import { vite } from "./plugins/vite/index.js";
 
 async function createApp() {
@@ -6,10 +8,7 @@ async function createApp() {
     logger: { transport: { target: "@fastify/one-line-logger" } },
   });
 
-  app.get("/api/", function (request, reply) {
-    reply.send({ hello: "world" });
-  });
-
+  await app.register(api);
   await app.register(vite);
 
   return app;
