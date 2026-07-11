@@ -102,3 +102,8 @@ export function getOpensyaConfig(name = "main"): UseOpensyaConfig {
 export function getAllOpensyaConfig() {
   return configs;
 }
+
+export function getListOpensyaConfig() {
+  const _configs = _.sortBy(Object.values(configs), ["_index"]);
+  return _configs;
+}

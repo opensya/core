@@ -3,8 +3,7 @@ import path from "node:path";
 import { getChildren, loadDefaultJs } from "../../utils/index.js";
 import { resolveApi } from "./resolve.js";
 import { appendPreHandler, defineRouteHandler } from "./helper.js";
-import { getAllOpensyaConfig, getOpensyaConfig } from "../../config/load.js";
-import _ from "lodash";
+import { getListOpensyaConfig } from "../../config/load.js";
 import { existsSync } from "node:fs";
 
 export const api = fp(async (app) => {
@@ -22,7 +21,7 @@ export const api = fp(async (app) => {
     }
   }
 
-  const configs = _.sortBy(Object.values(getAllOpensyaConfig()), ["_index"]);
+  const configs = getListOpensyaConfig();
 
   for (const { _srcDir } of configs) {
     const apiDir = path.resolve(_srcDir, "server/api");
