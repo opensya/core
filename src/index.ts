@@ -2,7 +2,7 @@ import Fastify from "fastify";
 
 import { api } from "./plugins/api/index";
 import { vite } from "./plugins/vite/index.js";
-import { loadOpensyaConfig } from "./config/index.js";
+import { loadOpensyaConfigs } from "./config/index.js";
 
 async function createApp() {
   const app = Fastify({
@@ -16,7 +16,7 @@ async function createApp() {
 }
 
 const bootstrap = async () => {
-  await loadOpensyaConfig({ cwd: process.cwd() });
+  await loadOpensyaConfigs();
 
   const app = await createApp();
   try {

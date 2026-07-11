@@ -3,6 +3,9 @@ import path from "node:path";
 import { getChildren, loadDefaultJs } from "../../utils/index.js";
 import { resolveApi } from "./resolve.js";
 import { appendPreHandler, defineRouteHandler } from "./helper.js";
+import { getAllOpensyaConfig, getOpensyaConfig } from "../../config/load.js";
+import _ from "lodash";
+import { existsSync } from "node:fs";
 
 export const api = fp(async (app) => {
   Object.assign(globalThis, { defineRouteHandler, appendPreHandler });
@@ -19,6 +22,12 @@ export const api = fp(async (app) => {
     }
   }
 
-  const apiDir = path.resolve(process.cwd(), "playground", "server/api");
-  await loadApi(apiDir);
+  const configs = _.sortBy(Object.values(getAllOpensyaConfig()), ["_index"]);
+
+  for (const { _srcDir } of configs) {
+    const apiDir = path.resolve(_srcDir, "server/api");
+    if (!existsSync(apiDir)) continue;
+
+    await loadApi(apiDir);
+  }
 });

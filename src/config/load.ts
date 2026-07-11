@@ -9,83 +9,96 @@ export type UseOpensyaConfig = Required<OpensyaConfig> & {
   _main: boolean;
   _cwd: string;
   _srcDir: string;
+
+  _index: number;
 };
 
-export const configs: Record<string, UseOpensyaConfig> = {};
+const configs: Record<string, UseOpensyaConfig> = {};
 
-export async function loadOpensyaConfig({
-  cwd,
-  name,
-}: {
-  cwd: string;
-  name?: string;
-}): Promise<UseOpensyaConfig> {
-  name ??= "main";
+export async function loadOpensyaConfigs() {
+  let index = 0;
 
-  const result = await loadConfig<OpensyaConfig>({
-    configFile: "opensya.config",
+  async function loadOpensyaConfig({
     cwd,
+    name,
+  }: {
+    cwd: string;
+    name?: string;
+  }) {
+    name ??= "main";
 
-    defaultConfig: {
-      srcDir: ".",
-      modules: [],
-    },
-  });
+    const result = await loadConfig<OpensyaConfig>({
+      configFile: "opensya.config",
+      cwd,
 
-  const _config = result.config as UseOpensyaConfig;
+      defaultConfig: {
+        srcDir: ".",
+        modules: [],
+      },
+    });
 
-  _config._main = cwd === process.cwd();
-  _config._cwd = cwd;
-  _config._srcDir = path.resolve(cwd, _config.srcDir);
+    const _config = result.config as UseOpensyaConfig;
 
-  configs[name] = _.merge(configs[name] ?? {}, _config);
+    _config._main = cwd === process.cwd();
+    _config._cwd = cwd;
+    _config._srcDir = path.resolve(cwd, _config.srcDir);
+    _config._index = index;
 
-  for (const module of _config.modules) {
-    const cwd = await getModuleDir(module);
-    await loadOpensyaConfig({ cwd, name: module });
+    index++;
+
+    configs[name] = _.merge(configs[name] ?? {}, _config);
+
+    for (const module of _config.modules) {
+      const cwd = await getModuleDir(module);
+      await loadOpensyaConfig({ cwd, name: module });
+    }
   }
 
-  return _config;
+  async function getModuleDir(name: string) {
+    let cwd: string | undefined = undefined;
+
+    if (name.startsWith("modules/")) {
+      cwd = path.resolve(configs["main"]._srcDir, name);
+    }
+
+    if (!cwd) {
+      try {
+        const require = createRequire(import.meta.url);
+        const packageJsonPath = require.resolve(
+          path.resolve(name, "package.json"),
+          {
+            paths: [process.cwd()],
+          },
+        );
+
+        cwd = path.relative(path.dirname(packageJsonPath), "dist");
+      } catch {
+        // Ignore
+      }
+    }
+
+    if (!cwd || !existsSync(cwd)) {
+      throw new Error(
+        `Failed to resolve Opensya module "${name}". The module was not found in the local "modules/" directory and could not be resolved from "node_modules".`,
+      );
+    }
+
+    return cwd;
+  }
+
+  await loadOpensyaConfig({ cwd: process.cwd() });
 }
 
 export function getOpensyaConfig(name = "main"): UseOpensyaConfig {
   if (!configs[name]) {
     throw new Error(
-      "Opensya config is not loaded. Call loadOpensyaConfig() first.",
+      "Opensya config is not loaded. Call loadOpensyaConfigs() first.",
     );
   }
 
   return configs[name];
 }
 
-async function getModuleDir(name: string) {
-  let cwd: string | undefined = undefined;
-
-  if (name.startsWith("modules/")) {
-    cwd = path.resolve(configs["main"]._srcDir, name);
-  }
-
-  if (!cwd) {
-    try {
-      const require = createRequire(import.meta.url);
-      const packageJsonPath = require.resolve(
-        path.resolve(name, "package.json"),
-        {
-          paths: [process.cwd()],
-        },
-      );
-
-      cwd = path.relative(path.dirname(packageJsonPath), "dist");
-    } catch {
-      // Ignore
-    }
-  }
-
-  if (!cwd || !existsSync(cwd)) {
-    throw new Error(
-      `Failed to resolve Opensya module "${name}". The module was not found in the local "modules/" directory and could not be resolved from "node_modules".`,
-    );
-  }
-
-  return cwd;
+export function getAllOpensyaConfig() {
+  return configs;
 }
