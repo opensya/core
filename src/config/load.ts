@@ -1,6 +1,6 @@
 import path from "node:path";
 import { loadConfig } from "c12";
-import { OpensyaConfig } from "./helper";
+import type { OpensyaConfig } from "./helper.js";
 import { createRequire } from "node:module";
 import { existsSync } from "node:fs";
 import _ from "lodash";
@@ -58,7 +58,7 @@ export async function loadOpensyaConfigs() {
     let cwd: string | undefined = undefined;
 
     if (name.startsWith("modules/")) {
-      cwd = path.resolve(configs["main"]._srcDir, name);
+      cwd = path.resolve(configs["main"]!._srcDir, name);
     }
 
     if (!cwd) {

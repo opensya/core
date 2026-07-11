@@ -1,11 +1,11 @@
 import fp from "fastify-plugin";
-import {
+import type {
   FastifyPluginCallback,
   preHandlerHookHandler,
   RouteHandlerMethod,
   RouteOptions,
 } from "fastify";
-import { ApiMetaOptions } from "./resolve";
+import type { ApiMetaOptions } from "./resolve.js";
 
 export type RouteTransformer = (
   options: RouteOptions,

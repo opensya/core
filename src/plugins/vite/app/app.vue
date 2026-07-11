@@ -4,4 +4,5 @@ const text = "Welcome to OpenSya";
 
 <template>
   <div>{{ text }}</div>
+  <RouterView />
 </template>

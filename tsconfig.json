@@ -1,7 +1,43 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.server.json" },
-    { "path": "./tsconfig.app.json" }
-  ]
+  "compilerOptions": {
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+
+    "jsx": "preserve",
+
+    // "outDir": "./dist-client",
+    // "rootDir": "./src/client",
+    "noEmit": true,
+
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "useDefineForClassFields": true,
+
+    "incremental": true,
+    "verbatimModuleSyntax": true,
+
+    "composite": true,
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
+
+    "types": ["node", "vite/client"]
+  },
+  "include": ["./src/**/*.ts", "./src/**/*.vue"],
+  "exclude": ["dist", "node_modules"]
 }

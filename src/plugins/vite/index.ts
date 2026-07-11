@@ -6,6 +6,7 @@ import path from "node:path";
 import fastifyStatic from "@fastify/static";
 
 import vue from "@vitejs/plugin-vue";
+import { viteRouterPlugin } from "./plugins/router.js";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -23,7 +24,7 @@ export const vite = fp(async (app) => {
       root: process.cwd(),
       server: { middlewareMode: true },
       appType: "custom",
-      plugins: [vue()],
+      plugins: [vue(), viteRouterPlugin()],
     });
 
     app.decorate("vite", viteServer);

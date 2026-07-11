@@ -1,4 +1,9 @@
 import { createApp } from "vue";
-import App from "./app.vue";
+import { createMemoryHistory, createRouter } from "vue-router";
 
-createApp(App).mount("#root");
+import App from "./app.vue";
+import { routes } from "virtual:router";
+
+const router = createRouter({ routes, history: createMemoryHistory() });
+
+createApp(App).use(router).mount("#root");
