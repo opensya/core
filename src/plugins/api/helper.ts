@@ -6,6 +6,9 @@ import type {
   RouteOptions,
 } from "fastify";
 import type { ApiMetaOptions } from "./resolve.js";
+import { atomicWriteFile } from "../../utils/atomic_write_ile.js";
+import path from "node:path";
+import { getDirs } from "../../utils/dirs.js";
 
 export type RouteTransformer = (
   options: RouteOptions,
@@ -81,10 +84,21 @@ export function appendPreHandler(
   return options;
 }
 
-type DefineRouteHandler = typeof defineRouteHandler;
-type AppendPreHandler = typeof appendPreHandler;
+export function generateHelperTypes() {
+  const { OUTPUT_DIR_SERVER } = getDirs();
 
-declare global {
-  const defineRouteHandler: DefineRouteHandler;
-  const appendPreHandler: AppendPreHandler;
+  const rPath = path.relative(
+    path.resolve(OUTPUT_DIR_SERVER, "api"),
+    import.meta.filename,
+  );
+
+  const content = `declare global {
+  const defineRouteHandler: (typeof import("${rPath}"))["defineRouteHandler"];
+  const appendPreHandler: (typeof import("${rPath}"))["appendPreHandler"];
+}
+
+export {};
+`;
+
+  atomicWriteFile(path.resolve(OUTPUT_DIR_SERVER, "api/helper.d.ts"), content);
 }

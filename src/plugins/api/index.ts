@@ -2,12 +2,17 @@ import fp from "fastify-plugin";
 import path from "node:path";
 import { getChildren, loadDefaultJs } from "../../utils/index.js";
 import { resolveApi } from "./resolve.js";
-import { appendPreHandler, defineRouteHandler } from "./helper.js";
+import {
+  appendPreHandler,
+  defineRouteHandler,
+  generateHelperTypes,
+} from "./helper.js";
 import { getListOpensyaConfig } from "../../config/load.js";
 import { existsSync } from "node:fs";
 
 export const api = fp(async (app) => {
   Object.assign(globalThis, { defineRouteHandler, appendPreHandler });
+  generateHelperTypes();
 
   async function loadApi(apiDir: string) {
     const files = getChildren(apiDir, { recursive: true, onlyFile: true });

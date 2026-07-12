@@ -15,7 +15,7 @@ export interface OpensyaDirs {
   OUTPUT_DIR_SERVER: string;
   OUTPUT_DIR_CLIENT: string;
 
-  // CORE_DIR: string;
+  CORE_DIR: string;
   // CORE_DIR_SERVER: string;
   // CORE_DIR_CLIENT: string;
 }
@@ -39,7 +39,7 @@ export function getDirs(): OpensyaDirs {
     OUTPUT_DIR_SERVER: join(outputDir, SERVER_DIRNAME),
     OUTPUT_DIR_CLIENT: join(outputDir, CLIENT_DIRNAME),
 
-    // CORE_DIR: join(import.meta.dirname, ".."),
+    CORE_DIR: join(import.meta.dirname, ".."),
     // CORE_DIR_SERVER: join(import.meta.dirname, "../server"),
     // CORE_DIR_CLIENT: join(import.meta.dirname, "../client"),
   };

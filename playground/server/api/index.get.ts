@@ -1,3 +1,4 @@
 export default defineRouteHandler(async () => {
-  return { hello: " yes" };
+  const user = await database.engine.findOne("users", {});
+  return { hello: " yes", user };
 });

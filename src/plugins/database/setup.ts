@@ -29,6 +29,8 @@ function generateType() {
 declare global {
   const database: Awaited<ReturnType<typeof setup>>;
 }
+
+export {};
 `;
 
   atomicWriteFile(
