@@ -6,7 +6,7 @@ import path from "node:path";
 import fastifyStatic from "@fastify/static";
 
 import vue from "@vitejs/plugin-vue";
-import { viteRouterPlugin } from "./plugins/router.js";
+import { viteRouterPlugin } from "./plugins/index.js";
 
 declare module "fastify" {
   interface FastifyInstance {
