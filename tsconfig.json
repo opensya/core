@@ -6,6 +6,7 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
 
     "jsx": "preserve",
+    "allowJs": true,
 
     // "outDir": "./dist-client",
     // "rootDir": "./src/client",
@@ -36,8 +37,12 @@
     "composite": true,
     "tsBuildInfoFile": "./dist/.tsbuildinfo",
 
-    "types": ["node", "vite/client"]
+    "types": ["node", "vite/client"],
+
+    "paths": {
+      "#server/*": ["./.opensya/server/*"]
+    }
   },
-  "include": ["./src/**/*.ts", "./src/**/*.vue"],
+  "include": ["./src/**/*.ts", "./src/**/*.vue", "./.opensya/**/*"],
   "exclude": ["dist", "node_modules"]
 }

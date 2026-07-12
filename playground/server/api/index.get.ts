@@ -1,3 +1,3 @@
-export default defineRouteHandler(() => {
+export default defineRouteHandler(async () => {
   return { hello: " yes" };
 });
