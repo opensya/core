@@ -1,3 +1,3 @@
 export default defineRouteHandler(() => {
-  return { hello: " test from module" };
+  return { hello: " test from core" };
 });
