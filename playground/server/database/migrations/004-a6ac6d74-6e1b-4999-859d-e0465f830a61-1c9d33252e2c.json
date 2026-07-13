@@ -1,0 +1,674 @@
+{
+  "version": 1,
+  "id": "a6ac6d74-6e1b-4999-859d-e0465f830a61-1c9d33252e2c",
+  "name": "a6ac6d74-6e1b-4999-859d-e0465f830a61",
+  "createdAt": "2026-07-13T14:53:53.798Z",
+  "checksum": "1c9d33252e2c0a7546c8bb7d77db80845ec0528cc18650b009314fdea9d72241",
+  "previous": {
+    "version": 1,
+    "tables": [
+      {
+        "name": "auditLogs",
+        "collectionName": "audit_logs",
+        "columns": [
+          {
+            "name": "actor",
+            "columnName": "actor",
+            "type": "json",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "after",
+            "columnName": "after",
+            "type": "json",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "before",
+            "columnName": "before",
+            "type": "json",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "changes",
+            "columnName": "changes",
+            "type": "json",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "entityId",
+            "columnName": "entity_id",
+            "type": "json",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true
+          },
+          {
+            "name": "occurredAt",
+            "columnName": "occurred_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "operation",
+            "columnName": "operation",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "requestId",
+            "columnName": "request_id",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "table",
+            "columnName": "table",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "tenantId",
+            "columnName": "tenant_id",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          }
+        ],
+        "indexes": [
+          {
+            "name": "audit_logs_occurred_at_idx",
+            "fields": [
+              "occurred_at"
+            ],
+            "unique": false
+          },
+          {
+            "name": "audit_logs_table_time_idx",
+            "fields": [
+              "table",
+              "occurred_at"
+            ],
+            "unique": false
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "name": "outboxEvents",
+        "collectionName": "outbox_events",
+        "columns": [
+          {
+            "name": "aggregateId",
+            "columnName": "aggregate_id",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "aggregateType",
+            "columnName": "aggregate_type",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "attempts",
+            "columnName": "attempts",
+            "type": "integer",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true
+          },
+          {
+            "name": "lastError",
+            "columnName": "last_error",
+            "type": "text",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "lockedAt",
+            "columnName": "locked_at",
+            "type": "timestamp",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "metadata",
+            "columnName": "metadata",
+            "type": "json",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "nextAttemptAt",
+            "columnName": "next_attempt_at",
+            "type": "timestamp",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "occurredAt",
+            "columnName": "occurred_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "payload",
+            "columnName": "payload",
+            "type": "json",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "publishedAt",
+            "columnName": "published_at",
+            "type": "timestamp",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "status",
+            "columnName": "status",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "type",
+            "columnName": "type",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "version",
+            "columnName": "version",
+            "type": "integer",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "workerId",
+            "columnName": "worker_id",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          }
+        ],
+        "indexes": [
+          {
+            "name": "outbox_events_aggregate_idx",
+            "fields": [
+              "aggregate_type",
+              "aggregate_id",
+              "occurred_at"
+            ],
+            "unique": false
+          },
+          {
+            "name": "outbox_events_pending_idx",
+            "fields": [
+              "status",
+              "next_attempt_at",
+              "occurred_at"
+            ],
+            "unique": false
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "name": "users",
+        "collectionName": "users",
+        "columns": [
+          {
+            "name": "createdAt",
+            "columnName": "created_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "email",
+            "columnName": "email",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": true
+          },
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "password",
+            "columnName": "password_hash",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "version",
+            "columnName": "version",
+            "type": "integer",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "static",
+              "value": 1
+            }
+          }
+        ],
+        "indexes": [],
+        "foreignKeys": []
+      }
+    ]
+  },
+  "next": {
+    "version": 1,
+    "tables": [
+      {
+        "name": "auditLogs",
+        "collectionName": "audit_logs",
+        "columns": [
+          {
+            "name": "actor",
+            "columnName": "actor",
+            "type": "json",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "after",
+            "columnName": "after",
+            "type": "json",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "before",
+            "columnName": "before",
+            "type": "json",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "changes",
+            "columnName": "changes",
+            "type": "json",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "entityId",
+            "columnName": "entity_id",
+            "type": "json",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true
+          },
+          {
+            "name": "occurredAt",
+            "columnName": "occurred_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "operation",
+            "columnName": "operation",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "requestId",
+            "columnName": "request_id",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "table",
+            "columnName": "table",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "tenantId",
+            "columnName": "tenant_id",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          }
+        ],
+        "indexes": [
+          {
+            "name": "audit_logs_occurred_at_idx",
+            "fields": [
+              "occurred_at"
+            ],
+            "unique": false
+          },
+          {
+            "name": "audit_logs_table_time_idx",
+            "fields": [
+              "table",
+              "occurred_at"
+            ],
+            "unique": false
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "name": "outboxEvents",
+        "collectionName": "outbox_events",
+        "columns": [
+          {
+            "name": "aggregateId",
+            "columnName": "aggregate_id",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "aggregateType",
+            "columnName": "aggregate_type",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "attempts",
+            "columnName": "attempts",
+            "type": "integer",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true
+          },
+          {
+            "name": "lastError",
+            "columnName": "last_error",
+            "type": "text",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "lockedAt",
+            "columnName": "locked_at",
+            "type": "timestamp",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "metadata",
+            "columnName": "metadata",
+            "type": "json",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "nextAttemptAt",
+            "columnName": "next_attempt_at",
+            "type": "timestamp",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "occurredAt",
+            "columnName": "occurred_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "payload",
+            "columnName": "payload",
+            "type": "json",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "publishedAt",
+            "columnName": "published_at",
+            "type": "timestamp",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "status",
+            "columnName": "status",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "type",
+            "columnName": "type",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "version",
+            "columnName": "version",
+            "type": "integer",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "workerId",
+            "columnName": "worker_id",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          }
+        ],
+        "indexes": [
+          {
+            "name": "outbox_events_aggregate_idx",
+            "fields": [
+              "aggregate_type",
+              "aggregate_id",
+              "occurred_at"
+            ],
+            "unique": false
+          },
+          {
+            "name": "outbox_events_pending_idx",
+            "fields": [
+              "status",
+              "next_attempt_at",
+              "occurred_at"
+            ],
+            "unique": false
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "name": "users",
+        "collectionName": "users",
+        "columns": [
+          {
+            "name": "createdAt",
+            "columnName": "created_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "email",
+            "columnName": "email",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": true
+          },
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "password",
+            "columnName": "password_hash",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "preferences",
+            "columnName": "preferences",
+            "type": "json",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "version",
+            "columnName": "version",
+            "type": "integer",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "static",
+              "value": 1
+            }
+          }
+        ],
+        "indexes": [],
+        "foreignKeys": []
+      }
+    ]
+  },
+  "operations": [
+    {
+      "kind": "addColumn",
+      "table": "users",
+      "column": {
+        "name": "preferences",
+        "columnName": "preferences",
+        "type": "json",
+        "nullable": true,
+        "primaryKey": false,
+        "unique": false
+      },
+      "safety": "safe"
+    }
+  ]
+}

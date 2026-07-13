@@ -11,7 +11,7 @@ import { getListOpensyaConfig } from "../../config/load.js";
 import { existsSync } from "node:fs";
 import _ from "lodash";
 
-export const api = fp(async (app) => {
+export default fp(async (app) => {
   Object.assign(globalThis, { defineRouteHandler, appendPreHandler });
   generateHelperTypes();
 

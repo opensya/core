@@ -2,9 +2,10 @@ import "dotenv/config";
 
 import Fastify from "fastify";
 
-import { database } from "./plugins/database/index.js";
-import { api } from "./plugins/api/index.js";
-import { vite } from "./plugins/vite/index.js";
+import database from "./plugins/database/index.js";
+import api from "./plugins/api/index.js";
+import vite from "./plugins/vite/index.js";
+
 import { loadOpensyaConfigs } from "./config/index.js";
 import { ensureOutput, generateTsconfig } from "./utils/index.js";
 

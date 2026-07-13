@@ -14,7 +14,7 @@ declare module "fastify" {
   }
 }
 
-export const vite = fp(async (app) => {
+export default fp(async (app) => {
   const isDev = process.env.NODE_ENV !== "production";
 
   if (isDev) {

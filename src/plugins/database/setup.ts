@@ -128,7 +128,7 @@ export async function setup() {
     adapter,
     engine,
     // schemaCreation,
-    close: () => database.$client.end(),
+    close: () => database?.$client?.end(),
   };
 
   Object.assign(globalThis, { database: _database });

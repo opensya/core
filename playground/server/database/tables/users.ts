@@ -1,4 +1,9 @@
-import { defineTable } from "@opensya/persistence";
+import { hash } from "argon2";
+import { defineTable, like } from "@opensya/persistence";
+
+interface UserPreferences {
+  theme?: "light" | "dark" | "system";
+}
 
 export default defineTable({
   name: "users",
@@ -14,6 +19,7 @@ export default defineTable({
       default: () => crypto.randomUUID(),
       validators: [],
     },
+
     {
       name: "email",
       columnName: "email",
@@ -32,6 +38,7 @@ export default defineTable({
         },
       ],
     },
+
     {
       name: "createdAt",
       columnName: "created_at",
@@ -61,9 +68,32 @@ export default defineTable({
           },
         },
       ],
-      // transform(value) {
-      //   return hash(value as string)
-      // }
+      transform(value) {
+        return hash(value as string);
+      },
+    },
+
+    {
+      name: "preferences",
+      columnName: "preferences",
+      type: "json",
+      $type: like<UserPreferences>(),
+      nullable: true,
+      primaryKey: false,
+      unique: false,
+      validators: [],
+      default: () => {},
+    },
+
+    {
+      name: "version",
+      columnName: "version",
+      type: "integer",
+      nullable: false,
+      primaryKey: false,
+      unique: false,
+      default: 1,
+      validators: [],
     },
   ],
   relations: [],
@@ -72,5 +102,10 @@ export default defineTable({
   audit: {
     enabled: true,
     excludedFields: [],
+  },
+
+  optimisticLock: {
+    field: "version",
+    initialVersion: 1,
   },
 });
