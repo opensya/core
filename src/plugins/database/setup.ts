@@ -8,11 +8,14 @@ import {
   createQueryEngine,
   createAuditLogMetadata,
   createOutboxMetadata,
+  loadMigrations,
+  lastMigration,
+  saveMigration,
 } from "@opensya/persistence";
 import { drizzle } from "drizzle-orm/node-postgres";
 import _ from "lodash";
 import { loadMetadatas } from "./load-metadatas.js";
-import path from "node:path";
+import path, { join } from "node:path";
 import { getDirs } from "../../utils/dirs.js";
 import { atomicWriteFile } from "../../utils/atomic_write_ile.js";
 
@@ -41,8 +44,9 @@ export {};
 
 export async function setup() {
   await loadMetadatas();
-  const metadatas = await import("#server/database/tables/index.js");
   generateType();
+
+  const metadatas = await import("#server/database/tables/index.js");
 
   const adapters = {
     postgresql() {
@@ -92,20 +96,42 @@ export async function setup() {
     createDatabaseAuditWriter(auditLogsMetadata.name),
   );
   const outbox = createDatabaseOutboxWriter(outboxEventsMetadata.name);
-  const engine = createQueryEngine(
-    registry,
-    adapter,
-    hooks,
-    undefined,
-    audit,
-    outbox,
-  );
-  const schemaCreation = await engine.schema.createTables();
+  const engine = createQueryEngine({ registry, adapter, hooks, audit, outbox });
 
-  return {
+  // const schemaCreation = await engine.schema.createTables();
+
+  const { INPUT_DIR_SERVER } = getDirs();
+  const directory = join(INPUT_DIR_SERVER, "database/migrations");
+
+  let migrations = await loadMigrations(directory);
+
+  const migration = engine.migrations.generate({
+    name: crypto.randomUUID(),
+    previous: lastMigration(migrations),
+  });
+
+  if (migration.operations.length) {
+    await saveMigration(directory, migration);
+    migrations = await loadMigrations(directory);
+  }
+
+  await engine.migrations.apply(migrations, {
+    allowDestructive: true,
+    // dryRun: true,
+  });
+
+  for (const metadata of registry.getAll()) {
+    adapter.buildTable(metadata);
+  }
+
+  const _database = {
     adapter,
     engine,
-    schemaCreation,
+    // schemaCreation,
     close: () => database.$client.end(),
   };
+
+  Object.assign(globalThis, { database: _database });
+
+  return _database;
 }

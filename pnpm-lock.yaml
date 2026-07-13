@@ -18,8 +18,8 @@ importers:
         specifier: ^9.3.0
         version: 9.3.0
       '@opensya/persistence':
-        specifier: ^0.4.0
-        version: 0.4.0(drizzle-orm@0.45.2(@types/pg@8.20.0)(pg@8.22.0))
+        specifier: ^0.5.0
+        version: 0.5.0(drizzle-orm@0.45.2(@types/pg@8.20.0)(pg@8.22.0))
       '@vitejs/plugin-vue':
         specifier: ^6.0.7
         version: 6.0.7(vite@8.1.4(@types/node@22.20.1)(esbuild@0.28.1)(tsx@4.23.0)(yaml@2.9.0))(vue@3.5.39(typescript@5.9.3))
@@ -429,8 +429,8 @@ packages:
       '@emnapi/core': ^1.7.1
       '@emnapi/runtime': ^1.7.1
 
-  '@opensya/persistence@0.4.0':
-    resolution: {integrity: sha512-NZDO165H8jahmxb8uzw0+fQzBFAB/sOgPzR3z1RPvaTjws5aCJ6sw8YIYkX3pJlFvGmjtQnkfQ3KUHbd6YTQsA==}
+  '@opensya/persistence@0.5.0':
+    resolution: {integrity: sha512-52/VgkAgZRJr/s3T87beM/8sjBCa6UDsRe5rR7+hktECaGWZ8D0VQJQQFEUiROJV1TcnBTguiU5UK9YWWpvPmg==}
     engines: {node: '>=20'}
     peerDependencies:
       drizzle-orm: 1.0.0-beta.22
@@ -2447,7 +2447,7 @@ snapshots:
       '@tybys/wasm-util': 0.10.3
     optional: true
 
-  '@opensya/persistence@0.4.0(drizzle-orm@0.45.2(@types/pg@8.20.0)(pg@8.22.0))':
+  '@opensya/persistence@0.5.0(drizzle-orm@0.45.2(@types/pg@8.20.0)(pg@8.22.0))':
     dependencies:
       drizzle-orm: 0.45.2(@types/pg@8.20.0)(pg@8.22.0)
 

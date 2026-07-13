@@ -42,6 +42,29 @@ export default defineTable({
       default: () => new Date(),
       validators: [],
     },
+
+    {
+      name: "password",
+      columnName: "password_hash",
+      type: "string",
+      nullable: true,
+      primaryKey: false,
+      unique: false,
+      hidden: true,
+      validators: [
+        {
+          name: "password-length",
+          validate(value) {
+            return typeof value === "string" && value.length >= 12
+              ? { valid: true }
+              : { valid: false, message: "Use at least 12 characters." };
+          },
+        },
+      ],
+      // transform(value) {
+      //   return hash(value as string)
+      // }
+    },
   ],
   relations: [],
   tableValidators: [],
