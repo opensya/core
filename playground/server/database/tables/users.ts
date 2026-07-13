@@ -1,7 +1,7 @@
 import { hash } from "argon2";
 import { defineTable, like } from "@opensya/persistence";
 
-interface UserPreferences {
+export interface UserPreferences {
   theme?: "light" | "dark" | "system";
 }
 

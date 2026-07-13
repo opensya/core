@@ -18,6 +18,8 @@ import { loadMetadatas } from "./load-metadatas.js";
 import path, { join } from "node:path";
 import { getDirs } from "../../utils/dirs.js";
 import { atomicWriteFile } from "../../utils/atomic_write_ile.js";
+import { registerHelpers } from "./helpers.js";
+import { loadDatabaseHooks } from "./load-hoos.js";
 
 function generateType() {
   const { OUTPUT_DIR_SERVER } = getDirs();
@@ -43,6 +45,8 @@ export {};
 }
 
 export async function setup() {
+  registerHelpers();
+
   await loadMetadatas();
   generateType();
 
@@ -84,13 +88,10 @@ export async function setup() {
   registry.lock();
 
   const hooks = createHooksRegistry();
-  hooks.onBeforeCreate("users", (data) => ({
-    ...data,
-    email:
-      typeof data.email === "string"
-        ? data.email.trim().toLowerCase()
-        : data.email,
-  }));
+  const hookDefinitions = await loadDatabaseHooks();
+  for (const definition of hookDefinitions) {
+    await definition({ hooks });
+  }
 
   const audit = createAuditManager(
     createDatabaseAuditWriter(auditLogsMetadata.name),

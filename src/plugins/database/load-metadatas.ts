@@ -22,7 +22,11 @@ export async function loadMetadatas() {
   }
 
   async function load(tablesDir: string) {
-    const files = getChildren(tablesDir, { recursive: true, onlyFile: true });
+    const files = getChildren(tablesDir, {
+      recursive: true,
+      onlyFile: true,
+      endWith: /\.(js|ts)$/,
+    });
 
     for (const file of files) {
       const content = await loadDefaultJs<TableMetadata>(file.path);
