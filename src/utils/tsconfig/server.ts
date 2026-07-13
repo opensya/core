@@ -14,8 +14,9 @@ export function writeServerTsconfig() {
     ),
 
     relative(dirs.OUTPUT_DIR, join(dirs.OUTPUT_DIR_SERVER, "**/*.d.ts")),
-    // relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "**/*.ts")),
-    // relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "**/*.d.ts")),
+
+    relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "**/*.ts")),
+    relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "**/*.d.ts")),
 
     // relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "server/*/*.d.ts")),
     // relative(dirs.OUTPUT_DIR, join(dirs.OUTPUT_DIR_SERVER, "**/*.d.ts")),
@@ -28,6 +29,10 @@ export function writeServerTsconfig() {
       normalizeDir(
         relative(dirs.OUTPUT_DIR, join(dirs.OUTPUT_DIR_SERVER, "./*")),
       ),
+    ],
+
+    "#core/*": [
+      normalizeDir(relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "./*"))),
     ],
   };
 

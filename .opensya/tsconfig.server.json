@@ -37,13 +37,18 @@
     "paths": {
       "#server/*": [
         "./server/*"
+      ],
+      "#core/*": [
+        "../src/*"
       ]
     }
   },
   "include": [
     "../playground/server/**/*.ts",
     "../playground/modules/**/server/**/*.ts",
-    "./server/**/*.d.ts"
+    "./server/**/*.d.ts",
+    "../src/**/*.ts",
+    "../src/**/*.d.ts"
   ],
   "exclude": []
 }

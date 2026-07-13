@@ -18,7 +18,7 @@
 
     "strict": true,
     "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
+    "exactOptionalPropertyTypes": false,
     "noImplicitOverride": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
@@ -40,7 +40,8 @@
     "types": ["node", "vite/client"],
 
     "paths": {
-      "#server/*": ["./.opensya/server/*"]
+      "#server/*": ["./.opensya/server/*"],
+      "#core/*": ["./src/*"]
     }
   },
   "include": ["./src/**/*.ts", "./src/**/*.vue", "./.opensya/**/*"],

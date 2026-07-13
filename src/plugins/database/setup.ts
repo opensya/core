@@ -39,7 +39,7 @@ export {};
 `;
 
   atomicWriteFile(
-    path.resolve(OUTPUT_DIR_SERVER, "database/index.d.ts"),
+    path.resolve(OUTPUT_DIR_SERVER, "database/database.d.ts"),
     content,
   );
 }

@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "id": "53a5d84a-6919-4a9d-bbb0-37f1a9690dbf-d265cfcf0199",
-  "name": "53a5d84a-6919-4a9d-bbb0-37f1a9690dbf",
-  "createdAt": "2026-07-13T14:54:58.001Z",
-  "checksum": "d265cfcf01997c79c90d44dc488b9fb43760879f77cdf00d824a2b8f98207001",
+  "id": "905777f1-bfd8-4709-8ac2-bff7347793c6-c4a90b353203",
+  "name": "905777f1-bfd8-4709-8ac2-bff7347793c6",
+  "createdAt": "2026-07-13T16:50:59.160Z",
+  "checksum": "c4a90b353203bc1f0e0914353c70658758e1a2e6c22cf912c742d9b5e2949deb",
   "previous": {
     "version": 1,
     "tables": [
@@ -450,6 +450,96 @@
         "foreignKeys": []
       },
       {
+        "name": "auths",
+        "collectionName": "auths",
+        "columns": [
+          {
+            "name": "createdAt",
+            "columnName": "created_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "expiresAt",
+            "columnName": "expires_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "revokedAt",
+            "columnName": "revoke_at",
+            "type": "timestamp",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "tokenHash",
+            "columnName": "token_hash",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "userId",
+            "columnName": "user_id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "version",
+            "columnName": "version",
+            "type": "integer",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "static",
+              "value": 1
+            }
+          }
+        ],
+        "indexes": [
+          {
+            "name": "auths_user_created_idx",
+            "fields": [
+              "user_id",
+              "created_at"
+            ],
+            "unique": false
+          }
+        ],
+        "foreignKeys": [
+          {
+            "name": "persistence_auths_user_fk",
+            "field": "user_id",
+            "targetTable": "users",
+            "targetField": "id"
+          }
+        ]
+      },
+      {
         "name": "outboxEvents",
         "collectionName": "outbox_events",
         "columns": [
@@ -669,6 +759,100 @@
   },
   "operations": [
     {
+      "kind": "createTable",
+      "table": {
+        "name": "auths",
+        "collectionName": "auths",
+        "columns": [
+          {
+            "name": "createdAt",
+            "columnName": "created_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "expiresAt",
+            "columnName": "expires_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "revokedAt",
+            "columnName": "revoke_at",
+            "type": "timestamp",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "tokenHash",
+            "columnName": "token_hash",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "userId",
+            "columnName": "user_id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "version",
+            "columnName": "version",
+            "type": "integer",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "static",
+              "value": 1
+            }
+          }
+        ],
+        "indexes": [
+          {
+            "name": "auths_user_created_idx",
+            "fields": [
+              "user_id",
+              "created_at"
+            ],
+            "unique": false
+          }
+        ],
+        "foreignKeys": [
+          {
+            "name": "persistence_auths_user_fk",
+            "field": "user_id",
+            "targetTable": "users",
+            "targetField": "id"
+          }
+        ]
+      },
+      "safety": "safe"
+    },
+    {
       "kind": "alterColumn",
       "table": "users",
       "before": {
@@ -689,6 +873,30 @@
         "default": {
           "kind": "runtime"
         }
+      },
+      "safety": "safe"
+    },
+    {
+      "kind": "createIndex",
+      "table": "auths",
+      "index": {
+        "name": "auths_user_created_idx",
+        "fields": [
+          "user_id",
+          "created_at"
+        ],
+        "unique": false
+      },
+      "safety": "safe"
+    },
+    {
+      "kind": "addForeignKey",
+      "table": "auths",
+      "foreignKey": {
+        "name": "persistence_auths_user_fk",
+        "field": "user_id",
+        "targetTable": "users",
+        "targetField": "id"
       },
       "safety": "safe"
     }
