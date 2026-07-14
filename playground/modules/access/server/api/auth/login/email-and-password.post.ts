@@ -32,10 +32,10 @@ export default defineRouteHandler(
       { user },
     );
 
-    const accessToken = await reply.jwtSign({
-      userId: user.id,
-      authId: auth.id,
-    });
+    const accessToken = await reply.jwtSign(
+      { userId: user.id, authId: auth.id },
+      { expiresIn: "15m" },
+    );
     setTokensCookie(reply, accessToken, refreshToken);
 
     return { success: true };
