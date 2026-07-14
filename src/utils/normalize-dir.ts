@@ -1,8 +1,8 @@
-import { isAbsolute } from 'node:path';
+import { isAbsolute } from "node:path";
 
 export function normalizeDir(dir: string) {
-  if (!isAbsolute(dir) && !dir.startsWith('..') && !dir.startsWith('./')) {
-    dir = `./${dir}`;
+  if (!isAbsolute(dir) && !dir.startsWith("..") && !dir.startsWith("./")) {
+    dir = `./${dir.replace(/\\/g, "/")}`;
   }
   return dir;
 }
@@ -13,11 +13,11 @@ export function normalizeDirs<T extends object>(dirs: T) {
       for (let i = 0; i < datas.length; i++) {
         datas[i] = _forEach(datas[i]);
       }
-    } else if (Object.prototype.toString.call(datas) === '[object Object]') {
+    } else if (Object.prototype.toString.call(datas) === "[object Object]") {
       for (const key in datas) {
         datas[key] = _forEach(datas[key]);
       }
-    } else if (typeof datas === 'string') {
+    } else if (typeof datas === "string") {
       datas = normalizeDir(datas);
     }
 

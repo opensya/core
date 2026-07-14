@@ -3,7 +3,9 @@ import { createMemoryHistory, createRouter } from "vue-router";
 
 import App from "./app.vue";
 
+import "virtual:css";
 import "virtual:composables";
+
 import { routes } from "virtual:router";
 import { componentsPlugin } from "virtual:components";
 

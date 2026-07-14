@@ -1,6 +1,8 @@
 export interface OpensyaConfig {
   srcDir?: string;
   modules?: string[];
+
+  css?: string[];
 }
 
 export function defineOpensyaConfig<TConfig extends OpensyaConfig>(

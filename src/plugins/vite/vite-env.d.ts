@@ -21,13 +21,13 @@ declare module "virtual:plugins" {
 
 declare module "virtual:composables" {}
 
+declare module "virtual:css" {}
+
 // declare module "virtual:guards" {
 //   import type { ComponentType, ReactNode } from "react";
 
 //   export const guards: ComponentType<{ children: ReactNode }>[];
 // }
-
-// declare module "virtual:style";
 
 // declare module "virtual:layouts" {
 //   import type { ComponentType, ReactNode } from "react";
