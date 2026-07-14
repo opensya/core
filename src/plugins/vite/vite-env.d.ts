@@ -8,6 +8,11 @@ declare module "virtual:router" {
   export const routes: eadonly<RouteRecordRaw[]>;
 }
 
+declare module "virtual:components" {
+  import type { Plugin } from "vue";
+  export const componentsPlugin: Plugin;
+}
+
 // declare module "virtual:guards" {
 //   import type { ComponentType, ReactNode } from "react";
 
