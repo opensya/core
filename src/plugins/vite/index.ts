@@ -14,6 +14,8 @@ import {
   viteCssPlugin,
 } from "./plugins/index.js";
 import { getDirs } from "#core/utils/dirs.js";
+import { getCustomConfigAliases } from "../../utils/get-config-alias.js";
+import { normalizeDir } from "#core/utils/normalize-dir.js";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -23,7 +25,7 @@ declare module "fastify" {
 
 export default fp(async (app) => {
   const isDev = process.env.NODE_ENV !== "production";
-  const { CORE_DIR } = getDirs();
+  const dirs = getDirs();
 
   if (isDev) {
     await app.register(middie);
@@ -43,7 +45,37 @@ export default fp(async (app) => {
 
       resolve: {
         alias: {
-          "#core/*": path.join(CORE_DIR, "./*"),
+          "#core/*": normalizeDir(
+            path.relative(process.cwd(), path.join(dirs.CORE_DIR, "./*")),
+          ),
+
+          "#server/*": normalizeDir(
+            path.relative(
+              process.cwd(),
+              path.join(dirs.OUTPUT_DIR_SERVER, "./*"),
+            ),
+          ),
+          "#app/*": normalizeDir(
+            path.relative(
+              process.cwd(),
+              path.join(dirs.OUTPUT_DIR_CLIENT, "./*"),
+            ),
+          ),
+
+          "~/*": normalizeDir(
+            path.relative(
+              process.cwd(),
+              path.join(dirs.INPUT_DIR_CLIENT, "./*"),
+            ),
+          ),
+          "~~/*": normalizeDir(
+            path.relative(
+              process.cwd(),
+              path.join(dirs.INPUT_DIR_SERVER, "./*"),
+            ),
+          ),
+
+          ...getCustomConfigAliases(),
         },
       },
     });
