@@ -2,7 +2,7 @@ import type { Plugin } from "vite";
 import { getListOpensyaConfig } from "../../../config/load.js";
 import path from "node:path";
 import _ from "lodash";
-import { normalizeDir } from "#core/utils/normalize-dir.js";
+import { normalizeDir } from "@/utils/normalize-dir.js";
 
 const VIRTUAL_ID = "virtual:css";
 const RESOLVED_VIRTUAL_ID = "\0virtual:css";
@@ -37,7 +37,7 @@ export function viteCssPlugin(): Plugin {
             const absoluteLocalPath = path.resolve(config._srcDir, cssPath);
             resolved = await this.resolve(absoluteLocalPath);
           } else {
-            // Otherwise (aliases like #core/* or absolute paths), let Vite's native resolver handle it
+            // Otherwise (aliases like @/* or absolute paths), let Vite's native resolver handle it
             resolved = await this.resolve(cssPath);
           }
 

@@ -13,9 +13,9 @@ import {
   viteComposablesPlugin,
   viteCssPlugin,
 } from "./plugins/index.js";
-import { getDirs } from "#core/utils/dirs.js";
+import { getDirs } from "@/utils/dirs.js";
 import { getCustomConfigAliases } from "../../utils/get-config-alias.js";
-import { normalizeDir } from "#core/utils/normalize-dir.js";
+import { normalizeDir } from "@/utils/normalize-dir.js";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -45,7 +45,7 @@ export default fp(async (app) => {
 
       resolve: {
         alias: {
-          "#core/*": normalizeDir(
+          "@/*": normalizeDir(
             path.relative(process.cwd(), path.join(dirs.CORE_DIR, "./*")),
           ),
 

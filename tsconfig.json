@@ -8,8 +8,6 @@
     "jsx": "preserve",
     "allowJs": true,
 
-    // "outDir": "./dist-client",
-    // "rootDir": "./src/client",
     "noEmit": true,
 
     "declaration": true,
@@ -40,10 +38,18 @@
     "types": ["node", "vite/client"],
 
     "paths": {
+      "@/*": ["./src/*"],
+      "#core/*": ["./src/*"],
+
       "#server/*": ["./.opensya/server/*"],
-      "#core/*": ["./src/*"]
+      "#app/*": ["./.opensya/app/*"]
     }
   },
-  "include": ["./src/**/*.ts", "./src/**/*.vue", "./.opensya/**/*"],
+  "include": [
+    "./src/**/*.ts",
+    "./src/**/*.vue",
+    "./.opensya/**/*",
+    "./tsdown.config.ts"
+  ],
   "exclude": ["dist", "node_modules"]
 }

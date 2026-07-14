@@ -1,8 +1,8 @@
 import { relative, join } from "node:path";
 import _ from "lodash";
-import { getListOpensyaConfig } from "#core/config/load.js";
-import { normalizeDir } from "#core/utils/normalize-dir.js";
-import { getDirs } from "#core/utils/dirs.js";
+import { getListOpensyaConfig } from "@/config/load.js";
+import { normalizeDir } from "@/utils/normalize-dir.js";
+import { getDirs } from "@/utils/dirs.js";
 
 /**
  * Collects and normalizes all custom Vite aliases defined in layers configuration.

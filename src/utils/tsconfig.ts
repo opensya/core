@@ -107,7 +107,7 @@ export function writeClientTsconfig() {
         relative(dirs.OUTPUT_DIR, join(dirs.OUTPUT_DIR_CLIENT, "./*")),
       ),
     ],
-    "#core/*": [
+    "@/*": [
       normalizeDir(relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "./*"))),
     ],
     "~/*": [
@@ -171,7 +171,7 @@ export function writeServerTsconfig() {
         relative(dirs.OUTPUT_DIR, join(dirs.OUTPUT_DIR_SERVER, "./*")),
       ),
     ],
-    "#core/*": [
+    "@/*": [
       normalizeDir(relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "./*"))),
     ],
     "~~/*": [
@@ -219,7 +219,7 @@ export function writeNodeTsconfig() {
   ]);
 
   const paths = {
-    "#core/*": [
+    "@/*": [
       normalizeDir(relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "./*"))),
     ],
   };

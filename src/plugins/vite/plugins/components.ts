@@ -4,8 +4,8 @@ import fs from "node:fs";
 import { getChildren } from "../../../utils/get-children.js";
 import path from "node:path";
 import _ from "lodash";
-import { getDirs } from "#core/utils/dirs.js";
-import { normalizeDir } from "#core/utils/normalize-dir.js";
+import { getDirs } from "@/utils/dirs.js";
+import { normalizeDir } from "@/utils/normalize-dir.js";
 
 const VIRTUAL_ID = "virtual:components";
 const RESOLVED_VIRTUAL_ID = "\0virtual:components";

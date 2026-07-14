@@ -1,14 +1,49 @@
 import { defineConfig } from "tsdown";
+// import Vue from "unplugin-vue/rolldown";
 
 export default defineConfig({
-  entry: ["./src/index.ts"],
+  entry: [
+    // "./src/**/*.{vue}",
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "!./src/**/*.test.{js,jsx,ts,tsx}",
+    "!./src/**/*.spec.{js,jsx,ts,tsx}",
+    "!./playground/**/*",
+  ],
 
-  tsconfig: "./tsconfig.json",
+  tsconfig: "./tsconfig.build.json",
   format: ["esm", "cjs"],
   dts: true,
   sourcemap: true,
   clean: true,
   unbundle: true,
+
+  plugins: [
+    // Vue({ isProduction: true }),
+
+    {
+      name: "copy-vue-files",
+      async buildEnd() {
+        const fs = await import("node:fs/promises");
+        const path = await import("node:path");
+        const { glob } = await import("tinyglobby"); // ou n'importe quel globber comme fast-glob
+
+        const vueFiles = await glob("./src/**/*.vue");
+
+        for (const file of vueFiles) {
+          // On calcule le chemin de sortie par rapport à ton dossier de destination (ex: dist)
+          const relativePath = path.relative("./src", file);
+          const destPath = path.join("./dist", relativePath);
+
+          await fs.mkdir(path.dirname(destPath), { recursive: true });
+          await fs.copyFile(file, destPath);
+        }
+      },
+    },
+  ],
+
+  deps: {
+    neverBundle: [/^[^./]/, /^\/?#(server|app):/, /\.vue$/],
+  },
 
   outExtensions: (ctx) => {
     return {
