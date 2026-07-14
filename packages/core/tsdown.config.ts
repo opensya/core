@@ -1,3 +1,4 @@
+import path from "node:path";
 import { defineConfig } from "tsdown";
 // import Vue from "unplugin-vue/rolldown";
 
@@ -16,6 +17,10 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   unbundle: true,
+
+  alias: {
+    "@/*": path.resolve(import.meta.dirname, "src"),
+  },
 
   plugins: [
     // Vue({ isProduction: true }),
@@ -41,8 +46,22 @@ export default defineConfig({
     },
   ],
 
+  // deps: {
+  //   neverBundle: [/^[^./]/, /^\/?#(server|app)/, /\.vue$/],
+  // },
+
   deps: {
-    neverBundle: [/^[^./]/, /^\/?#(server|app):/, /\.vue$/],
+    neverBundle: (id) => {
+      if (id.startsWith("@/")) {
+        return false;
+      }
+
+      if (id.endsWith(".vue")) {
+        return true;
+      }
+
+      return /^[^./]/.test(id);
+    },
   },
 
   outExtensions: (ctx) => {

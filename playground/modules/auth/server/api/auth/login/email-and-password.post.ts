@@ -1,4 +1,4 @@
-import { UnauthorizedError } from "#core/error/utils.js";
+import { UnauthorizedError } from "@opensya/core/error/utils";
 import { verify } from "argon2";
 import crypto from "node:crypto";
 import { setTokensCookie } from "../../../utils/auth.ts";

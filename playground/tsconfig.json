@@ -1,7 +1,13 @@
 {
   "files": [],
+  "compilerOptions": {
+    "paths": {
+      "#server/*": ["./.opensya/server/*"],
+      "#app/*": ["./.opensya/app/*"]
+    }
+  },
   "references": [
-    { "path": "../.opensya/tsconfig.server.json" },
-    { "path": "../.opensya/tsconfig.app.json" }
+    { "path": "./.opensya/tsconfig.server.json" },
+    { "path": "./.opensya/tsconfig.app.json" }
   ]
 }

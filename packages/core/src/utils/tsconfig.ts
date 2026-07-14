@@ -107,6 +107,7 @@ export function writeClientTsconfig() {
         relative(dirs.OUTPUT_DIR, join(dirs.OUTPUT_DIR_CLIENT, "./*")),
       ),
     ],
+
     "@/*": [
       normalizeDir(relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "./*"))),
     ],

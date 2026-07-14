@@ -1,0 +1,19 @@
+{
+  "name": "@opensya/core-playground",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx ./node_modules/@opensya/core/dist/index.js"
+  },
+  "dependencies": {
+    "@opensya/core": "workspace:*",
+    "@opensya/persistence": "^0.5.1",
+    "argon2": "^0.44.0"
+  },
+  "devDependencies": {
+    "fastify": "^5.10.0",
+    "tsx": "^4.23.0",
+    "typescript": "^5.7.2",
+    "vite": "^8.1.4"
+  }
+}

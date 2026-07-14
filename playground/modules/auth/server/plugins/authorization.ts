@@ -1,7 +1,7 @@
 import type { FastifyRequest } from "fastify";
 import { permissionCache } from "../utils/permission-cache.ts";
 import { authorizationService } from "../utils/authorization-service.ts";
-import { ForbiddenError, UnauthorizedError } from "#core/error/utils.ts";
+import { ForbiddenError, UnauthorizedError } from "@opensya/core/error/utils";
 import type { Actor } from "../utils/types.ts";
 
 // ─────────────────────────────────────────────────────────────────────────────

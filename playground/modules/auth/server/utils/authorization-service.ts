@@ -5,7 +5,7 @@ import type {
   PermissionSlug,
 } from "./types.ts";
 import { permissionCache } from "./permission-cache.ts";
-import { ForbiddenError, UnauthorizedError } from "#core/error/index.js";
+import { ForbiddenError, UnauthorizedError } from "@opensya/core/error/utils";
 
 export class AuthorizationService {
   /**

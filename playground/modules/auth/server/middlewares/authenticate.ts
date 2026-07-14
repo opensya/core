@@ -1,4 +1,4 @@
-import { UnauthorizedError } from "#core/error/utils.ts";
+import { UnauthorizedError } from "@opensya/core/error/utils";
 
 export default defineRouteMiddleware({
   pre(request) {
