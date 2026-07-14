@@ -1,19 +1,27 @@
 import { join, relative } from "node:path";
-import { getDirs, SERVER_DIRNAME } from "../dirs.js";
+import { CLIENT_DIRNAME, getDirs } from "../dirs.js";
 import { normalizeDir, normalizeDirs } from "../normalize-dir.js";
 import { atomicWriteFile } from "../atomic_write_ile.js";
 
-export function writeServerTsconfig() {
+export function writeClientTsconfig() {
   const dirs = getDirs();
 
   const include: string[] = normalizeDirs([
-    relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR_SERVER, "**/*.ts")),
+    relative(dirs.OUTPUT_DIR, join(dirs.OUTPUT_DIR_CLIENT, "**/*.ts")),
+    relative(dirs.OUTPUT_DIR, join(dirs.OUTPUT_DIR_CLIENT, "**/*.d.ts")),
+    relative(dirs.OUTPUT_DIR, join(dirs.OUTPUT_DIR_CLIENT, "**/*.vue")),
+
+    relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR, CLIENT_DIRNAME, "**/*.ts")),
+    relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR, CLIENT_DIRNAME, "**/*.vue")),
+
     relative(
       dirs.OUTPUT_DIR,
-      join(dirs.INPUT_DIR, "modules/**", SERVER_DIRNAME, "**/*.ts"),
+      join(dirs.INPUT_DIR, "modules/**", CLIENT_DIRNAME, "**/*.ts"),
     ),
-
-    relative(dirs.OUTPUT_DIR, join(dirs.OUTPUT_DIR_SERVER, "**/*.d.ts")),
+    relative(
+      dirs.OUTPUT_DIR,
+      join(dirs.INPUT_DIR, "modules/**", CLIENT_DIRNAME, "**/*.vue"),
+    ),
 
     relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "**/*.ts")),
     relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "**/*.d.ts")),
@@ -22,9 +30,9 @@ export function writeServerTsconfig() {
   const exclude: string[] = [];
 
   const paths = {
-    "#server/*": [
+    "#app/*": [
       normalizeDir(
-        relative(dirs.OUTPUT_DIR, join(dirs.OUTPUT_DIR_SERVER, "./*")),
+        relative(dirs.OUTPUT_DIR, join(dirs.OUTPUT_DIR_CLIENT, "./*")),
       ),
     ],
 
@@ -37,7 +45,7 @@ export function writeServerTsconfig() {
     compilerOptions: {
       /* Language and runtime */
       target: "ES2022",
-      lib: ["ES2022"],
+      lib: ["ES2022", "DOM"],
       jsx: "preserve",
       allowJs: true,
       useDefineForClassFields: true,
@@ -87,7 +95,7 @@ export function writeServerTsconfig() {
       paths,
 
       /* Global type definitions */
-      // types: ["node"],
+      types: ["node", "vite/client"],
     },
 
     include,
@@ -95,7 +103,7 @@ export function writeServerTsconfig() {
   };
 
   atomicWriteFile(
-    join(dirs.OUTPUT_DIR, "tsconfig.server.json"),
+    join(dirs.OUTPUT_DIR, "tsconfig.app.json"),
     JSON.stringify(tsconfig, undefined, 2),
   );
 }
