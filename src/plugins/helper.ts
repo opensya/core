@@ -9,12 +9,14 @@ export type PluginMeta = {
   file: string;
 };
 
-export function definePlugin(
-  handler: FastifyPluginCallback,
-  options?: PluginMetadata,
-) {
-  return fp(handler, options);
-}
+// export function definePlugin(
+//   handler: FastifyPluginCallback,
+//   options?: PluginMetadata,
+// ) {
+//   return fp(handler, options);
+// }
+
+export const definePlugin = fp;
 
 export function generateHelperTypes() {
   const { OUTPUT_DIR_SERVER } = getDirs();

@@ -2,18 +2,16 @@ import fp from "fastify-plugin";
 import path from "node:path";
 import { getChildren, loadDefaultJs } from "../../utils/index.js";
 import { resolveApi, type ApiMetaOptions } from "./resolve.js";
-import {
-  appendPreHandler,
-  defineRouteHandler,
-  generateHelperTypes,
-} from "./helper.js";
+import { registerHelpers } from "./helper/index.js";
 import { getListOpensyaConfig } from "../../config/load.js";
 import { existsSync } from "node:fs";
 import _ from "lodash";
+import { loadRouteMiddleware } from "./load-middlewares.js";
 
 export default fp(async (app) => {
-  Object.assign(globalThis, { defineRouteHandler, appendPreHandler });
-  generateHelperTypes();
+  registerHelpers();
+
+  const middlewares = await loadRouteMiddleware();
 
   const routes: Record<
     string,
@@ -21,7 +19,11 @@ export default fp(async (app) => {
   > = {};
 
   async function loadApi(apiDir: string) {
-    const files = getChildren(apiDir, { recursive: true, onlyFile: true });
+    const files = getChildren(apiDir, {
+      recursive: true,
+      onlyFile: true,
+      endWith: /\.(js|ts)$/,
+    });
 
     for (const file of files) {
       const content = await loadDefaultJs<ReturnType<typeof fp>>(file.path);
@@ -44,6 +46,6 @@ export default fp(async (app) => {
     if (!Object.hasOwn(routes, idx)) continue;
 
     const route = routes[idx]!;
-    await app.register(route.content, route.options);
+    await app.register(route.content, { ...route.options, middlewares });
   }
 });

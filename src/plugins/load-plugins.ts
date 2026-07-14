@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { getListOpensyaConfig } from "../config/load.js";
-import { getDirs, SERVER_DIRNAME } from "../utils/dirs.js";
+import { SERVER_DIRNAME } from "../utils/dirs.js";
 import path from "node:path";
 import { existsSync } from "node:fs";
 import { getChildren } from "../utils/get-children.js";
@@ -9,7 +9,6 @@ import type { FastifyPluginCallback } from "fastify";
 
 export default async function loadPlugins(): Promise<FastifyPluginCallback[]> {
   const configs = _.reverse(getListOpensyaConfig());
-  const { OUTPUT_DIR_SERVER } = getDirs();
 
   const plugins: FastifyPluginCallback[] = [];
 

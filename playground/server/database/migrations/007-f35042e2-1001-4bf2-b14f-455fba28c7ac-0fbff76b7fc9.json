@@ -1,0 +1,1763 @@
+{
+  "version": 1,
+  "id": "f35042e2-1001-4bf2-b14f-455fba28c7ac-0fbff76b7fc9",
+  "name": "f35042e2-1001-4bf2-b14f-455fba28c7ac",
+  "createdAt": "2026-07-13T21:24:42.697Z",
+  "checksum": "0fbff76b7fc97cd21fab612a4fdd368676a6125c5e300c7526ece61702b13683",
+  "previous": {
+    "version": 1,
+    "tables": [
+      {
+        "name": "auditLogs",
+        "collectionName": "audit_logs",
+        "columns": [
+          {
+            "name": "actor",
+            "columnName": "actor",
+            "type": "json",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "after",
+            "columnName": "after",
+            "type": "json",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "before",
+            "columnName": "before",
+            "type": "json",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "changes",
+            "columnName": "changes",
+            "type": "json",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "entityId",
+            "columnName": "entity_id",
+            "type": "json",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true
+          },
+          {
+            "name": "occurredAt",
+            "columnName": "occurred_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "operation",
+            "columnName": "operation",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "requestId",
+            "columnName": "request_id",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "table",
+            "columnName": "table",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "tenantId",
+            "columnName": "tenant_id",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          }
+        ],
+        "indexes": [
+          {
+            "name": "audit_logs_occurred_at_idx",
+            "fields": [
+              "occurred_at"
+            ],
+            "unique": false
+          },
+          {
+            "name": "audit_logs_table_time_idx",
+            "fields": [
+              "table",
+              "occurred_at"
+            ],
+            "unique": false
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "name": "auths",
+        "collectionName": "auths",
+        "columns": [
+          {
+            "name": "createdAt",
+            "columnName": "created_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "expiresAt",
+            "columnName": "expires_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "revokedAt",
+            "columnName": "revoke_at",
+            "type": "timestamp",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "tokenHash",
+            "columnName": "token_hash",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "userId",
+            "columnName": "user_id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "version",
+            "columnName": "version",
+            "type": "integer",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "static",
+              "value": 1
+            }
+          }
+        ],
+        "indexes": [
+          {
+            "name": "auths_user_created_idx",
+            "fields": [
+              "user_id",
+              "created_at"
+            ],
+            "unique": false
+          }
+        ],
+        "foreignKeys": [
+          {
+            "name": "persistence_auths_user_fk",
+            "field": "user_id",
+            "targetTable": "users",
+            "targetField": "id"
+          }
+        ]
+      },
+      {
+        "name": "outboxEvents",
+        "collectionName": "outbox_events",
+        "columns": [
+          {
+            "name": "aggregateId",
+            "columnName": "aggregate_id",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "aggregateType",
+            "columnName": "aggregate_type",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "attempts",
+            "columnName": "attempts",
+            "type": "integer",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true
+          },
+          {
+            "name": "lastError",
+            "columnName": "last_error",
+            "type": "text",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "lockedAt",
+            "columnName": "locked_at",
+            "type": "timestamp",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "metadata",
+            "columnName": "metadata",
+            "type": "json",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "nextAttemptAt",
+            "columnName": "next_attempt_at",
+            "type": "timestamp",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "occurredAt",
+            "columnName": "occurred_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "payload",
+            "columnName": "payload",
+            "type": "json",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "publishedAt",
+            "columnName": "published_at",
+            "type": "timestamp",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "status",
+            "columnName": "status",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "type",
+            "columnName": "type",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "version",
+            "columnName": "version",
+            "type": "integer",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "workerId",
+            "columnName": "worker_id",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          }
+        ],
+        "indexes": [
+          {
+            "name": "outbox_events_aggregate_idx",
+            "fields": [
+              "aggregate_type",
+              "aggregate_id",
+              "occurred_at"
+            ],
+            "unique": false
+          },
+          {
+            "name": "outbox_events_pending_idx",
+            "fields": [
+              "status",
+              "next_attempt_at",
+              "occurred_at"
+            ],
+            "unique": false
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "name": "users",
+        "collectionName": "users",
+        "columns": [
+          {
+            "name": "createdAt",
+            "columnName": "created_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "email",
+            "columnName": "email",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": true
+          },
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "password",
+            "columnName": "password_hash",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "preferences",
+            "columnName": "preferences",
+            "type": "json",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "version",
+            "columnName": "version",
+            "type": "integer",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "static",
+              "value": 1
+            }
+          }
+        ],
+        "indexes": [],
+        "foreignKeys": []
+      }
+    ]
+  },
+  "next": {
+    "version": 1,
+    "tables": [
+      {
+        "name": "auditLogs",
+        "collectionName": "audit_logs",
+        "columns": [
+          {
+            "name": "actor",
+            "columnName": "actor",
+            "type": "json",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "after",
+            "columnName": "after",
+            "type": "json",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "before",
+            "columnName": "before",
+            "type": "json",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "changes",
+            "columnName": "changes",
+            "type": "json",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "entityId",
+            "columnName": "entity_id",
+            "type": "json",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true
+          },
+          {
+            "name": "occurredAt",
+            "columnName": "occurred_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "operation",
+            "columnName": "operation",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "requestId",
+            "columnName": "request_id",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "table",
+            "columnName": "table",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "tenantId",
+            "columnName": "tenant_id",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          }
+        ],
+        "indexes": [
+          {
+            "name": "audit_logs_occurred_at_idx",
+            "fields": [
+              "occurred_at"
+            ],
+            "unique": false
+          },
+          {
+            "name": "audit_logs_table_time_idx",
+            "fields": [
+              "table",
+              "occurred_at"
+            ],
+            "unique": false
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "name": "auths",
+        "collectionName": "auths",
+        "columns": [
+          {
+            "name": "createdAt",
+            "columnName": "created_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "expiresAt",
+            "columnName": "expires_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "revokedAt",
+            "columnName": "revoke_at",
+            "type": "timestamp",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "tokenHash",
+            "columnName": "token_hash",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "userId",
+            "columnName": "user_id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "version",
+            "columnName": "version",
+            "type": "integer",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "static",
+              "value": 1
+            }
+          }
+        ],
+        "indexes": [
+          {
+            "name": "auths_user_created_idx",
+            "fields": [
+              "user_id",
+              "created_at"
+            ],
+            "unique": false
+          }
+        ],
+        "foreignKeys": [
+          {
+            "name": "persistence_auths_user_fk",
+            "field": "user_id",
+            "targetTable": "users",
+            "targetField": "id"
+          }
+        ]
+      },
+      {
+        "name": "memberships",
+        "collectionName": "memberships",
+        "columns": [
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "joinedAt",
+            "columnName": "joined_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "roleId",
+            "columnName": "role_id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "userId",
+            "columnName": "user_id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": true
+          }
+        ],
+        "indexes": [],
+        "foreignKeys": [
+          {
+            "name": "persistence_memberships_role_fk",
+            "field": "role_id",
+            "targetTable": "roles",
+            "targetField": "id"
+          },
+          {
+            "name": "persistence_memberships_user_fk",
+            "field": "user_id",
+            "targetTable": "users",
+            "targetField": "id"
+          }
+        ]
+      },
+      {
+        "name": "outboxEvents",
+        "collectionName": "outbox_events",
+        "columns": [
+          {
+            "name": "aggregateId",
+            "columnName": "aggregate_id",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "aggregateType",
+            "columnName": "aggregate_type",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "attempts",
+            "columnName": "attempts",
+            "type": "integer",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true
+          },
+          {
+            "name": "lastError",
+            "columnName": "last_error",
+            "type": "text",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "lockedAt",
+            "columnName": "locked_at",
+            "type": "timestamp",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "metadata",
+            "columnName": "metadata",
+            "type": "json",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "nextAttemptAt",
+            "columnName": "next_attempt_at",
+            "type": "timestamp",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "occurredAt",
+            "columnName": "occurred_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "payload",
+            "columnName": "payload",
+            "type": "json",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "publishedAt",
+            "columnName": "published_at",
+            "type": "timestamp",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "status",
+            "columnName": "status",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "type",
+            "columnName": "type",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "version",
+            "columnName": "version",
+            "type": "integer",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "workerId",
+            "columnName": "worker_id",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          }
+        ],
+        "indexes": [
+          {
+            "name": "outbox_events_aggregate_idx",
+            "fields": [
+              "aggregate_type",
+              "aggregate_id",
+              "occurred_at"
+            ],
+            "unique": false
+          },
+          {
+            "name": "outbox_events_pending_idx",
+            "fields": [
+              "status",
+              "next_attempt_at",
+              "occurred_at"
+            ],
+            "unique": false
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "name": "permissions",
+        "collectionName": "permissions",
+        "columns": [
+          {
+            "name": "action",
+            "columnName": "action",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "resource",
+            "columnName": "resource",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "slug",
+            "columnName": "slug",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": true
+          }
+        ],
+        "indexes": [
+          {
+            "name": "permissions_resource_action_idx",
+            "fields": [
+              "resource",
+              "action"
+            ],
+            "unique": true
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "name": "role_permissions",
+        "collectionName": "role_permissions",
+        "columns": [
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "permissionId",
+            "columnName": "permission_id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "roleId",
+            "columnName": "role_id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          }
+        ],
+        "indexes": [
+          {
+            "name": "role_permissions_role_permission_idx",
+            "fields": [
+              "role_id",
+              "permission_id"
+            ],
+            "unique": true
+          }
+        ],
+        "foreignKeys": [
+          {
+            "name": "persistence_role_permissions_permission_fk",
+            "field": "permission_id",
+            "targetTable": "permissions",
+            "targetField": "id"
+          },
+          {
+            "name": "persistence_role_permissions_role_fk",
+            "field": "role_id",
+            "targetTable": "roles",
+            "targetField": "id"
+          }
+        ]
+      },
+      {
+        "name": "roles",
+        "collectionName": "roles",
+        "columns": [
+          {
+            "name": "createdAt",
+            "columnName": "created_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "description",
+            "columnName": "description",
+            "type": "text",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "isSystem",
+            "columnName": "is_system",
+            "type": "boolean",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "static",
+              "value": false
+            }
+          },
+          {
+            "name": "name",
+            "columnName": "name",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "slug",
+            "columnName": "slug",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": true
+          }
+        ],
+        "indexes": [],
+        "foreignKeys": []
+      },
+      {
+        "name": "team_memberships",
+        "collectionName": "team_memberships",
+        "columns": [
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "joinedAt",
+            "columnName": "joined_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "roleId",
+            "columnName": "role_id",
+            "type": "uuid",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "teamId",
+            "columnName": "team_id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "userId",
+            "columnName": "user_id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          }
+        ],
+        "indexes": [
+          {
+            "name": "team_memberships_user_team_idx",
+            "fields": [
+              "user_id",
+              "team_id"
+            ],
+            "unique": true
+          }
+        ],
+        "foreignKeys": [
+          {
+            "name": "persistence_team_memberships_role_fk",
+            "field": "role_id",
+            "targetTable": "roles",
+            "targetField": "id"
+          },
+          {
+            "name": "persistence_team_memberships_team_fk",
+            "field": "team_id",
+            "targetTable": "teams",
+            "targetField": "id"
+          },
+          {
+            "name": "persistence_team_memberships_user_fk",
+            "field": "user_id",
+            "targetTable": "users",
+            "targetField": "id"
+          }
+        ]
+      },
+      {
+        "name": "teams",
+        "collectionName": "teams",
+        "columns": [
+          {
+            "name": "createdAt",
+            "columnName": "created_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "description",
+            "columnName": "description",
+            "type": "text",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "name",
+            "columnName": "name",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "slug",
+            "columnName": "slug",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": true
+          },
+          {
+            "name": "updatedAt",
+            "columnName": "updated_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "runtime"
+            }
+          }
+        ],
+        "indexes": [],
+        "foreignKeys": []
+      },
+      {
+        "name": "users",
+        "collectionName": "users",
+        "columns": [
+          {
+            "name": "createdAt",
+            "columnName": "created_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "email",
+            "columnName": "email",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": true
+          },
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "password",
+            "columnName": "password_hash",
+            "type": "string",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "preferences",
+            "columnName": "preferences",
+            "type": "json",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "version",
+            "columnName": "version",
+            "type": "integer",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "static",
+              "value": 1
+            }
+          }
+        ],
+        "indexes": [],
+        "foreignKeys": []
+      }
+    ]
+  },
+  "operations": [
+    {
+      "kind": "createTable",
+      "table": {
+        "name": "memberships",
+        "collectionName": "memberships",
+        "columns": [
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "joinedAt",
+            "columnName": "joined_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "roleId",
+            "columnName": "role_id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "userId",
+            "columnName": "user_id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": true
+          }
+        ],
+        "indexes": [],
+        "foreignKeys": [
+          {
+            "name": "persistence_memberships_role_fk",
+            "field": "role_id",
+            "targetTable": "roles",
+            "targetField": "id"
+          },
+          {
+            "name": "persistence_memberships_user_fk",
+            "field": "user_id",
+            "targetTable": "users",
+            "targetField": "id"
+          }
+        ]
+      },
+      "safety": "safe"
+    },
+    {
+      "kind": "createTable",
+      "table": {
+        "name": "permissions",
+        "collectionName": "permissions",
+        "columns": [
+          {
+            "name": "action",
+            "columnName": "action",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "resource",
+            "columnName": "resource",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "slug",
+            "columnName": "slug",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": true
+          }
+        ],
+        "indexes": [
+          {
+            "name": "permissions_resource_action_idx",
+            "fields": [
+              "resource",
+              "action"
+            ],
+            "unique": true
+          }
+        ],
+        "foreignKeys": []
+      },
+      "safety": "safe"
+    },
+    {
+      "kind": "createTable",
+      "table": {
+        "name": "role_permissions",
+        "collectionName": "role_permissions",
+        "columns": [
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "permissionId",
+            "columnName": "permission_id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "roleId",
+            "columnName": "role_id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          }
+        ],
+        "indexes": [
+          {
+            "name": "role_permissions_role_permission_idx",
+            "fields": [
+              "role_id",
+              "permission_id"
+            ],
+            "unique": true
+          }
+        ],
+        "foreignKeys": [
+          {
+            "name": "persistence_role_permissions_permission_fk",
+            "field": "permission_id",
+            "targetTable": "permissions",
+            "targetField": "id"
+          },
+          {
+            "name": "persistence_role_permissions_role_fk",
+            "field": "role_id",
+            "targetTable": "roles",
+            "targetField": "id"
+          }
+        ]
+      },
+      "safety": "safe"
+    },
+    {
+      "kind": "createTable",
+      "table": {
+        "name": "roles",
+        "collectionName": "roles",
+        "columns": [
+          {
+            "name": "createdAt",
+            "columnName": "created_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "description",
+            "columnName": "description",
+            "type": "text",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "isSystem",
+            "columnName": "is_system",
+            "type": "boolean",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "static",
+              "value": false
+            }
+          },
+          {
+            "name": "name",
+            "columnName": "name",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "slug",
+            "columnName": "slug",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": true
+          }
+        ],
+        "indexes": [],
+        "foreignKeys": []
+      },
+      "safety": "safe"
+    },
+    {
+      "kind": "createTable",
+      "table": {
+        "name": "team_memberships",
+        "collectionName": "team_memberships",
+        "columns": [
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "joinedAt",
+            "columnName": "joined_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "roleId",
+            "columnName": "role_id",
+            "type": "uuid",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "teamId",
+            "columnName": "team_id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "userId",
+            "columnName": "user_id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          }
+        ],
+        "indexes": [
+          {
+            "name": "team_memberships_user_team_idx",
+            "fields": [
+              "user_id",
+              "team_id"
+            ],
+            "unique": true
+          }
+        ],
+        "foreignKeys": [
+          {
+            "name": "persistence_team_memberships_role_fk",
+            "field": "role_id",
+            "targetTable": "roles",
+            "targetField": "id"
+          },
+          {
+            "name": "persistence_team_memberships_team_fk",
+            "field": "team_id",
+            "targetTable": "teams",
+            "targetField": "id"
+          },
+          {
+            "name": "persistence_team_memberships_user_fk",
+            "field": "user_id",
+            "targetTable": "users",
+            "targetField": "id"
+          }
+        ]
+      },
+      "safety": "safe"
+    },
+    {
+      "kind": "createTable",
+      "table": {
+        "name": "teams",
+        "collectionName": "teams",
+        "columns": [
+          {
+            "name": "createdAt",
+            "columnName": "created_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "description",
+            "columnName": "description",
+            "type": "text",
+            "nullable": true,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "id",
+            "columnName": "id",
+            "type": "uuid",
+            "nullable": false,
+            "primaryKey": true,
+            "unique": true,
+            "default": {
+              "kind": "runtime"
+            }
+          },
+          {
+            "name": "name",
+            "columnName": "name",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false
+          },
+          {
+            "name": "slug",
+            "columnName": "slug",
+            "type": "string",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": true
+          },
+          {
+            "name": "updatedAt",
+            "columnName": "updated_at",
+            "type": "timestamp",
+            "nullable": false,
+            "primaryKey": false,
+            "unique": false,
+            "default": {
+              "kind": "runtime"
+            }
+          }
+        ],
+        "indexes": [],
+        "foreignKeys": []
+      },
+      "safety": "safe"
+    },
+    {
+      "kind": "createIndex",
+      "table": "permissions",
+      "index": {
+        "name": "permissions_resource_action_idx",
+        "fields": [
+          "resource",
+          "action"
+        ],
+        "unique": true
+      },
+      "safety": "safe"
+    },
+    {
+      "kind": "createIndex",
+      "table": "role_permissions",
+      "index": {
+        "name": "role_permissions_role_permission_idx",
+        "fields": [
+          "role_id",
+          "permission_id"
+        ],
+        "unique": true
+      },
+      "safety": "safe"
+    },
+    {
+      "kind": "createIndex",
+      "table": "team_memberships",
+      "index": {
+        "name": "team_memberships_user_team_idx",
+        "fields": [
+          "user_id",
+          "team_id"
+        ],
+        "unique": true
+      },
+      "safety": "safe"
+    },
+    {
+      "kind": "addForeignKey",
+      "table": "memberships",
+      "foreignKey": {
+        "name": "persistence_memberships_role_fk",
+        "field": "role_id",
+        "targetTable": "roles",
+        "targetField": "id"
+      },
+      "safety": "safe"
+    },
+    {
+      "kind": "addForeignKey",
+      "table": "memberships",
+      "foreignKey": {
+        "name": "persistence_memberships_user_fk",
+        "field": "user_id",
+        "targetTable": "users",
+        "targetField": "id"
+      },
+      "safety": "safe"
+    },
+    {
+      "kind": "addForeignKey",
+      "table": "role_permissions",
+      "foreignKey": {
+        "name": "persistence_role_permissions_permission_fk",
+        "field": "permission_id",
+        "targetTable": "permissions",
+        "targetField": "id"
+      },
+      "safety": "safe"
+    },
+    {
+      "kind": "addForeignKey",
+      "table": "role_permissions",
+      "foreignKey": {
+        "name": "persistence_role_permissions_role_fk",
+        "field": "role_id",
+        "targetTable": "roles",
+        "targetField": "id"
+      },
+      "safety": "safe"
+    },
+    {
+      "kind": "addForeignKey",
+      "table": "team_memberships",
+      "foreignKey": {
+        "name": "persistence_team_memberships_role_fk",
+        "field": "role_id",
+        "targetTable": "roles",
+        "targetField": "id"
+      },
+      "safety": "safe"
+    },
+    {
+      "kind": "addForeignKey",
+      "table": "team_memberships",
+      "foreignKey": {
+        "name": "persistence_team_memberships_team_fk",
+        "field": "team_id",
+        "targetTable": "teams",
+        "targetField": "id"
+      },
+      "safety": "safe"
+    },
+    {
+      "kind": "addForeignKey",
+      "table": "team_memberships",
+      "foreignKey": {
+        "name": "persistence_team_memberships_user_fk",
+        "field": "user_id",
+        "targetTable": "users",
+        "targetField": "id"
+      },
+      "safety": "safe"
+    }
+  ]
+}

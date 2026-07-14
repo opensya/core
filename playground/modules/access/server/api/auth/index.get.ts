@@ -16,5 +16,5 @@ export default defineRouteHandler(
     };
   },
 
-  // { publicRoute: true },
+  { config: { publicRoute: true } },
 );

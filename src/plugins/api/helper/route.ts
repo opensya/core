@@ -5,10 +5,11 @@ import type {
   RouteHandlerMethod,
   RouteOptions,
 } from "fastify";
-import type { ApiMetaOptions } from "./resolve.js";
-import { atomicWriteFile } from "../../utils/atomic_write_ile.js";
-import path from "node:path";
-import { getDirs } from "../../utils/dirs.js";
+import type { ApiMetaOptions } from "../resolve.js";
+import {
+  composeRouteMiddlewares,
+  type RouteMiddlewareDefinition,
+} from "./middleware.js";
 
 export type RouteTransformer = (
   options: RouteOptions,
@@ -17,7 +18,11 @@ export type RouteTransformer = (
 export type ApiHandlerOptions = Omit<
   RouteOptions,
   "method" | "url" | "handler"
-> & {};
+>;
+
+type PluginParams = ApiMetaOptions & {
+  middlewares: RouteMiddlewareDefinition[];
+};
 
 export function defineRouteHandler<THandler extends RouteHandlerMethod>(
   handler: THandler,
@@ -40,13 +45,13 @@ export function defineRouteHandler<
   handler: THandler,
   optionsOrTransformer?: TOptions | RouteTransformer,
   ...transformers: RouteTransformer[]
-): FastifyPluginCallback<ApiMetaOptions> {
+): FastifyPluginCallback<PluginParams> {
   const hasOptions =
     typeof optionsOrTransformer === "object" && optionsOrTransformer !== null;
 
   const args = {
     handler,
-    options: hasOptions ? optionsOrTransformer : {},
+    options: hasOptions ? optionsOrTransformer : ({} as TOptions),
     transformers: hasOptions
       ? transformers
       : optionsOrTransformer
@@ -54,11 +59,14 @@ export function defineRouteHandler<
         : transformers,
   };
 
-  return fp<ApiMetaOptions>(async (app, options) => {
+  return fp<PluginParams>(async (app, options) => {
+    const handler = composeRouteMiddlewares(options.middlewares, args.handler);
+
     let routeOptions: RouteOptions = {
       url: options.url,
       method: options.method,
-      handler: args.handler,
+      config: args.options.config,
+      handler,
     };
 
     for (const transformer of args.transformers) {
@@ -82,23 +90,4 @@ export function appendPreHandler(
   }
 
   return options;
-}
-
-export function generateHelperTypes() {
-  const { OUTPUT_DIR_SERVER } = getDirs();
-
-  const rPath = path.relative(
-    path.resolve(OUTPUT_DIR_SERVER, "api"),
-    import.meta.filename,
-  );
-
-  const content = `declare global {
-  const defineRouteHandler: (typeof import("${rPath}"))["defineRouteHandler"];
-  const appendPreHandler: (typeof import("${rPath}"))["appendPreHandler"];
-}
-
-export {};
-`;
-
-  atomicWriteFile(path.resolve(OUTPUT_DIR_SERVER, "api/helper.d.ts"), content);
 }

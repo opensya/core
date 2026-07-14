@@ -128,6 +128,7 @@ export async function setup() {
   const _database = {
     adapter,
     engine,
+    database,
     // schemaCreation,
     close: () => database?.$client?.end(),
   };

@@ -1,6 +1,7 @@
 declare global {
-  const defineRouteHandler: (typeof import("../../../src/plugins/api/helper.ts"))["defineRouteHandler"];
-  const appendPreHandler: (typeof import("../../../src/plugins/api/helper.ts"))["appendPreHandler"];
+  const defineRouteHandler: (typeof import("../../../src/plugins/api/helper/index.js"))["defineRouteHandler"];
+  const appendPreHandler: (typeof import("../../../src/plugins/api/helper/index.js"))["appendPreHandler"];
+  const defineRouteMiddleware: (typeof import("../../../src/plugins/api/helper/index.js"))["defineRouteMiddleware"];
 }
 
 export {};
