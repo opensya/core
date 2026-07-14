@@ -1,7 +1,7 @@
 import { join, relative } from "node:path";
 import { getDirs, SERVER_DIRNAME } from "../dirs.js";
 import { normalizeDir, normalizeDirs } from "../normalize-dir.js";
-import { atomicWriteFile } from "../atomic_write_ile.js";
+import { atomicWriteFile } from "../atomic-write-file.js";
 
 export function writeServerTsconfig() {
   const dirs = getDirs();

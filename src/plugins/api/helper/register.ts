@@ -2,7 +2,7 @@ import { appendPreHandler, defineRouteHandler } from "./route.js";
 import { defineRouteMiddleware } from "./middleware.js";
 import { getDirs } from "#core/utils/dirs.js";
 import path from "node:path";
-import { atomicWriteFile } from "#core/utils/atomic_write_ile.js";
+import { atomicWriteFile } from "#core/utils/atomic-write-file.js";
 
 export function registerHelpers() {
   Object.assign(globalThis, {

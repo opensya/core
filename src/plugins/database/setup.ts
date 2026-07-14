@@ -17,7 +17,7 @@ import _ from "lodash";
 import { loadMetadatas } from "./load-metadatas.js";
 import path, { join } from "node:path";
 import { getDirs } from "../../utils/dirs.js";
-import { atomicWriteFile } from "../../utils/atomic_write_ile.js";
+import { atomicWriteFile } from "../../utils/atomic-write-file.js";
 import { registerHelpers } from "./helpers.js";
 import { loadDatabaseHooks } from "./load-hoos.js";
 

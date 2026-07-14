@@ -1,3 +1,7 @@
+<script lang="ts" setup>
+useTestComposable();
+</script>
+
 <template>
   <SubUseTest />
   Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt asperiores

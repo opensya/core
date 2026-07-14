@@ -19,6 +19,8 @@ declare module "virtual:plugins" {
   export const pluginsPlugin: Plugin;
 }
 
+declare module "virtual:composables" {}
+
 // declare module "virtual:guards" {
 //   import type { ComponentType, ReactNode } from "react";
 

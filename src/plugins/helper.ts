@@ -2,7 +2,7 @@ import type { FastifyPluginCallback } from "fastify";
 import fp, { type PluginMetadata } from "fastify-plugin";
 import { getDirs } from "../utils/dirs.js";
 import path from "path/posix";
-import { atomicWriteFile } from "../utils/atomic_write_ile.js";
+import { atomicWriteFile } from "../utils/atomic-write-file.js";
 
 export type PluginMeta = {
   name: string;

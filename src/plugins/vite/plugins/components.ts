@@ -106,10 +106,10 @@ export function viteComponentsPlugin(): Plugin {
     const configs = _.reverse(getListOpensyaConfig());
 
     for (const { _srcDir } of configs) {
-      const pageDir = path.resolve(_srcDir, "app/components");
-      if (!fs.existsSync(pageDir)) continue;
+      const parentDir = path.resolve(_srcDir, "app/components");
+      if (!fs.existsSync(parentDir)) continue;
 
-      await getPages(pageDir);
+      await getPages(parentDir);
     }
 
     // Trigger the dts generation asynchronously

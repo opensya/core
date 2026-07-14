@@ -1,5 +1,5 @@
 import type { HooksRegistry } from "@opensya/persistence";
-import { atomicWriteFile } from "../../utils/atomic_write_ile.js";
+import { atomicWriteFile } from "../../utils/atomic-write-file.js";
 import path from "node:path";
 import { getDirs } from "../../utils/dirs.js";
 

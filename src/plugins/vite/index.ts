@@ -10,6 +10,7 @@ import {
   viteRouterPlugin,
   viteComponentsPlugin,
   vitePluginsPlugin,
+  viteComposablesPlugin,
 } from "./plugins/index.js";
 import { getDirs } from "#core/utils/dirs.js";
 
@@ -33,6 +34,7 @@ export default fp(async (app) => {
       plugins: [
         vue(),
         viteComponentsPlugin(),
+        viteComposablesPlugin(),
         vitePluginsPlugin(),
         viteRouterPlugin(),
       ],

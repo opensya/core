@@ -5,7 +5,7 @@ import { existsSync } from "fs";
 import { getChildren } from "../../utils/get-children.js";
 import { loadDefaultJs } from "../../utils/load-js.js";
 import type { TableMetadata } from "@opensya/persistence";
-import { atomicWriteFile } from "../../utils/atomic_write_ile.js";
+import { atomicWriteFile } from "../../utils/atomic-write-file.js";
 import _ from "lodash";
 
 export async function loadMetadatas() {
