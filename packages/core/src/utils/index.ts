@@ -6,3 +6,4 @@ export * from "./atomic-write-file.js";
 export * from "./get-config-alias.js";
 export * from "./tsconfig.js";
 export * from "./random.js";
+export * from "./unset.js";

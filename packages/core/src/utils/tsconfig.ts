@@ -1,8 +1,11 @@
-import { join, relative } from "node:path";
+import path, { join, relative } from "node:path";
 import { CLIENT_DIRNAME, getDirs, SERVER_DIRNAME } from "./dirs.js";
 import { normalizeDir, normalizeDirs } from "./normalize-dir.js";
 import { atomicWriteFile } from "./atomic-write-file.js";
 import { getCustomConfigAliases } from "./get-config-alias.js";
+import { findAndReadPackageJson } from "./read-package-json.js";
+import { getDependencyTree } from "./depancies-paths.js";
+import _ from "lodash";
 
 /**
  * Returns the base compiler options shared across all tsconfig targets.
@@ -60,11 +63,17 @@ function getSharedCompilerOptions() {
 /**
  * Generates the base tsconfig.json that other configurations will extend.
  */
-export function writeBaseTsconfig() {
+export function writeBaseTsconfig({
+  dependencies,
+}: {
+  dependencies: string[];
+}) {
   const dirs = getDirs();
 
   const tsconfig = {
     compilerOptions: getSharedCompilerOptions(),
+
+    include: [...dependencies],
   };
 
   atomicWriteFile(
@@ -76,7 +85,11 @@ export function writeBaseTsconfig() {
 /**
  * Generates tsconfig.app.json for the frontend/client environment.
  */
-export function writeClientTsconfig() {
+export function writeClientTsconfig({
+  dependencies,
+}: {
+  dependencies: string[];
+}) {
   const dirs = getDirs();
 
   const include: string[] = normalizeDirs([
@@ -98,6 +111,8 @@ export function writeClientTsconfig() {
 
     relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "**/*.ts")),
     relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "**/*.d.ts")),
+
+    ...dependencies,
   ]);
 
   // Default client path aliases (ensuring they are wrapped in arrays for tsconfig compliance)
@@ -149,7 +164,11 @@ export function writeClientTsconfig() {
 /**
  * Generates tsconfig.server.json for the backend/server environment.
  */
-export function writeServerTsconfig() {
+export function writeServerTsconfig({
+  dependencies,
+}: {
+  dependencies: string[];
+}) {
   const dirs = getDirs();
 
   const include: string[] = normalizeDirs([
@@ -163,6 +182,8 @@ export function writeServerTsconfig() {
 
     relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "**/*.ts")),
     relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "**/*.d.ts")),
+
+    ...dependencies,
   ]);
 
   // Default server path aliases (ensuring they are wrapped in arrays for tsconfig compliance)
@@ -207,7 +228,11 @@ export function writeServerTsconfig() {
 /**
  * Generates tsconfig.node.json for tooling, configuration files, and build scripts.
  */
-export function writeNodeTsconfig() {
+export function writeNodeTsconfig({
+  dependencies,
+}: {
+  dependencies: string[];
+}) {
   const dirs = getDirs();
 
   // Scans build tools, config files (vite.config.ts, opensya.config.ts) and scripts
@@ -217,6 +242,8 @@ export function writeNodeTsconfig() {
     relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR, "tools/**/*.ts")),
     relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "**/*.ts")),
     relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "**/*.d.ts")),
+
+    ...dependencies,
   ]);
 
   const paths = {
@@ -246,8 +273,27 @@ export function writeNodeTsconfig() {
  * High-level runner to build the entire TypeScript project configuration.
  */
 export function generateAllTsconfigs() {
-  writeBaseTsconfig();
-  writeClientTsconfig();
-  writeServerTsconfig();
-  writeNodeTsconfig();
+  const dirs = getDirs();
+  let dependencies = [];
+
+  const pkg = findAndReadPackageJson(import.meta.dirname);
+  for (const name of Object.keys(pkg.dependencies ?? {})) {
+    const dependence = getDependencyTree(name, import.meta.dirname);
+    // dependencies.push(
+    //   ...dependence.dependencies.map((dependence) => dependence.path),
+    // );
+
+    dependencies.push(dependence.packagePath);
+  }
+
+  dependencies = _.uniq(dependencies.filter((dep) => dep !== null)).map(
+    (dep) => {
+      return normalizeDir(path.relative(dirs.OUTPUT_DIR, dep));
+    },
+  );
+
+  writeBaseTsconfig({ dependencies });
+  writeClientTsconfig({ dependencies });
+  writeServerTsconfig({ dependencies });
+  writeNodeTsconfig({ dependencies });
 }

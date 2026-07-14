@@ -14,7 +14,7 @@ const VIRTUAL_ID = "virtual:composables";
 const RESOLVED_VIRTUAL_ID = "\0virtual:composables";
 
 const template = `
-import _ from "lodash";
+import { unset } from "{{import_unset}}";
 
 {{imports}}
 
@@ -46,7 +46,7 @@ export function viteComposablesPlugin(): Plugin {
     });
 
     for (const file of files) {
-      let name = _.camelCase(file.name.replace(/\.(js|ts)$/, ""));
+      const name = _.camelCase(file.name.replace(/\.(js|ts)$/, ""));
       let slug = "";
 
       while (
@@ -66,7 +66,7 @@ export function viteComposablesPlugin(): Plugin {
     const dtsEntries = [];
 
     for (const entry of composablesEntries) {
-      const content = await loadJs<Record<string, any>>(entry.file);
+      const content = await loadJs<Record<string, unknown>>(entry.file);
 
       dtsEntries.push(
         ...Object.keys(content)
@@ -112,13 +112,22 @@ export function viteComposablesPlugin(): Plugin {
     const assigns = composablesEntries
       .map(({ name }) =>
         [
-          `_.unset(${name}, 'default');`,
+          `unset(${name}, 'default');`,
           `Object.assign(globalThis, ${name});`,
         ].join("\n"),
       )
       .join("\n");
 
     return template
+      .replace(
+        "{{import_unset}}",
+        normalizeDir(
+          path.relative(
+            process.cwd(),
+            path.resolve(import.meta.dirname, "../../../utils/unset.js"),
+          ),
+        ),
+      )
       .replace("{{imports}}", imports)
       .replace("{{assigns}}", assigns);
   }

@@ -93,8 +93,11 @@ export default fp(async (app) => {
 
     app.get("*", async (request, reply) => {
       try {
-        const clientEntry = path.join(import.meta.dirname, "./app/main.ts");
-        const html = getIndexHtml(path.relative(process.cwd(), clientEntry));
+        const clientEntry = normalizeDir(
+          path.resolve(import.meta.dirname, "./app/main.js"),
+        );
+
+        const html = getIndexHtml(clientEntry);
         const transformed = await viteServer.transformIndexHtml(
           request.url,
           html,
