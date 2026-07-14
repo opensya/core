@@ -13,6 +13,12 @@ declare module "virtual:components" {
   export const componentsPlugin: Plugin;
 }
 
+declare module "virtual:plugins" {
+  import type { Plugin } from "vue";
+  export const plugins: Record<string, (ctx: { app: any }) => void>;
+  export const pluginsPlugin: Plugin;
+}
+
 // declare module "virtual:guards" {
 //   import type { ComponentType, ReactNode } from "react";
 

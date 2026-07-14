@@ -86,7 +86,7 @@ export function viteComponentsPlugin(): Plugin {
         if (!relativePath.startsWith(".")) {
           relativePath = `./${relativePath}`;
         }
-        return `  ${name}: typeof import('${relativePath}')['default']`;
+        return `    ${name}: typeof import('${relativePath}')['default']`;
       })
       .join("\n");
 

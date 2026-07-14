@@ -6,7 +6,12 @@ import path from "node:path";
 import fastifyStatic from "@fastify/static";
 
 import vue from "@vitejs/plugin-vue";
-import { viteRouterPlugin, viteComponentsPlugin } from "./plugins/index.js";
+import {
+  viteRouterPlugin,
+  viteComponentsPlugin,
+  vitePluginsPlugin,
+} from "./plugins/index.js";
+import { getDirs } from "#core/utils/dirs.js";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -16,6 +21,7 @@ declare module "fastify" {
 
 export default fp(async (app) => {
   const isDev = process.env.NODE_ENV !== "production";
+  const { CORE_DIR } = getDirs();
 
   if (isDev) {
     await app.register(middie);
@@ -24,7 +30,18 @@ export default fp(async (app) => {
       root: process.cwd(),
       server: { middlewareMode: true },
       appType: "custom",
-      plugins: [vue(), viteComponentsPlugin(), viteRouterPlugin()],
+      plugins: [
+        vue(),
+        viteComponentsPlugin(),
+        vitePluginsPlugin(),
+        viteRouterPlugin(),
+      ],
+
+      resolve: {
+        alias: {
+          "#core/*": path.join(CORE_DIR, "./*"),
+        },
+      },
     });
 
     app.decorate("vite", viteServer);
