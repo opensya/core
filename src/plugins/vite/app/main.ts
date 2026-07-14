@@ -3,13 +3,12 @@ import { createMemoryHistory, createRouter } from "vue-router";
 
 import App from "./app.vue";
 
+import "virtual:composables";
 import { routes } from "virtual:router";
 import { componentsPlugin } from "virtual:components";
 
 import { pluginsPlugin } from "virtual:plugins";
 import "./helpers/plugin.js";
-
-import "virtual:composables";
 
 const app = createApp(App);
 

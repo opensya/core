@@ -5,6 +5,7 @@ import { getChildren } from "../../../utils/get-children.js";
 import path from "node:path";
 import _ from "lodash";
 import { getDirs } from "#core/utils/dirs.js";
+import { normalizeDir } from "#core/utils/normalize-dir.js";
 
 const VIRTUAL_ID = "virtual:components";
 const RESOLVED_VIRTUAL_ID = "\0virtual:components";
@@ -21,7 +22,6 @@ export const componentsPlugin = {
     for (const [name, loader] of Object.entries(components)) {
       app.component(name, defineAsyncComponent(loader));
     }
-    console.log('[Opensya] Registered global components:', Object.keys(components));
   }
 };
 `;
@@ -80,13 +80,11 @@ export function viteComponentsPlugin(): Plugin {
     const dtsEntries = Object.entries(componentsEntries)
       .map(([name, { file }]) => {
         // Calculate the relative path from the dts file to the component
-        let relativePath = path
-          .relative(path.dirname(dtsPath), file)
-          .replace(/\\/g, "/");
-        if (!relativePath.startsWith(".")) {
-          relativePath = `./${relativePath}`;
-        }
-        return `    ${name}: typeof import('${relativePath}')['default']`;
+        const rPath = normalizeDir(
+          path.relative(path.dirname(dtsPath), file).replace(/\\/g, "/"),
+        );
+
+        return `    ${name}: typeof import('${rPath}')['default']`;
       })
       .join("\n");
 
@@ -118,8 +116,10 @@ export function viteComponentsPlugin(): Plugin {
     // Generate lazy-loaded imports for Vue
     const imports = Object.entries(componentsEntries)
       .map(([name, { file }]) => {
+        const rPath = normalizeDir(path.relative(process.cwd(), file));
+
         // We use stringify to safely escape file paths for Windows/Unix compatibility
-        return `    ${JSON.stringify(name)}: () => import(${JSON.stringify(file)})`;
+        return `    ${JSON.stringify(name)}: () => import('${rPath}')`;
       })
       .join(",\n");
 

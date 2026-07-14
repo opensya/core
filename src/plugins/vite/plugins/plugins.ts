@@ -5,6 +5,8 @@ import { getChildren } from "../../../utils/get-children.js";
 import path from "node:path";
 import _ from "lodash";
 import { getDirs } from "#core/utils/dirs.js";
+import { atomicWriteFile } from "#core/utils/atomic-write-file.js";
+import { normalizeDir } from "#core/utils/normalize-dir.js";
 
 const VIRTUAL_ID = "virtual:plugins";
 const RESOLVED_VIRTUAL_ID = "\0virtual:plugins";
@@ -26,7 +28,6 @@ export const pluginsPlugin = {
         await plugin.install(app);
       }
     }
-    console.log('[Opensya] Registered app plugins:', Object.keys(plugins));
   }
 };
 `;
@@ -84,7 +85,7 @@ export function vitePluginsPlugin(): Plugin {
     const dtsPath = path.resolve(OUTPUT_DIR_CLIENT, "plugins.d.ts");
 
     try {
-      fs.writeFileSync(dtsPath, dtsTemplate, "utf-8");
+      atomicWriteFile(dtsPath, dtsTemplate);
     } catch (error) {
       console.error("[Vite Plugin] Failed to write plugins.d.ts:", error);
     }
@@ -108,7 +109,11 @@ export function vitePluginsPlugin(): Plugin {
     // 1. Generate Static Imports (e.g., import myPluginPlugin from "path/to/plugin.ts")
     const imports = Object.entries(pluginEntries)
       .map(([varName, filePath]) => {
-        return `import ${varName} from ${JSON.stringify(filePath)};`;
+        const rPath = normalizeDir(
+          path.relative(process.cwd(), filePath).replace(/\\/g, "/"),
+        );
+
+        return `import ${varName} from ${JSON.stringify(rPath)};`;
       })
       .join("\n");
 
