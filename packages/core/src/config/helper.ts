@@ -4,7 +4,7 @@ export interface OpensyaConfig {
 
   css?: string[];
 
-  alias: Record<string, string[]>;
+  alias?: Record<string, string[]>;
 }
 
 export function defineOpensyaConfig<TConfig extends OpensyaConfig>(

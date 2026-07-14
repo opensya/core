@@ -4,8 +4,9 @@ import { normalizeDir, normalizeDirs } from "./normalize-dir.js";
 import { atomicWriteFile } from "./atomic-write-file.js";
 import { getCustomConfigAliases } from "./get-config-alias.js";
 import { findAndReadPackageJson } from "./read-package-json.js";
-import { getDependencyTree } from "./depancies-paths.js";
+import { resolvePackageDir } from "./depancies-paths.js";
 import _ from "lodash";
+import { getListOpensyaConfig } from "@/config/load.js";
 
 /**
  * Returns the base compiler options shared across all tsconfig targets.
@@ -276,14 +277,22 @@ export function generateAllTsconfigs() {
   const dirs = getDirs();
   let dependencies = [];
 
-  const pkg = findAndReadPackageJson(import.meta.dirname);
-  for (const name of Object.keys(pkg.dependencies ?? {})) {
-    const dependence = getDependencyTree(name, import.meta.dirname);
-    // dependencies.push(
-    //   ...dependence.dependencies.map((dependence) => dependence.path),
-    // );
+  const configs = getListOpensyaConfig();
 
-    dependencies.push(dependence.packagePath);
+  for (const config of configs) {
+    if (config._name.startsWith("module")) continue;
+
+    const pkg = findAndReadPackageJson(config._srcDir);
+    for (const name of Object.keys(pkg.dependencies ?? {})) {
+      dependencies.push(resolvePackageDir(name, config._srcDir));
+    }
+  }
+
+  for (const dir of [import.meta.dirname, undefined]) {
+    const pkg = findAndReadPackageJson(dir);
+    for (const name of Object.keys(pkg.dependencies ?? {})) {
+      dependencies.push(resolvePackageDir(name, dir));
+    }
   }
 
   dependencies = _.uniq(dependencies.filter((dep) => dep !== null)).map(

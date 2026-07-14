@@ -6,6 +6,7 @@ import { existsSync } from "node:fs";
 import _ from "lodash";
 
 export type UseOpensyaConfig = Required<OpensyaConfig> & {
+  _name: string;
   _main: boolean;
   _cwd: string;
   _srcDir: string;
@@ -43,6 +44,7 @@ export async function loadOpensyaConfigs() {
     _config._cwd = cwd;
     _config._srcDir = path.resolve(cwd, _config.srcDir);
     _config._index = index;
+    _config._name = name;
 
     index++;
 
