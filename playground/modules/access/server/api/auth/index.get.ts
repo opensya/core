@@ -1,18 +1,21 @@
 export default defineRouteHandler(
   async (request) => {
-    if (!request.user) return {};
+    if (!request.actor) return {};
 
-    const auth = await database.engine.findOne("auths", {
+    const user = await database.engine.findOne("users", {
       where: {
-        conditions: [{ field: "id", operator: "eq", value: request.user.sub }],
+        conditions: [
+          { field: "id", operator: "eq", value: request.actor.userId },
+        ],
       },
-      populate: ["user"],
     });
 
-    if (!auth) return {};
+    if (!user) return {};
 
     return {
-      user: (auth as any).user,
+      user,
+      orgRole: request.actor?.orgRole,
+      teamRoles: request.actor?.teamRoles,
     };
   },
 

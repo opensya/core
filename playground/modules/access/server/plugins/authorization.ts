@@ -27,12 +27,32 @@ export default definePlugin(async (app) => {
   // ── Résoudre l'actor sur chaque request authentifiée
   //    request.user est setté par @fastify/jwt (null si token absent/invalide)
   app.addHook("onRequest", async (request: FastifyRequest) => {
-    if (!request.user?.sub) {
-      request.actor = null;
-      return;
-    }
+    request.actor = null;
 
-    request.actor = await authorizationService.resolveActor(request.user.sub);
+    if (!request.user) return;
+
+    const auth = await database.engine.findOne("auths", {
+      where: {
+        conditions: [
+          {
+            field: "id",
+            operator: "eq",
+            value: request.user.authId,
+          },
+
+          {
+            field: "revokedAt",
+            operator: "isNull",
+          },
+        ],
+      },
+    });
+
+    if (!auth) return;
+
+    request.actor = await authorizationService.resolveActor(
+      request.user.userId,
+    );
   });
 
   // ── Enregistrer les erreurs d'autorisation comme réponses HTTP propres

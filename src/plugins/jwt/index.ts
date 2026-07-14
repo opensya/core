@@ -25,7 +25,8 @@ export default fp(async (app) => {
 });
 
 export interface AuthUser {
-  sub: string;
+  userId: string;
+  authId: string;
 }
 
 declare module "fastify" {
@@ -36,8 +37,7 @@ declare module "fastify" {
 
 declare module "@fastify/jwt" {
   interface FastifyJWT {
-    payload: { sub: string };
-
+    payload: AuthUser;
     user: AuthUser;
   }
 }
