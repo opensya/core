@@ -7,11 +7,13 @@ import fastifyStatic from "@fastify/static";
 
 import vue from "@vitejs/plugin-vue";
 import {
-  viteRouterPlugin,
+  viteRoutesPlugin,
   viteComponentsPlugin,
   vitePluginsPlugin,
   viteComposablesPlugin,
   viteCssPlugin,
+  viteRouterMiddlewaresPlugin,
+  vitePageMetaPlugin,
 } from "./plugins/index.js";
 import { getDirs } from "@/utils/dirs.js";
 import { getCustomConfigAliases } from "../../utils/get-config-alias.js";
@@ -39,8 +41,10 @@ export default fp(async (app) => {
         viteComponentsPlugin(),
         viteComposablesPlugin(),
         vitePluginsPlugin(),
-        viteRouterPlugin(),
+        viteRoutesPlugin(),
         viteCssPlugin(),
+        viteRouterMiddlewaresPlugin(),
+        vitePageMetaPlugin({ dev: isDev }).vite(),
       ],
 
       resolve: {

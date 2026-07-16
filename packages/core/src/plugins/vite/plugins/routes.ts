@@ -3,9 +3,10 @@ import { getListOpensyaConfig } from "../../../config/load.js";
 import { existsSync } from "node:fs";
 import { getChildren } from "../../../utils/get-children.js";
 import path from "node:path";
+import { normalizeDir } from "@/utils/normalize-dir.js";
 
-const VIRTUAL_ID = "virtual:router";
-const RESOLVED_VIRTUAL_ID = "\0virtual:router";
+const VIRTUAL_ID = "virtual:routes";
+const RESOLVED_VIRTUAL_ID = "\0virtual:routes";
 
 type RouteTree = {
   segment: string;
@@ -26,7 +27,7 @@ type VueRoute = {
   children?: VueRoute[];
 };
 
-export function viteRouterPlugin(): Plugin {
+export function viteRoutesPlugin(): Plugin {
   let pageEntries: RouteEntry[] = [];
 
   function buildRouteTree(entries: RouteEntry[]): RouteTree {
@@ -122,8 +123,7 @@ export function viteRouterPlugin(): Plugin {
   }
 
   function toImportPath(filePath: string): string {
-    return filePath.replaceAll("\\", "/");
-    // return path.relative(process.cwd(), filePath.replaceAll("\\", "/"));
+    return normalizeDir(path.relative(process.cwd(), filePath));
   }
 
   function joinPath(base: string, sub: string): string {
@@ -184,19 +184,22 @@ export function viteRouterPlugin(): Plugin {
     return routes;
   }
 
-  function serializeRoutes(
-    routes: VueRoute[],
-    toImportPath: (f: string) => string,
-  ): string {
+  function serializeRoutes(routes: VueRoute[]): string {
     const json = JSON.stringify(routes, null, 2);
 
-    const withImports = json.replace(
+    const withImportsAndMeta = json.replace(
       /"component":\s*"([^"]+)"/g,
-      (_match, filePath: string) =>
-        `"component": () => import(${JSON.stringify(toImportPath(filePath))})`,
+      (_match, filePath: string) => {
+        const resolvedPath = toImportPath(filePath);
+
+        return [
+          `"component": () => import('${resolvedPath}')`,
+          `"meta": () => import('${resolvedPath}?macro=true').then(m => m.default)`,
+        ].join(",\n      ");
+      },
     );
 
-    return `export const routes = ${withImports};\n`;
+    return `export const routes = ${withImportsAndMeta};\n`;
   }
 
   async function generateCode() {
@@ -214,7 +217,7 @@ export function viteRouterPlugin(): Plugin {
     const tree = buildRouteTree(pageEntries);
     const vueRoutes = buildVueRoutes(tree);
 
-    return serializeRoutes(vueRoutes, toImportPath);
+    return serializeRoutes(vueRoutes);
   }
 
   return {

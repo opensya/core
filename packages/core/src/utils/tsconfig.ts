@@ -248,8 +248,13 @@ export function writeNodeTsconfig({
   ]);
 
   const paths = {
-    "@/*": [
-      normalizeDir(relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "./*"))),
+    "~/*": [
+      normalizeDir(
+        relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR_CLIENT, "./*")),
+      ),
+    ],
+    "~~/*": [
+      normalizeDir(relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR, "./*"))),
     ],
   };
 
@@ -282,17 +287,21 @@ export function generateAllTsconfigs() {
   for (const config of configs) {
     if (config._name.startsWith("module")) continue;
 
-    const pkg = findAndReadPackageJson(config._srcDir);
-    for (const name of Object.keys(pkg.dependencies ?? {})) {
-      dependencies.push(resolvePackageDir(name, config._srcDir));
-    }
+    try {
+      const pkg = findAndReadPackageJson(config._srcDir);
+      for (const name of Object.keys(pkg.dependencies ?? {})) {
+        dependencies.push(resolvePackageDir(name, config._srcDir));
+      }
+    } catch {}
   }
 
   for (const dir of [import.meta.dirname, undefined]) {
-    const pkg = findAndReadPackageJson(dir);
-    for (const name of Object.keys(pkg.dependencies ?? {})) {
-      dependencies.push(resolvePackageDir(name, dir));
-    }
+    try {
+      const pkg = findAndReadPackageJson(dir);
+      for (const name of Object.keys(pkg.dependencies ?? {})) {
+        dependencies.push(resolvePackageDir(name, dir));
+      }
+    } catch {}
   }
 
   dependencies = _.uniq(dependencies.filter((dep) => dep !== null)).map(

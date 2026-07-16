@@ -8,7 +8,7 @@ export default defineConfig({
     "./src/**/*.{js,jsx,ts,tsx}",
     "!./src/**/*.test.{js,jsx,ts,tsx}",
     "!./src/**/*.spec.{js,jsx,ts,tsx}",
-    "!./playground/**/*",
+    "!./src/plugins/vite/vite-env.d.ts",
   ],
 
   tsconfig: "./tsconfig.build.json",

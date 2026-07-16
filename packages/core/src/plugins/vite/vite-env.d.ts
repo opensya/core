@@ -1,11 +1,13 @@
-// declare module "virtual:providers" {
-//   import type { ComponentType, ReactNode } from "react";
-//   export const providers: ComponentType<{ children: ReactNode }>[];
-// }
-
-declare module "virtual:router" {
+declare module "virtual:routes" {
   import type { RouteRecordRaw } from "vue-router";
-  export const routes: eadonly<RouteRecordRaw[]>;
+  export const routes: readonly RouteRecordRaw[];
+}
+
+declare module "virtual:router-middlewares" {
+  import type { RouteMiddleware } from "vue-router";
+
+  export const globalMiddlewares: readonly RouteMiddleware[];
+  export const namedMiddlewares: readonly RouteMiddleware[];
 }
 
 declare module "virtual:components" {
@@ -14,8 +16,9 @@ declare module "virtual:components" {
 }
 
 declare module "virtual:plugins" {
-  import type { Plugin } from "vue";
-  export const plugins: Record<string, (ctx: { app: any }) => void>;
+  import type { Plugin, App } from "vue";
+
+  export const plugins: Record<string, (ctx: { app: App }) => void>;
   export const pluginsPlugin: Plugin;
 }
 

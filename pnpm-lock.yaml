@@ -62,6 +62,9 @@ importers:
       '@vitejs/plugin-vue':
         specifier: ^6.0.7
         version: 6.0.7(vite@8.1.4(@types/node@22.20.1)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.0)(yaml@2.9.0))(vue@3.5.39(typescript@5.9.3))
+      acorn:
+        specifier: ^8.17.0
+        version: 8.17.0
       argon2:
         specifier: ^0.44.0
         version: 0.44.0
@@ -74,6 +77,9 @@ importers:
       drizzle-orm:
         specifier: ^0.45.2
         version: 0.45.2(@types/pg@8.20.0)(pg@8.22.0)
+      estree-walker:
+        specifier: ^3.0.3
+        version: 3.0.3
       fastify:
         specifier: ^5.10.0
         version: 5.10.0
@@ -83,12 +89,21 @@ importers:
       lodash:
         specifier: ^4.18.1
         version: 4.18.1
+      magic-string:
+        specifier: ^0.30.21
+        version: 0.30.21
+      mlly:
+        specifier: ^1.8.2
+        version: 1.8.2
       pg:
         specifier: ^8.22.0
         version: 8.22.0
       tsx:
         specifier: ^4.23.0
         version: 4.23.0
+      unplugin:
+        specifier: ^3.3.0
+        version: 3.3.0(esbuild@0.28.1)(rolldown@1.1.5)(vite@8.1.4(@types/node@22.20.1)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.0)(yaml@2.9.0))
       vite:
         specifier: ^8.1.4
         version: 8.1.4(@types/node@22.20.1)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.0)(yaml@2.9.0)
@@ -108,6 +123,9 @@ importers:
       '@eslint/markdown':
         specifier: ^8.0.3
         version: 8.0.3
+      '@types/estree':
+        specifier: ^1.0.9
+        version: 1.0.9
       '@types/lodash':
         specifier: ^4.17.24
         version: 4.17.24
@@ -1400,6 +1418,9 @@ packages:
 
   estree-walker@2.0.2:
     resolution: {integrity: sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w==}
+
+  estree-walker@3.0.3:
+    resolution: {integrity: sha512-7RUKfXgSMMkzt6ZuXmqapOurLGPPfgj6l9uRZ7lRGolvk0y2yocc35LdcxKC5PQZdn2DMqioAQ2NoWcrTKmm6g==}
 
   esutils@2.0.3:
     resolution: {integrity: sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==}
@@ -3400,6 +3421,10 @@ snapshots:
   estraverse@5.3.0: {}
 
   estree-walker@2.0.2: {}
+
+  estree-walker@3.0.3:
+    dependencies:
+      '@types/estree': 1.0.9
 
   esutils@2.0.3: {}
 
