@@ -1,5 +1,5 @@
 {
-  "name": "@opensya/core-playground",
+  "name": "@opensya/base",
   "private": true,
   "type": "module",
   "scripts": {

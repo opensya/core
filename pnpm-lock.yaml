@@ -36,6 +36,34 @@ importers:
         specifier: ^8.63.0
         version: 8.63.0(eslint@10.7.0(jiti@2.7.0))(typescript@5.9.3)
 
+  packages/base:
+    dependencies:
+      '@opensya/core':
+        specifier: workspace:*
+        version: link:../core
+      '@opensya/persistence':
+        specifier: ^0.5.1
+        version: 0.5.1(drizzle-orm@1.0.0-beta.22(@types/pg@8.20.0)(pg@8.22.0))
+      argon2:
+        specifier: ^0.44.0
+        version: 0.44.0
+      vue:
+        specifier: ^3.5.39
+        version: 3.5.39(typescript@5.9.3)
+    devDependencies:
+      fastify:
+        specifier: ^5.10.0
+        version: 5.10.0
+      tsx:
+        specifier: ^4.23.0
+        version: 4.23.0
+      typescript:
+        specifier: ^5.7.2
+        version: 5.9.3
+      vite:
+        specifier: ^8.1.4
+        version: 8.1.4(@types/node@22.20.1)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.0)(yaml@2.9.0)
+
   packages/core:
     dependencies:
       '@fastify/cookie':
@@ -159,34 +187,6 @@ importers:
       vue-tsc:
         specifier: ^3.3.7
         version: 3.3.7(typescript@5.9.3)
-
-  playground:
-    dependencies:
-      '@opensya/core':
-        specifier: workspace:*
-        version: link:../packages/core
-      '@opensya/persistence':
-        specifier: ^0.5.1
-        version: 0.5.1(drizzle-orm@1.0.0-beta.22(@types/pg@8.20.0)(pg@8.22.0))
-      argon2:
-        specifier: ^0.44.0
-        version: 0.44.0
-      vue:
-        specifier: ^3.5.39
-        version: 3.5.39(typescript@5.9.3)
-    devDependencies:
-      fastify:
-        specifier: ^5.10.0
-        version: 5.10.0
-      tsx:
-        specifier: ^4.23.0
-        version: 4.23.0
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-      vite:
-        specifier: ^8.1.4
-        version: 8.1.4(@types/node@22.20.1)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.0)(yaml@2.9.0)
 
 packages:
 
