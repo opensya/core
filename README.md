@@ -49,5 +49,5 @@ Organizations own their code, data, infrastructure and the way their recruitment
 
 ---
 
-- Documentation **https://docs.opensya.com**
+- More infos **https://opensya.com**
 - License [MIT licensed](LICENSE).

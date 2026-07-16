@@ -32,7 +32,7 @@ type ExtractComponentProps<T> = T extends new (...args: any[]) => { $props: infe
   : Record<string, any>;
 
 declare module '{{page_meta_helper_path}}' {
-  interface PageMeta {
+  export interface PageMeta {
     /**
      * Define layout behavior with strict TypeScript verification and props validation:
      * - \`false\`: Disables the layout.
