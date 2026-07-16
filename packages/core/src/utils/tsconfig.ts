@@ -94,6 +94,8 @@ export function writeClientTsconfig({
   const dirs = getDirs();
 
   const include: string[] = normalizeDirs([
+    ...dependencies,
+
     relative(dirs.OUTPUT_DIR, join(dirs.OUTPUT_DIR_CLIENT, "**/*.ts")),
     relative(dirs.OUTPUT_DIR, join(dirs.OUTPUT_DIR_CLIENT, "**/*.d.ts")),
     relative(dirs.OUTPUT_DIR, join(dirs.OUTPUT_DIR_CLIENT, "**/*.vue")),
@@ -112,8 +114,6 @@ export function writeClientTsconfig({
 
     relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "**/*.ts")),
     relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "**/*.d.ts")),
-
-    ...dependencies,
   ]);
 
   // Default client path aliases (ensuring they are wrapped in arrays for tsconfig compliance)
@@ -173,6 +173,8 @@ export function writeServerTsconfig({
   const dirs = getDirs();
 
   const include: string[] = normalizeDirs([
+    ...dependencies,
+
     relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR_SERVER, "**/*.ts")),
     relative(
       dirs.OUTPUT_DIR,
@@ -183,8 +185,6 @@ export function writeServerTsconfig({
 
     relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "**/*.ts")),
     relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "**/*.d.ts")),
-
-    ...dependencies,
   ]);
 
   // Default server path aliases (ensuring they are wrapped in arrays for tsconfig compliance)
@@ -238,13 +238,13 @@ export function writeNodeTsconfig({
 
   // Scans build tools, config files (vite.config.ts, opensya.config.ts) and scripts
   const include: string[] = normalizeDirs([
+    ...dependencies,
+
     relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR, "*.config.ts")),
     relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR, "scripts/**/*.ts")),
     relative(dirs.OUTPUT_DIR, join(dirs.INPUT_DIR, "tools/**/*.ts")),
     relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "**/*.ts")),
     relative(dirs.OUTPUT_DIR, join(dirs.CORE_DIR, "**/*.d.ts")),
-
-    ...dependencies,
   ]);
 
   const paths = {

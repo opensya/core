@@ -1,6 +1,7 @@
-import type { RouteMeta } from "vue-router";
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface PageMeta {}
 
-export function definePageMeta(meta: RouteMeta): RouteMeta {
+export function definePageMeta(meta: PageMeta): PageMeta {
   return meta;
 }
 
