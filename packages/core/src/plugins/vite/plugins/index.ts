@@ -5,3 +5,4 @@ export * from "./composables.js";
 export * from "./css.js";
 export * from "./router-middlewares.js";
 export * from "./page-meta.js";
+export * from "./layouts.js";

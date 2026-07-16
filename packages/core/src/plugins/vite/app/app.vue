@@ -1,9 +1,7 @@
 <script setup lang="ts">
-const text = "Welcome to OpenSya";
-export const __sdf = {};
+import Layout from "./layout.vue";
 </script>
 
 <template>
-  <div>{{ text }}</div>
-  <RouterView />
+  <Layout />
 </template>

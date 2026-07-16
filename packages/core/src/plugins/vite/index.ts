@@ -14,6 +14,7 @@ import {
   viteCssPlugin,
   viteRouterMiddlewaresPlugin,
   vitePageMetaPlugin,
+  viteLayoutsPlugin,
 } from "./plugins/index.js";
 import { getDirs } from "@/utils/dirs.js";
 import { getCustomConfigAliases } from "../../utils/get-config-alias.js";
@@ -45,6 +46,7 @@ export default fp(async (app) => {
         viteCssPlugin(),
         viteRouterMiddlewaresPlugin(),
         vitePageMetaPlugin({ dev: isDev }).vite(),
+        viteLayoutsPlugin(),
       ],
 
       resolve: {

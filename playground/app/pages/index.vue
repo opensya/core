@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 useTestComposable();
-definePageMeta({ test: "yeaaaaaaaaah" });
+definePageMeta({ test: "yeaaaaaaaaah", layout: "admin" });
 </script>
 
 <template>

@@ -6,6 +6,7 @@ import path from "node:path";
 import _ from "lodash";
 import { getDirs } from "@/utils/dirs.js";
 import { normalizeDir } from "@/utils/normalize-dir.js";
+import { atomicWriteFile } from "@/utils/atomic-write-file.js";
 
 const VIRTUAL_ID = "virtual:components";
 const RESOLVED_VIRTUAL_ID = "\0virtual:components";
@@ -91,7 +92,7 @@ export function viteComponentsPlugin(): Plugin {
     const dtsContent = dtsTemplate.replaceAll("{{dtsEntries}}", dtsEntries);
 
     try {
-      fs.writeFileSync(dtsPath, dtsContent, "utf-8");
+      atomicWriteFile(dtsPath, dtsContent);
     } catch (error) {
       console.error("[Vite Plugin] Failed to write components.d.ts:", error);
     }

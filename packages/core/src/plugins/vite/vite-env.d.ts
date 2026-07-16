@@ -22,6 +22,27 @@ declare module "virtual:plugins" {
   export const pluginsPlugin: Plugin;
 }
 
+declare module "virtual:layouts" {
+  import type { Component } from "vue";
+
+  declare module "vue-router" {
+    interface RouteMeta {
+      /**
+       * Define layout behavior:
+       * - `false`: Disables the layout.
+       * - `string`: Loads the specified layout by name (e.g., 'Admin').
+       * - `object`: Loads the layout with specific runtime props.
+       */
+      layout?:
+        | false
+        | string
+        | { name: string; props?: Record<string, unknown> };
+    }
+  }
+
+  export const layouts: Record<string, () => Promise<Component>>;
+}
+
 declare module "virtual:composables" {}
 
 declare module "virtual:css" {}
